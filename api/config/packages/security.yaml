@@ -1,0 +1,20 @@
+security:
+    providers:
+        api_key_provider:
+            memory:
+                users:
+                    admin:
+                        password: 'not-used'
+                        roles: ['ROLE_ADMIN']
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        api:
+            pattern: ^/api
+            stateless: true
+            custom_authenticators:
+                - App\Security\ApiKeyAuthenticator
+
+    access_control: []

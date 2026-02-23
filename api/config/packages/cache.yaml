@@ -1,0 +1,11 @@
+framework:
+    cache:
+        app: cache.adapter.redis
+        default_redis_provider: '%env(REDIS_URL)%'
+
+        pools:
+            # Used by Doctrine for query/result caching
+            doctrine.result_cache_pool:
+                adapter: cache.adapter.redis
+            doctrine.system_cache_pool:
+                adapter: cache.adapter.redis

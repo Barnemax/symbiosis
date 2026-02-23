@@ -1,0 +1,49 @@
+# Global
+node_modules/
+
+# Symfony
+api/.env.local
+api/.env.local.php
+api/.env.*.local
+api/config/secrets/prod/prod.decrypt.private.php
+api/var/
+api/vendor/
+api/public/bundles/
+
+# PHPUnit
+api/phpunit.xml
+api/.phpunit.cache/
+
+# PHPStan
+api/.phpstan.cache/
+
+# Next.js
+frontend/.env.local
+frontend/.env.*.local
+frontend/.next/
+frontend/node_modules/
+
+# Agent
+scripts/.env.local
+scripts/suggestions-*.md
+
+# Root env overrides
+.env.local
+.env.*.local
+
+# Docker
+docker/postgres/data/
+
+# Downloaded media
+api/public/media/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code
+.claude/*
+!.claude/skills/
+.playwright-mcp/
+CLAUDE.local.md
+scripts/suggestions-*.md

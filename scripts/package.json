@@ -1,0 +1,12 @@
+{
+  "name": "bird-api-scripts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "suggest": "node --env-file=.env.local suggest-species.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.55.0"
+  }
+}
