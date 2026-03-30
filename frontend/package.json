@@ -15,7 +15,7 @@
     "seed:admin": "tsx scripts/seed-admin.ts"
   },
   "dependencies": {
-    "@marsidev/react-turnstile": "^1.4.2",
+    "@marsidev/react-turnstile": "^1.5.0",
     "better-auth": "^1.5.6",
     "d3-force": "^3.0.0",
     "drizzle-orm": "^0.45.2",
