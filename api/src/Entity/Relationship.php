@@ -10,6 +10,8 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Repository\RelationshipRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -77,6 +79,16 @@ class Relationship
     #[Groups(['relationship:read', 'relationship:write'])]
     private ?string $notes = null;
 
+    /** @var Collection<int, RelationshipTranslation> */
+    #[ORM\OneToMany(targetEntity: RelationshipTranslation::class, mappedBy: 'relationship', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[Groups(['relationship:read', 'relationship:write'])]
+    private Collection $translations;
+
+    public function __construct()
+    {
+        $this->translations = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -126,6 +138,33 @@ class Relationship
     public function setNotes(?string $notes): static
     {
         $this->notes = $notes;
+
+        return $this;
+    }
+
+    /** @return Collection<int, RelationshipTranslation> */
+    public function getTranslations(): Collection
+    {
+        return $this->translations;
+    }
+
+    public function addTranslation(RelationshipTranslation $translation): static
+    {
+        if (!$this->translations->contains($translation)) {
+            $this->translations->add($translation);
+            $translation->setRelationship($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTranslation(RelationshipTranslation $translation): static
+    {
+        if ($this->translations->removeElement($translation)) {
+            if ($translation->getRelationship() === $this) {
+                $translation->setRelationship(null);
+            }
+        }
 
         return $this;
     }

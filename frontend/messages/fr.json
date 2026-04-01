@@ -1,0 +1,84 @@
+{
+  "nav": {
+    "birds": "Oiseaux",
+    "contact": "Contact",
+    "explore": "Explorer",
+    "fungi": "Champignons",
+    "trees": "Arbres"
+  },
+  "home": {
+    "birds_desc": "Aves, vertébrés à plumes",
+    "fungi_desc": "Champignons mycorhiziens et saprotrophes",
+    "subtitle": "Explorez les relations entre espèces",
+    "title": "Symbiose",
+    "trees_desc": "Plantes ligneuses et leur écologie"
+  },
+  "kingdom": {
+    "empty": "Aucune espèce trouvée pour « {search} »",
+    "link_count": "{count, plural, one {# lien} other {# liens}}",
+    "next": "Suiv. →",
+    "prev": "← Préc.",
+    "sort_links": "Liens",
+    "sort_name": "Nom",
+    "species_count": "{count} espèces"
+  },
+  "species": {
+    "bird_call": "Chant",
+    "facts": "Informations",
+    "foliage": "Feuillage",
+    "habitat": "Habitat",
+    "iucn_status": "Statut UICN",
+    "max_height": "Hauteur max.",
+    "max_height_value": "{value} m",
+    "relationships": "Relations écologiques",
+    "substrate": "Substrat",
+    "wingspan": "Envergure",
+    "wingspan_value": "~{value} cm"
+  },
+  "contact": {
+    "subtitle": "Une erreur\u00a0? Vous souhaitez suggérer une espèce\u00a0? Juste dire bonjour\u00a0? Envoyez-nous un message.",
+    "title": "Contact"
+  },
+  "explore": {
+    "loading": "Construction du réseau écologique\u2026",
+    "subtitle": "{species} espèces · {relationships} relations · cliquer pour zoomer · double-cliquer pour ouvrir",
+    "title": "Réseau écologique"
+  },
+  "search": {
+    "placeholder": "Rechercher une espèce\u2026"
+  },
+  "kingdoms": {
+    "bird": "Oiseau",
+    "fungus": "Champignon",
+    "tree": "Arbre"
+  },
+  "conservation": {
+    "CR": "En danger critique",
+    "DD": "Données insuffisantes",
+    "EN": "En danger",
+    "EW": "Éteint à l'état sauvage",
+    "EX": "Éteint",
+    "LC": "Préoccupation mineure",
+    "NE": "Non évalué",
+    "NT": "Quasi menacé",
+    "VU": "Vulnérable"
+  },
+  "relationships": {
+    "disperses_seeds_of": "Disperse les graines de",
+    "disperses_seeds_of_inv": "Graines dispersées par",
+    "disperses_spores_of": "Disperse les spores de",
+    "disperses_spores_of_inv": "Spores dispersées par",
+    "feeds_on": "Se nourrit de",
+    "feeds_on_inv": "Consommé par",
+    "grows_on": "Pousse sur",
+    "grows_on_inv": "Hôte de",
+    "mycorrhiza_with": "Partenaire mycorhizien de",
+    "mycorrhiza_with_inv": "Partenaire mycorhizien de",
+    "nests_in": "Niche dans",
+    "nests_in_inv": "Site de nidification de",
+    "parasitises": "Parasite",
+    "parasitises_inv": "Parasité par",
+    "symbiosis_with": "En symbiose avec",
+    "symbiosis_with_inv": "En symbiose avec"
+  }
+}

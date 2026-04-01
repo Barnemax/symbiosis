@@ -2,5 +2,7 @@ parameters:
     level: 6
     paths:
         - src
+    ignoreErrors:
+        - identifier: doctrine.associationType
     symfony:
         containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml

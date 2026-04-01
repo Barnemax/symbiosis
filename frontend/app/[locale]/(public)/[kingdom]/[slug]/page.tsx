@@ -1,21 +1,33 @@
-import Link from 'next/link'
 import Image from 'next/image'
+import { Link } from '@/i18n/navigation'
 import { getSpeciesBySlug, getRelationshipsForSpecies } from '@/lib/api'
-import { CONSERVATION_STATUSES, KINGDOM_MAP, RELATIONSHIP_LABELS_INVERSE } from '@/lib/constants'
-import { getCommonName, getRelationshipLabel, pluralKingdom, resolveMediaUrl } from '@/lib/helpers'
+import { KINGDOM_MAP, KINGDOM_SLUG_HREFS } from '@/lib/constants'
+import { getCommonName, getTranslatedField, resolveMediaUrl } from '@/lib/helpers'
+import type { AppLocale } from '@/lib/types'
 import { notFound } from 'next/navigation'
 import { AdminEditLink } from '@/components/AdminEditLink'
+import { getTranslations, getLocale } from 'next-intl/server'
 
 export default async function SpeciesPage({
   params,
 }: {
-  params: Promise<{ kingdom: string; slug: string }>
+  params: Promise<{ kingdom: string; locale: string; slug: string }>
 }): Promise<React.JSX.Element> {
   const { kingdom, slug } = await params
   const apiKingdom = KINGDOM_MAP[kingdom]
   if (!apiKingdom) {
     notFound()
   }
+
+  const [ts, tc, tk, tr, locale] = await Promise.all([
+    getTranslations('species'),
+    getTranslations('conservation'),
+    getTranslations('kingdoms'),
+    getTranslations('relationships'),
+    getLocale(),
+  ])
+
+  const l = locale as AppLocale
 
   const species = await getSpeciesBySlug(apiKingdom, slug).catch(() => null)
   if (!species) {
@@ -25,13 +37,27 @@ export default async function SpeciesPage({
   const { asSubject, asObject } = await getRelationshipsForSpecies(species.id).catch(() => ({ asObject: [], asSubject: [] }))
 
   const relationships = [
-    ...asSubject.map(rel => ({ editId: rel.id, id: rel.id, label: getRelationshipLabel(rel.type), notes: rel.notes, other: rel.object })),
-    ...asObject.map(rel => ({ editId: rel.id, id: `inv-${rel.id}`, label: RELATIONSHIP_LABELS_INVERSE[rel.type] ?? rel.type, notes: rel.notes, other: rel.subject })),
+    ...asSubject.map(rel => ({
+      editId: rel.id,
+      id: rel.id,
+      label: tr.has(rel.type) ? tr(rel.type) : rel.type.replace(/_/g, ' '),
+      notes: rel.translations.find(t => t.locale === l)?.notes ?? rel.notes,
+      other: rel.object,
+    })),
+    ...asObject.map(rel => ({
+      editId: rel.id,
+      id: `inv-${rel.id}`,
+      label: tr.has(`${rel.type}_inv`) ? tr(`${rel.type}_inv`) : rel.type.replace(/_/g, ' '),
+      notes: rel.translations.find(t => t.locale === l)?.notes ?? rel.notes,
+      other: rel.subject,
+    })),
   ]
 
   const image = species.media.find(m => m.type === 'image')
   const leaf = species.media.find(m => m.type === 'leaf')
   const audio = species.media.find(m => m.type === 'audio')
+  const habitat = getTranslatedField(species, 'habitat', l)
+  const substrate = getTranslatedField(species, 'substrate', l)
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-8">
@@ -40,7 +66,7 @@ export default async function SpeciesPage({
         <figure className="mb-6 overflow-hidden rounded-xl">
           <Image
             src={resolveMediaUrl(image.url)}
-            alt={getCommonName(species, 'en')}
+            alt={getCommonName(species, l)}
             width={800}
             height={500}
             className="h-72 w-full object-cover object-top"
@@ -58,20 +84,17 @@ export default async function SpeciesPage({
       {/* Title */}
       <div className="mb-8">
         <p className="text-xs font-semibold uppercase tracking-widest text-stone-400">
-          {species.family.kingdom} · {species.family.name}
+          {tk(species.family.kingdom)} · {species.family.name}
         </p>
         <div className="mt-1 flex items-center gap-3">
-          <h1 className="text-3xl font-semibold text-stone-900">{getCommonName(species, 'en')}</h1>
+          <h1 className="text-3xl font-semibold text-stone-900">{getCommonName(species, l)}</h1>
           <AdminEditLink href={`/admin/species/${species.slug}/edit`} title="Edit species" />
         </div>
         <p className="text-lg italic text-stone-400">{species.scientificName}</p>
-        {species.commonNames.find(n => n.locale === 'fr') && (
-          <p className="mt-1 text-sm text-stone-500">{getCommonName(species, 'fr')}</p>
-        )}
         {/* Audio player */}
         {audio && (
           <div className="mt-4">
-            <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-stone-400">Bird call</p>
+            <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-stone-400">{ts('bird_call')}</p>
             <audio controls src={audio.url.startsWith('/media/') ? resolveMediaUrl(audio.url) : `/api/audio?url=${encodeURIComponent(audio.url)}`} className="w-full" />
             {audio.credit && (
               <p className="mt-1 text-right text-xs text-stone-400">{audio.credit}</p>
@@ -82,38 +105,38 @@ export default async function SpeciesPage({
 
       {/* Facts */}
       <section className="mb-8 rounded-xl border border-stone-200 bg-white p-5">
-        <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-stone-400">Facts</h2>
+        <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-stone-400">{ts('facts')}</h2>
         <dl className="space-y-2">
-          {species.habitat && (
+          {habitat && (
             <div className="flex gap-2">
-              <dt className="w-36 shrink-0 text-sm text-stone-400">Habitat</dt>
-              <dd className="text-sm text-stone-700">{species.habitat}</dd>
+              <dt className="w-36 shrink-0 text-sm text-stone-400">{ts('habitat')}</dt>
+              <dd className="text-sm text-stone-700">{habitat}</dd>
             </div>
           )}
           {species.conservationStatus && (
             <div className="flex gap-2">
-              <dt className="w-36 shrink-0 text-sm text-stone-400">IUCN status</dt>
+              <dt className="w-36 shrink-0 text-sm text-stone-400">{ts('iucn_status')}</dt>
               <dd className="text-sm font-semibold text-stone-700">
-                {species.conservationStatus} ({CONSERVATION_STATUSES[species.conservationStatus]?.label ?? species.conservationStatus})
+                {species.conservationStatus} ({tc(species.conservationStatus)})
               </dd>
             </div>
           )}
           {species.wingspan && (
             <div className="flex gap-2">
-              <dt className="w-36 shrink-0 text-sm text-stone-400">Wingspan</dt>
-              <dd className="text-sm text-stone-700">~{species.wingspan} cm</dd>
+              <dt className="w-36 shrink-0 text-sm text-stone-400">{ts('wingspan')}</dt>
+              <dd className="text-sm text-stone-700">{ts('wingspan_value', { value: species.wingspan })}</dd>
             </div>
           )}
           {species.maxHeight && (
             <div className="flex gap-2">
-              <dt className="w-36 shrink-0 text-sm text-stone-400">Max height</dt>
-              <dd className="text-sm text-stone-700">{species.maxHeight} m</dd>
+              <dt className="w-36 shrink-0 text-sm text-stone-400">{ts('max_height')}</dt>
+              <dd className="text-sm text-stone-700">{ts('max_height_value', { value: species.maxHeight })}</dd>
             </div>
           )}
-          {species.substrate && (
+          {substrate && (
             <div className="flex gap-2">
-              <dt className="w-36 shrink-0 text-sm text-stone-400">Substrate</dt>
-              <dd className="text-sm text-stone-700">{species.substrate}</dd>
+              <dt className="w-36 shrink-0 text-sm text-stone-400">{ts('substrate')}</dt>
+              <dd className="text-sm text-stone-700">{substrate}</dd>
             </div>
           )}
         </dl>
@@ -124,14 +147,14 @@ export default async function SpeciesPage({
         <figure className="mb-8 overflow-hidden rounded-xl">
           <Image
             src={resolveMediaUrl(leaf.url)}
-            alt={`${getCommonName(species, 'en')} leaves`}
+            alt={`${getCommonName(species, l)} ${ts('foliage').toLowerCase()}`}
             width={800}
             height={400}
             className="h-56 w-full object-cover object-center"
             unoptimized
           />
           <figcaption className="bg-stone-100 px-3 py-1.5 text-right text-xs text-stone-400">
-            Foliage{leaf.credit ? ` · ${leaf.credit}` : ''}
+            {ts('foliage')}{leaf.credit ? ` · ${leaf.credit}` : ''}
           </figcaption>
         </figure>
       )}
@@ -140,7 +163,7 @@ export default async function SpeciesPage({
       {relationships.length > 0 && (
         <section className="rounded-xl border border-stone-200 bg-white p-5">
           <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-stone-400">
-            Ecological relationships
+            {ts('relationships')}
           </h2>
           <ul className="space-y-4">
             {relationships.map(rel => (
@@ -150,10 +173,13 @@ export default async function SpeciesPage({
                     {rel.label}
                   </span>
                   <Link
-                    href={`/${pluralKingdom(rel.other.family.kingdom)}/${rel.other.slug}`}
+                    href={{
+                      params: { slug: rel.other.slug ?? rel.other.id.toString() },
+                      pathname: KINGDOM_SLUG_HREFS[rel.other.family.kingdom]
+                    }}
                     className="font-medium text-stone-900 hover:underline"
                   >
-                    {getCommonName(rel.other, 'en')}
+                    {getCommonName(rel.other, l)}
                   </Link>
                   <span className="italic text-stone-400">{rel.other.scientificName}</span>
                   <AdminEditLink href={`/admin/relationships/${rel.editId}/edit`} title="Edit relationship" size={14} />

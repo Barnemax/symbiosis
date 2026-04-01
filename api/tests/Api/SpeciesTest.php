@@ -8,42 +8,21 @@ use App\Entity\Family;
 use App\Entity\Relationship;
 use App\Entity\Species;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\SchemaTool;
 
 class SpeciesTest extends ApiTestCase
 {
     protected static ?bool $alwaysBootKernel = true;
 
-    private static bool $schemaReady = false;
-
     // ---------------------------------------------------------------------------
-    // Schema lifecycle
+    // Lifecycle
     // ---------------------------------------------------------------------------
-
-    public static function setUpBeforeClass(): void
-    {
-        if (self::$schemaReady) {
-            return;
-        }
-
-        $kernel = self::bootKernel();
-        /** @var EntityManagerInterface $em */
-        $em = $kernel->getContainer()->get('doctrine')->getManager();
-        $tool = new SchemaTool($em);
-        $meta = $em->getMetadataFactory()->getAllMetadata();
-        $tool->dropSchema($meta);
-        $tool->createSchema($meta);
-        self::ensureKernelShutdown();
-
-        self::$schemaReady = true;
-    }
 
     protected function tearDown(): void
     {
         /** @var EntityManagerInterface $em */
         $em = static::getContainer()->get('doctrine')->getManager();
         $conn = $em->getConnection();
-        $conn->executeStatement('TRUNCATE relationship, common_name, media, species, family RESTART IDENTITY CASCADE');
+        $conn->executeStatement('TRUNCATE relationship_translation, species_translation, relationship, common_name, media, species, family RESTART IDENTITY CASCADE');
         parent::tearDown();
     }
 
@@ -389,12 +368,16 @@ class SpeciesTest extends ApiTestCase
     public function testOrderByRelationshipCountDescending(): void
     {
         $family = $this->createFamily();
-        $jay     = $this->createSpecies($family, 'Garrulus glandarius');  // 2 relationships
-        $robin   = $this->createSpecies($family, 'Erithacus rubecula');   // 1 relationship
-        $warbler = $this->createSpecies($family, 'Phylloscopus sibilatrix'); // 0 relationships
+        $jay     = $this->createSpecies($family, 'Garrulus glandarius');
+        $robin   = $this->createSpecies($family, 'Erithacus rubecula');
+        $warbler = $this->createSpecies($family, 'Phylloscopus sibilatrix');
+        $tit     = $this->createSpecies($family, 'Parus major');
 
+        // Jay: 3 links (subject ×2, object ×1)
         $this->createRelationship($jay, $robin, 'feeds_on');
         $this->createRelationship($jay, $warbler, 'nests_in');
+        $this->createRelationship($tit, $jay, 'feeds_on');
+        // Robin: 2 links (subject ×1, object ×1)
         $this->createRelationship($robin, $warbler, 'feeds_on');
 
         $response = static::createClient()->request('GET', '/api/species?order[relationshipCount]=desc');
@@ -406,7 +389,7 @@ class SpeciesTest extends ApiTestCase
         for ($i = 0; $i < count($counts) - 1; ++$i) {
             $this->assertGreaterThanOrEqual($counts[$i + 1], $counts[$i]);
         }
-        // Jay has the most links (subject of 2), so it should be first
+        // Jay has the most links (3), so it should be first
         $this->assertSame('Garrulus glandarius', $members[0]['scientificName']);
     }
 }

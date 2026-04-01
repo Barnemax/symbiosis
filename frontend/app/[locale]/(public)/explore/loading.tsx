@@ -1,4 +1,7 @@
-export default function ExploreLoading(): React.JSX.Element {
+import { getTranslations } from 'next-intl/server'
+
+export default async function ExploreLoading(): Promise<React.JSX.Element> {
+  const t = await getTranslations('explore')
   return (
     <main className="mx-auto max-w-5xl px-6 py-8">
       <div className="mb-6">
@@ -12,7 +15,7 @@ export default function ExploreLoading(): React.JSX.Element {
             <line x1="12" y1="7" x2="19" y2="12"/><line x1="12" y1="7" x2="5" y2="12"/>
             <line x1="19" y1="16" x2="5" y2="16"/>
           </svg>
-          <p className="text-sm">Building ecological network…</p>
+          <p className="text-sm">{t('loading')}</p>
         </div>
       </div>
     </main>

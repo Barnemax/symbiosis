@@ -1,4 +1,19 @@
+import { routing } from '@/i18n/routing'
 import type { ConservationStatus, Kingdom } from './types'
+
+export const COMMON_NAME_LOCALES = [...routing.locales, 'la'] as const
+
+export const KINGDOM_HREFS = {
+  bird: '/birds',
+  fungus: '/fungi',
+  tree: '/trees',
+} as const satisfies Record<Kingdom, string>
+
+export const KINGDOM_SLUG_HREFS = {
+  bird: '/birds/[slug]',
+  fungus: '/fungi/[slug]',
+  tree: '/trees/[slug]',
+} as const satisfies Record<Kingdom, string>
 
 export const CONSERVATION_STATUSES: Record<ConservationStatus, { label: string; className: string }> = {
   CR: { className: 'bg-red-100 text-red-800', label: 'Critically Endangered' },
@@ -29,13 +44,3 @@ export const RELATIONSHIP_LABELS: Record<string, string> = {
   symbiosis_with: 'Symbiosis with',
 }
 
-export const RELATIONSHIP_LABELS_INVERSE: Record<string, string> = {
-  disperses_seeds_of: 'Seeds dispersed by',
-  disperses_spores_of: 'Spores dispersed by',
-  feeds_on: 'Eaten by',
-  grows_on: 'Host of',
-  mycorrhiza_with: 'Mycorrhizal partner of',
-  nests_in: 'Nesting site for',
-  parasitises: 'Parasitised by',
-  symbiosis_with: 'Symbiosis with',
-}

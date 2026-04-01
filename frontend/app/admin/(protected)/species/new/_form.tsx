@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from 'react'
 import { CONSERVATION_STATUSES } from '@/lib/constants'
+import { routing, type AppLocale } from '@/i18n/routing'
 import type { Family, Species } from '@/lib/types'
 import Combobox from '@/components/Combobox'
 
@@ -26,7 +27,7 @@ export default function SpeciesForm({
 
   const filteredFamilies = kingdom ? families.filter(f => f.kingdom === kingdom) : []
 
-  const cn = (locale: 'en' | 'fr' | 'la'): string =>
+  const cn = (locale: AppLocale | 'la'): string =>
     initialData?.commonNames.find(c => c.locale === locale)?.name ?? ''
 
   return (
@@ -136,14 +137,14 @@ export default function SpeciesForm({
       <div>
         <label className="mb-2 block text-sm text-stone-500">Common names</label>
         <div className="space-y-2">
-          {(['en', 'fr', 'la'] as const).map(locale => (
+          {([...routing.locales, 'la'] as Array<AppLocale | 'la'>).map(locale => (
             <div key={locale} className="flex items-center gap-2">
               <span className="w-6 shrink-0 text-xs font-medium text-stone-400">{locale}</span>
               <input
                 type="text"
                 name={`cn_${locale}`}
                 defaultValue={cn(locale)}
-                placeholder={locale === 'en' ? 'e.g. English Oak' : locale === 'fr' ? 'e.g. Chêne pédonculé' : 'e.g. Quercus robur'}
+                placeholder={locale === routing.defaultLocale ? 'e.g. English Oak' : locale === 'fr' ? 'e.g. Chêne pédonculé' : 'e.g. Quercus robur'}
                 className="w-full rounded-lg border border-stone-200 px-3 py-2 text-sm text-stone-900 outline-none focus:border-stone-400"
               />
             </div>

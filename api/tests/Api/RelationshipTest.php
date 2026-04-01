@@ -7,42 +7,21 @@ use App\Entity\Family;
 use App\Entity\Relationship;
 use App\Entity\Species;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\SchemaTool;
 
 class RelationshipTest extends ApiTestCase
 {
     protected static ?bool $alwaysBootKernel = true;
 
-    private static bool $schemaReady = false;
-
     // ---------------------------------------------------------------------------
-    // Schema lifecycle
+    // Lifecycle
     // ---------------------------------------------------------------------------
-
-    public static function setUpBeforeClass(): void
-    {
-        if (self::$schemaReady) {
-            return;
-        }
-
-        $kernel = self::bootKernel();
-        /** @var EntityManagerInterface $em */
-        $em = $kernel->getContainer()->get('doctrine')->getManager();
-        $tool = new SchemaTool($em);
-        $meta = $em->getMetadataFactory()->getAllMetadata();
-        $tool->dropSchema($meta);
-        $tool->createSchema($meta);
-        self::ensureKernelShutdown();
-
-        self::$schemaReady = true;
-    }
 
     protected function tearDown(): void
     {
         /** @var EntityManagerInterface $em */
         $em = static::getContainer()->get('doctrine')->getManager();
         $conn = $em->getConnection();
-        $conn->executeStatement('TRUNCATE relationship, common_name, media, species, family RESTART IDENTITY CASCADE');
+        $conn->executeStatement('TRUNCATE relationship_translation, species_translation, relationship, common_name, media, species, family RESTART IDENTITY CASCADE');
         parent::tearDown();
     }
 
