@@ -37,7 +37,15 @@
   },
   "contact": {
     "subtitle": "Spotted an error? Want to suggest a species? Just want to say hello? Drop us a message.",
-    "title": "Contact"
+    "title": "Contact",
+    "email": "Email",
+    "email_placeholder": "your@email.com",
+    "species": "Species (optional)",
+    "species_placeholder": "Search for a species…",
+    "message": "Message",
+    "message_placeholder": "Describe a correction, suggest a species, or just say hello…",
+    "send": "Send",
+    "sending": "Sending…"
   },
   "explore": {
     "loading": "Building ecological network\u2026",

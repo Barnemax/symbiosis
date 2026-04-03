@@ -37,7 +37,15 @@
   },
   "contact": {
     "subtitle": "Une erreur\u00a0? Vous souhaitez suggérer une espèce\u00a0? Juste dire bonjour\u00a0? Envoyez-nous un message.",
-    "title": "Contact"
+    "title": "Contact",
+    "email": "Email",
+    "email_placeholder": "votre@email.com",
+    "species": "Espèce (facultatif)",
+    "species_placeholder": "Rechercher une espèce\u2026",
+    "message": "Message",
+    "message_placeholder": "Décrivez une correction, suggérez une espèce ou dites simplement bonjour\u00a0\u2026",
+    "send": "Envoyer",
+    "sending": "Envoi\u2026"
   },
   "explore": {
     "loading": "Construction du réseau écologique\u2026",
