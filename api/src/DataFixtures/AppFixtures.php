@@ -19,6 +19,7 @@ class AppFixtures extends Fixture
         // Families
         // ------------------------------------------------------------------ //
 
+        $accipitridae = $this->family($manager, 'Accipitridae', 'bird');
         $corvidae = $this->family($manager, 'Corvidae', 'bird');
         $picidae = $this->family($manager, 'Picidae', 'bird');
         $fringillidae = $this->family($manager, 'Fringillidae', 'bird');
@@ -58,8 +59,10 @@ class AppFixtures extends Fixture
         $hypoxylaceae = $this->family($manager, 'Hypoxylaceae', 'fungus');
         $fistulinaceae = $this->family($manager, 'Fistulinaceae', 'fungus');
         $polyporaceae = $this->family($manager, 'Polyporaceae', 'fungus');
+        $parmeliaceae = $this->family($manager, 'Parmeliaceae', 'fungus');
         $paxillaceae = $this->family($manager, 'Paxillaceae', 'fungus');
         $russulaceae = $this->family($manager, 'Russulaceae', 'fungus');
+        $strophariaceae = $this->family($manager, 'Strophariaceae', 'fungus');
         $tuberaceae = $this->family($manager, 'Tuberaceae', 'fungus');
 
         // ------------------------------------------------------------------ //
@@ -153,6 +156,18 @@ class AppFixtures extends Fixture
         $blackWoodpecker = $this->species($manager, 'Dryocopus martius', $picidae, 'LC', 'Mature beech and pine forest with large-diameter trees; requires extensive home range', wingspan: 68.0);
         $this->names($manager, $blackWoodpecker, 'Black Woodpecker', 'Pic noir');
         $this->translate($manager, $blackWoodpecker, 'fr', 'Hêtraies et pinèdes matures avec des arbres de grand diamètre ; nécessite un vaste domaine vital');
+
+        $honeyBuzzard = $this->species($manager, 'Pernis apivorus', $accipitridae, 'LC', 'Mature deciduous and mixed woodland, forest edge, with open foraging ground', wingspan: 135.0);
+        $this->names($manager, $honeyBuzzard, 'Honey Buzzard', 'Bondrée apivore');
+        $this->translate($manager, $honeyBuzzard, 'fr', 'Forêts de feuillus et mixtes matures, lisières forestières, avec terrain de chasse ouvert');
+
+        $wryneck = $this->species($manager, 'Jynx torquilla', $picidae, 'LC', 'Open woodland, orchards, parkland, and woodland edge with old trees bearing existing cavities', wingspan: 27.0);
+        $this->names($manager, $wryneck, 'Wryneck', 'Torcol fourmilier');
+        $this->translate($manager, $wryneck, 'fr', 'Forêts ouvertes, vergers, parcs et lisières forestières avec de vieux arbres présentant des cavités existantes');
+
+        $spottedNutcracker = $this->species($manager, 'Nucifraga caryocatactes', $corvidae, 'LC', 'Montane and boreal coniferous forest, especially Norway Spruce and Swiss Stone Pine stands', wingspan: 52.0);
+        $this->names($manager, $spottedNutcracker, 'Spotted Nutcracker', 'Cassenoix moucheté');
+        $this->translate($manager, $spottedNutcracker, 'fr', 'Forêts de conifères montagnardes et boréales, notamment à Épicéa commun et Pin cembro');
 
         // ------------------------------------------------------------------ //
         // Species | Trees
@@ -313,6 +328,22 @@ class AppFixtures extends Fixture
         $orangeBolete = $this->species($manager, 'Leccinum aurantiacum', $boletaceae, null, 'Soil under Aspen and Black Poplar in riparian and mixed woodland', substrate: 'Ectomycorrhizal, near-obligate Populus associate');
         $this->names($manager, $orangeBolete, 'Orange Birch Bolete', 'Bolet orangé');
         $this->translate($manager, $orangeBolete, 'fr', 'Sol sous Tremble et Peuplier noir en forêts riveraines et mixtes', 'Ectomycorhizien, associé quasi obligatoire du Populus');
+
+        $aspenBracket = $this->species($manager, 'Phellinus tremulae', $hymenochaetaceae, null, 'Living Aspen trunks in boreal and montane mixed woodland; strictly host-specific', substrate: 'Parasitic, white heart rot of living Aspen');
+        $this->names($manager, $aspenBracket, 'Aspen Bracket', 'Polypore du tremble');
+        $this->translate($manager, $aspenBracket, 'fr', 'Troncs de Tremble vivants en forêts mixtes boréales et montagnardes ; strictement hôte-spécifique', 'Parasite, carie blanche du cœur du Tremble vivant');
+
+        $oakmoss = $this->species($manager, 'Evernia prunastri', $parmeliaceae, null, 'Bark of broadleaved and coniferous trees in open woodland, hedgerows, and upland scrub', substrate: 'Lichenised fungus, epiphytic on bark');
+        $this->names($manager, $oakmoss, 'Oakmoss Lichen', 'Mousse de chêne');
+        $this->translate($manager, $oakmoss, 'fr', 'Écorce de feuillus et de conifères dans les forêts ouvertes, les haies et les fourrés d\'altitude', 'Champignon lichénisé, épiphyte sur écorce');
+
+        $hornbeamMilkcap = $this->species($manager, 'Lactarius circellatus', $russulaceae, null, 'Calcareous deciduous woodland floor, near-exclusively under Hornbeam', substrate: 'Ectomycorrhizal, near-obligate Carpinus associate');
+        $this->names($manager, $hornbeamMilkcap, 'Hornbeam Milkcap', 'Lactaire du charme');
+        $this->translate($manager, $hornbeamMilkcap, 'fr', 'Sol de forêts de feuillus calcaires, presque exclusivement sous Charme', 'Ectomycorhizien, associé quasi obligatoire du Carpinus');
+
+        $poplarFieldcap = $this->species($manager, 'Cyclocybe cylindracea', $strophariaceae, null, 'Dead and dying Poplar and Aspen wood in riparian and mixed woodland; also occasional on elder', substrate: 'Saprotrophic/weakly parasitic, dead Populus wood');
+        $this->names($manager, $poplarFieldcap, 'Poplar Fieldcap', 'Pholiote du peuplier');
+        $this->translate($manager, $poplarFieldcap, 'fr', 'Bois de Peuplier et Tremble mort ou mourant en forêt riveraine et mixte ; parfois sur sureau', 'Saprotrophe/faiblement parasitaire, bois mort de Populus');
 
         // ------------------------------------------------------------------ //
         // Ecological relationships
@@ -587,6 +618,70 @@ class AppFixtures extends Fixture
 
         $r = $this->rel($manager, $orangeBolete, $poplar, 'mycorrhiza_with', 'Ectomycorrhizal association with Black Poplar in riparian and mixed woodland.');
         $this->relTranslate($manager, $r, 'fr', 'Association ectomycorhizienne avec le Peuplier noir en forêt riveraine et mixte.');
+
+        // Honey Buzzard
+        $r = $this->rel($manager, $honeyBuzzard, $beech, 'nests_in', 'Preferentially nests in canopy of mature beech woodland, often re-using large stick nests.');
+        $this->relTranslate($manager, $r, 'fr', 'Niche préférentiellement dans la canopée des hêtraies matures, réutilisant souvent de grands nids de brindilles.');
+
+        $r = $this->rel($manager, $honeyBuzzard, $oak, 'nests_in', 'Also nests in large oaks where beech is unavailable.');
+        $this->relTranslate($manager, $r, 'fr', 'Niche également dans les grands chênes lorsque le hêtre est absent.');
+
+        $r = $this->rel($manager, $honeyBuzzard, $blackWoodpecker, 'symbiosis_with', 'Frequently re-uses or nests near Black Woodpecker cavities in mature beech; commensal facilitation.');
+        $this->relTranslate($manager, $r, 'fr', 'Réutilise fréquemment ou niche à proximité des cavités du Pic noir dans les hêtres matures ; facilitation commensale.');
+
+        // Wryneck
+        $r = $this->rel($manager, $wryneck, $aspen, 'nests_in', 'Obligate secondary cavity nester, strongly associated with aspen woodpecker holes.');
+        $this->relTranslate($manager, $r, 'fr', 'Nicheur secondaire en cavité obligatoire, fortement associé aux trous de pics dans les trembles.');
+
+        $r = $this->rel($manager, $wryneck, $oak, 'nests_in', 'Uses existing woodpecker cavities in mature oaks.');
+        $this->relTranslate($manager, $r, 'fr', 'Utilise les cavités de pics existantes dans les chênes matures.');
+
+        $r = $this->rel($manager, $wryneck, $woodpecker, 'symbiosis_with', 'Depends on cavities excavated by Great Spotted Woodpecker; obligate commensal.');
+        $this->relTranslate($manager, $r, 'fr', 'Dépend des cavités creusées par le Pic épeiche ; commensal obligatoire.');
+
+        // Spotted Nutcracker
+        $r = $this->rel($manager, $spottedNutcracker, $spruce, 'disperses_seeds_of', 'Caches enormous quantities of Norway Spruce seeds; primary long-distance disperser in montane and boreal-temperate forests.');
+        $this->relTranslate($manager, $r, 'fr', 'Cache d\'énormes quantités de graines d\'Épicéa commun ; principal disperseur à longue distance dans les forêts montagnardes et boréales-tempérées.');
+
+        $r = $this->rel($manager, $spottedNutcracker, $spruce, 'feeds_on', 'Seeds of Norway Spruce form a major dietary component.');
+        $this->relTranslate($manager, $r, 'fr', 'Les graines d\'Épicéa commun constituent un composant alimentaire majeur.');
+
+        $r = $this->rel($manager, $spottedNutcracker, $pine, 'feeds_on', 'Also extracts and caches Scots Pine seeds as supplementary food source.');
+        $this->relTranslate($manager, $r, 'fr', 'Extrait et cache également les graines de Pin sylvestre comme source alimentaire complémentaire.');
+
+        // Aspen Bracket
+        $r = $this->rel($manager, $aspenBracket, $aspen, 'parasitises', 'Obligate host-specific white-rot parasite of Aspen; causes the heartwood decay essential for cavity-nesting birds.');
+        $this->relTranslate($manager, $r, 'fr', 'Parasite obligatoire hôte-spécifique de carie blanche du Tremble ; provoque la décomposition de l\'aubier essentielle pour les oiseaux nichant en cavité.');
+
+        $r = $this->rel($manager, $blackWoodpecker, $aspenBracket, 'symbiosis_with', 'Black Woodpecker preferentially excavates nest cavities in aspen trunks infected by this fungus; decay softens heartwood to enable excavation (Zahner et al. 2012).');
+        $this->relTranslate($manager, $r, 'fr', 'Le Pic noir creuse préférentiellement des cavités de nidification dans les troncs de Tremble infectés par ce champignon ; la décomposition ramollit l\'aubier pour permettre l\'excavation (Zahner et al. 2012).');
+
+        // Oakmoss Lichen
+        $r = $this->rel($manager, $oakmoss, $oak, 'grows_on', 'Epiphytic lichenised fungus with strong preference for acidic-barked broadleaves; extremely common on mature oak.');
+        $this->relTranslate($manager, $r, 'fr', 'Champignon lichénisé épiphyte à forte préférence pour les feuillus à écorce acide ; extrêmement commun sur les chênes matures.');
+
+        $r = $this->rel($manager, $oakmoss, $ash, 'grows_on', 'Also abundant on ash bark, particularly in moist western woodlands.');
+        $this->relTranslate($manager, $r, 'fr', 'Également abondant sur l\'écorce du frêne, notamment dans les forêts humides de l\'Ouest.');
+
+        $r = $this->rel($manager, $oakmoss, $rowan, 'grows_on', 'Commonly colonises rowan bark in upland and montane woodland.');
+        $this->relTranslate($manager, $r, 'fr', 'Colonise couramment l\'écorce du Sorbier dans les forêts d\'altitude et montagnardes.');
+
+        $r = $this->rel($manager, $oriole, $oakmoss, 'symbiosis_with', 'Golden Oriole incorporates oakmoss lichen as key camouflage and structural material in its suspended nest.');
+        $this->relTranslate($manager, $r, 'fr', 'Le Loriot d\'Europe incorpore la mousse de chêne comme matériau de camouflage et de structure dans son nid suspendu.');
+
+        // Hornbeam Milkcap
+        $r = $this->rel($manager, $hornbeamMilkcap, $hornbeam, 'mycorrhiza_with', 'Near-obligate ectomycorrhizal partner of Hornbeam; one of the most host-specific Lactarius species in Europe.');
+        $this->relTranslate($manager, $r, 'fr', 'Partenaire ectomycorhizien quasi obligatoire du Charme ; l\'une des espèces de Lactarius les plus hôte-spécifiques d\'Europe.');
+
+        // Poplar Fieldcap
+        $r = $this->rel($manager, $poplarFieldcap, $poplar, 'grows_on', 'Saprotrophic and weakly parasitic on living and dead Black Poplar wood; strong host preference for Populus.');
+        $this->relTranslate($manager, $r, 'fr', 'Saprotrophe et faiblement parasitaire sur le bois de Peuplier noir vivant et mort ; forte préférence hôte pour les Populus.');
+
+        $r = $this->rel($manager, $poplarFieldcap, $aspen, 'grows_on', 'Also commonly found on Aspen stumps and standing deadwood.');
+        $this->relTranslate($manager, $r, 'fr', 'Également couramment trouvée sur les souches de Tremble et le bois mort sur pied.');
+
+        $r = $this->rel($manager, $poplarFieldcap, $elder, 'grows_on', 'Occasionally fruits on elder trunks, a recorded secondary host.');
+        $this->relTranslate($manager, $r, 'fr', 'Fructifie occasionnellement sur les troncs de Sureau, un hôte secondaire documenté.');
 
         $manager->flush();
     }

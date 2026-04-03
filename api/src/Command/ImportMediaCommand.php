@@ -139,26 +139,32 @@ class ImportMediaCommand extends Command
         $title = str_replace(' ', '_', $scientificName);
 
         // Step 1 | resolve the lead image filename + direct URL
-        try {
-            $res = $this->httpClient->request('GET', 'https://en.wikipedia.org/w/api.php', [
-                'query' => [
-                    'action' => 'query',
-                    'titles' => $title,
-                    'prop' => 'pageimages',
-                    'piprop' => 'original',
-                    'format' => 'json',
-                    'redirects' => '1',
-                ],
-            ]);
-            $data = $res->toArray();
-            $page = reset($data['query']['pages']);
-        } catch (\Throwable $e) {
-            $io->text("  API error (pageimages): {$e->getMessage()}");
-
-            return [null, null];
+        // Try language editions in order until one returns a lead image
+        $imageUrl = null;
+        foreach (['en', 'de', 'fr', 'la'] as $lang) {
+            try {
+                $res = $this->httpClient->request('GET', "https://{$lang}.wikipedia.org/w/api.php", [
+                    'query' => [
+                        'action' => 'query',
+                        'titles' => $title,
+                        'prop' => 'pageimages',
+                        'piprop' => 'original',
+                        'format' => 'json',
+                        'redirects' => '1',
+                    ],
+                ]);
+                $data = $res->toArray();
+                $page = reset($data['query']['pages']);
+                if (isset($page['original']['source'])) {
+                    $imageUrl = $page['original']['source'];
+                    break;
+                }
+            } catch (\Throwable $e) {
+                $io->text("  API error (pageimages, {$lang}): {$e->getMessage()}");
+            }
         }
 
-        if (!isset($page['original']['source'])) {
+        if (null === $imageUrl) {
             return [null, null];
         }
 

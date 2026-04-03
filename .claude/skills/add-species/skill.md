@@ -19,17 +19,23 @@ The user provides species names as arguments (scientific or common names). Match
 - Glob for `scripts/suggestions-*.md` and read the most recent one
 - Read `api/src/DataFixtures/AppFixtures.php`
 - Read `scripts/suggest-species.mjs`
+- Read `api/src/Locale.php` — extract the `SUPPORTED` array; the non-`en` values are the locales that need translations
 
 ### 2. Parse the suggestions
 
 For each requested species, extract from the suggestions file:
 - Scientific name, common name, kingdom, family
-- Habitat, conservation status, and kingdom-specific attributes (wingspan for birds, maxHeight for trees, substrate for fungi)
-- All proposed relationships (subject, object, type, description)
+- Habitat (EN), conservation status, and kingdom-specific attributes (wingspan for birds, maxHeight for trees, substrate for fungi)
+- All proposed relationships (subject, object, type, English description/notes)
 - The fixture snippet (use as reference, but adapt to match the actual variable names in AppFixtures.php)
 
 If a requested species is not found in the suggestions file, warn the user and skip it.
 If a requested species is already in the fixtures, warn the user and skip it.
+
+For each non-`en` locale found in `Locale.php`, translate:
+- Habitat for each species
+- Substrate for each fungus species (if a substrate is present)
+- Notes for each relationship
 
 ### 3. Determine variable names
 
@@ -46,10 +52,14 @@ If a species requires a family not yet in AppFixtures.php, add it in the Familie
 **Add species** in the correct kingdom section (Birds, Trees, or Fungi), at the end of that section:
 - `$var = $this->species($manager, ...)` call
 - `$this->names($manager, $var, 'English Name', 'French Name')` call
+- For each non-`en` locale: `$this->translate($manager, $var, '<locale>', '<translated habitat>')` call
+  - For fungi: include the substrate as a second argument if present
 
 **Add relationships** before `$manager->flush()`:
 - Group them under a comment with the species name
-- Use `$this->rel($manager, ...)` calls
+- For each relationship:
+  - `$r = $this->rel($manager, ...)` call (assign to `$r`)
+  - For each non-`en` locale: `$this->relTranslate($manager, $r, '<locale>', '<translated notes>')` call on the next line
 - Reference existing variables for species already in the fixtures
 
 ### 6. Update suggest-species.mjs

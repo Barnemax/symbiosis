@@ -50,6 +50,9 @@ const EXISTING_SPECIES = {
     'Picus viridis (European Green Woodpecker) | Picidae',
     'Bombycilla garrulus (Bohemian Waxwing) | Bombycillidae',
     'Dryocopus martius (Black Woodpecker) | Picidae',
+    'Pernis apivorus (Honey Buzzard) | Accipitridae',
+    'Jynx torquilla (Wryneck) | Picidae',
+    'Nucifraga caryocatactes (Spotted Nutcracker) | Corvidae',
   ],
   trees: [
     'Quercus robur (Pedunculate Oak) | Fagaceae',
@@ -92,6 +95,10 @@ const EXISTING_SPECIES = {
     'Cantharellus pallens (Pale Chanterelle) | Cantharellaceae',
     'Fomes fomentarius (Tinder Fungus) | Polyporaceae',
     'Leccinum aurantiacum (Orange Birch Bolete) | Boletaceae',
+    'Phellinus tremulae (Aspen Bracket) | Hymenochaetaceae',
+    'Evernia prunastri (Oakmoss Lichen) | Parmeliaceae',
+    'Lactarius circellatus (Hornbeam Milkcap) | Russulaceae',
+    'Cyclocybe cylindracea (Poplar Fieldcap) | Strophariaceae',
   ],
 };
 
@@ -173,12 +180,34 @@ const EXISTING_RELATIONSHIPS = [
   'Black Woodpecker → Tinder Fungus: symbiosis_with',
   'Orange Birch Bolete → Aspen: mycorrhiza_with',
   'Orange Birch Bolete → Black Poplar: mycorrhiza_with',
+  'Honey Buzzard → European Beech: nests_in',
+  'Honey Buzzard → Pedunculate Oak: nests_in',
+  'Honey Buzzard → Black Woodpecker: symbiosis_with',
+  'Wryneck → Aspen: nests_in',
+  'Wryneck → Pedunculate Oak: nests_in',
+  'Wryneck → Great Spotted Woodpecker: symbiosis_with',
+  'Spotted Nutcracker → Norway Spruce: disperses_seeds_of',
+  'Spotted Nutcracker → Norway Spruce: feeds_on',
+  'Spotted Nutcracker → Scots Pine: feeds_on',
+  'Aspen Bracket → Aspen: parasitises',
+  'Black Woodpecker → Aspen Bracket: symbiosis_with',
+  'Oakmoss Lichen → Pedunculate Oak: grows_on',
+  'Oakmoss Lichen → European Ash: grows_on',
+  'Oakmoss Lichen → Rowan: grows_on',
+  'Golden Oriole → Oakmoss Lichen: symbiosis_with',
+  'Hornbeam Milkcap → Hornbeam: mycorrhiza_with',
+  'Poplar Fieldcap → Black Poplar: grows_on',
+  'Poplar Fieldcap → Aspen: grows_on',
+  'Poplar Fieldcap → Elder: grows_on',
 ];
 
 // Species that were previously suggested but intentionally skipped.
 // The model should not re-suggest these.
 const SKIPPED_SPECIES = [
   'Kretzschmaria deusta (Brittle Cinder) | overlaps with Tinder Fungus for Beech parasite role; Ash already has King Alfred\'s Cakes',
+  'Gymnosporangium cornutum (Rowan Whitebeam Rust) | heteroecious rust requiring Juniper for telial stage; ecologically incomplete without Juniper in DB',
+  'Postia fragilis (Yew Powdercap) | single Yew relationship; low chain value; Yew is a peripheral node',
+  'Perenniporia fraxinea (Ash Bracket) | single Ash relationship; Ash already strengthened by Oakmoss Lichen',
 ];
 
 const RELATIONSHIP_TYPES = [
