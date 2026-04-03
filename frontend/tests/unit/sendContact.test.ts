@@ -16,7 +16,7 @@ vi.mock('next/cache', () => ({ revalidateTag: vi.fn() }))
 vi.mock('next/navigation', () => ({ redirect: vi.fn() }))
 vi.mock('next/server', () => ({}))
 vi.mock('next/headers', () => ({ headers: vi.fn(() => new Headers()) }))
-vi.mock('@/lib/auth', () => ({ auth: { api: { signInEmail: vi.fn(), signOut: vi.fn(), getSession: vi.fn() } } }))
+vi.mock('@/lib/auth', () => ({ auth: { api: { getSession: vi.fn(), signInEmail: vi.fn(), signOut: vi.fn() } } }))
 
 function makeFormData(fields: Record<string, string>): FormData {
   const fd = new FormData()

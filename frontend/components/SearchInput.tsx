@@ -3,7 +3,7 @@
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-export default function SearchInput({ defaultValue }: { defaultValue: string }): React.JSX.Element {
+export default function SearchInput({ defaultValue, placeholder }: { defaultValue: string; placeholder: string }): React.JSX.Element {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -42,7 +42,7 @@ export default function SearchInput({ defaultValue }: { defaultValue: string }):
     <input
       value={value}
       onChange={e => setValue(e.target.value)}
-      placeholder="Search species…"
+      placeholder={placeholder}
       className="w-full rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-300"
     />
   )

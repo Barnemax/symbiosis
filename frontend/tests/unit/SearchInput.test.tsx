@@ -28,17 +28,17 @@ function type(value: string): void {
 
 describe('SearchInput', () => {
   it('renders with the provided default value', () => {
-    render(<SearchInput defaultValue="jay" />)
+    render(<SearchInput placeholder="Search…" defaultValue="jay" />)
     expect(screen.getByRole('textbox')).toHaveValue('jay')
   })
 
   it('renders empty when defaultValue is empty string', () => {
-    render(<SearchInput defaultValue="" />)
+    render(<SearchInput placeholder="Search…" defaultValue="" />)
     expect(screen.getByRole('textbox')).toHaveValue('')
   })
 
   it('debounces: does not call router.replace before 300ms', () => {
-    render(<SearchInput defaultValue="" />)
+    render(<SearchInput placeholder="Search…" defaultValue="" />)
     type('oak')
     act(() => {
       vi.advanceTimersByTime(200)
@@ -47,7 +47,7 @@ describe('SearchInput', () => {
   })
 
   it('calls router.replace with search param after 300ms', () => {
-    render(<SearchInput defaultValue="" />)
+    render(<SearchInput placeholder="Search…" defaultValue="" />)
     type('oak')
     act(() => {
       vi.advanceTimersByTime(300)
@@ -57,7 +57,7 @@ describe('SearchInput', () => {
 
   it('removes search param when input is cleared', () => {
     mockSearchParams = new URLSearchParams('search=jay')
-    render(<SearchInput defaultValue="jay" />)
+    render(<SearchInput placeholder="Search…" defaultValue="jay" />)
     type('')
     act(() => {
       vi.advanceTimersByTime(300)
@@ -68,7 +68,7 @@ describe('SearchInput', () => {
 
   it('resets page param on new search', () => {
     mockSearchParams = new URLSearchParams('page=3')
-    render(<SearchInput defaultValue="" />)
+    render(<SearchInput placeholder="Search…" defaultValue="" />)
     type('pine')
     act(() => {
       vi.advanceTimersByTime(300)
@@ -80,7 +80,7 @@ describe('SearchInput', () => {
 
   it('preserves unrelated query params', () => {
     mockSearchParams = new URLSearchParams('sort=name')
-    render(<SearchInput defaultValue="" />)
+    render(<SearchInput placeholder="Search…" defaultValue="" />)
     type('oak')
     act(() => {
       vi.advanceTimersByTime(300)
@@ -89,7 +89,7 @@ describe('SearchInput', () => {
   })
 
   it('resets the debounce timer on rapid typing', () => {
-    render(<SearchInput defaultValue="" />)
+    render(<SearchInput placeholder="Search…" defaultValue="" />)
     type('o')
     act(() => {
       vi.advanceTimersByTime(200)

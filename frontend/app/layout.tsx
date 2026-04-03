@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 
 import { siteInfo } from '@/lib/strings/siteInfo'
+import { getLocale } from 'next-intl/server'
 
 const geistSans = Geist({
   subsets: ['latin'],
@@ -19,13 +20,14 @@ export const metadata: Metadata = {
   title: siteInfo.name,
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>): React.JSX.Element {
+}>): Promise<React.JSX.Element> {
+  const locale = await getLocale().catch(() => 'en')
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

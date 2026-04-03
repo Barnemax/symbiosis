@@ -5,6 +5,7 @@ import { revalidateTag } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod/v4'
 import { auth } from '@/lib/auth'
+import { COMMON_NAME_LOCALES } from './constants'
 import { API_URL } from './api'
 import { pluralKingdom } from './helpers'
 import type { Species } from './types'
@@ -52,11 +53,11 @@ export async function createSpecies(
   const body: Record<string, unknown> = {
     conservationStatus: formData.get('conservationStatus') || null,
     family: `/api/families/${formData.get('familyId')}`,
-    habitat: formData.get('habitat') || null,
+    habitat: (formData.get('habitat') as string)?.trim() || null,
     scientificName: formData.get('scientificName'),
   }
 
-  const commonNames = (['en', 'fr', 'la'] as const)
+  const commonNames = COMMON_NAME_LOCALES
     .map(locale => ({ locale, name: (formData.get(`cn_${locale}`) as string).trim() }))
     .filter(cn => cn.name.length > 0)
   if (commonNames.length > 0) {
@@ -69,8 +70,11 @@ export async function createSpecies(
   if (kingdom === 'tree' && formData.get('maxHeight')) {
     body.maxHeight = Number(formData.get('maxHeight'))
   }
-  if (kingdom === 'fungus' && formData.get('substrate')) {
-    body.substrate = formData.get('substrate')
+  if (kingdom === 'fungus') {
+    const substrate = (formData.get('substrate') as string)?.trim() || null
+    if (substrate) {
+      body.substrate = substrate
+    }
   }
 
   const res = await fetch(`${API_URL}/api/species`, {
@@ -81,6 +85,7 @@ export async function createSpecies(
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({})) as { detail?: string }
+
     return { error: err.detail ?? `API error ${res.status}` }
   }
 
@@ -99,11 +104,11 @@ export async function updateSpecies(
   const body: Record<string, unknown> = {
     conservationStatus: formData.get('conservationStatus') || null,
     family: `/api/families/${formData.get('familyId')}`,
-    habitat: formData.get('habitat') || null,
+    habitat: (formData.get('habitat') as string)?.trim() || null,
     scientificName: formData.get('scientificName'),
   }
 
-  const commonNames = (['en', 'fr', 'la'] as const)
+  const commonNames = COMMON_NAME_LOCALES
     .map(locale => ({ locale, name: (formData.get(`cn_${locale}`) as string).trim() }))
     .filter(cn => cn.name.length > 0)
   body.commonNames = commonNames
@@ -115,7 +120,7 @@ export async function updateSpecies(
     body.maxHeight = formData.get('maxHeight') ? Number(formData.get('maxHeight')) : null
   }
   if (kingdom === 'fungus') {
-    body.substrate = formData.get('substrate') || null
+    body.substrate = (formData.get('substrate') as string)?.trim() || null
   }
 
   const res = await fetch(`${API_URL}/api/species/${id}`, {
@@ -238,4 +243,55 @@ export async function createRelationship(
 
   revalidateTag('relationships', { expire: 0 })
   redirect('/admin')
+}
+
+export async function updateSpeciesTranslation(
+  id: number,
+  _prevState: { error: string } | null,
+  formData: FormData,
+): Promise<{ error: string } | null> {
+  const locale = formData.get('locale') as string
+  const body = {
+    habitat: (formData.get('habitat') as string)?.trim() || null,
+    substrate: (formData.get('substrate') as string)?.trim() || null,
+  }
+
+  const res = await fetch(`${API_URL}/api/species/${id}/translations/${locale}`, {
+    body: JSON.stringify(body),
+    headers: writeHeaders('application/merge-patch+json'),
+    method: 'PATCH',
+  })
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({})) as { detail?: string }
+    return { error: err.detail ?? `API error ${res.status}` }
+  }
+
+  revalidateTag('species', { expire: 0 })
+  return null
+}
+
+export async function updateRelationshipTranslation(
+  id: number,
+  _prevState: { error: string } | null,
+  formData: FormData,
+): Promise<{ error: string } | null> {
+  const locale = formData.get('locale') as string
+  const body = {
+    notes: (formData.get('notes') as string)?.trim() || null,
+  }
+
+  const res = await fetch(`${API_URL}/api/relationships/${id}/translations/${locale}`, {
+    body: JSON.stringify(body),
+    headers: writeHeaders('application/merge-patch+json'),
+    method: 'PATCH',
+  })
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({})) as { detail?: string }
+    return { error: err.detail ?? `API error ${res.status}` }
+  }
+
+  revalidateTag('relationships', { expire: 0 })
+  return null
 }

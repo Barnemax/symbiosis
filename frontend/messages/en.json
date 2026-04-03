@@ -1,0 +1,84 @@
+{
+  "nav": {
+    "birds": "Birds",
+    "contact": "Contact",
+    "explore": "Explore",
+    "fungi": "Fungi",
+    "trees": "Trees"
+  },
+  "home": {
+    "birds_desc": "Aves, feathered vertebrates",
+    "fungi_desc": "Mycorrhizal and saprotrophic fungi",
+    "subtitle": "Explore relationships between species",
+    "title": "Symbiosis",
+    "trees_desc": "Woody plants and their ecology"
+  },
+  "kingdom": {
+    "empty": "No species found for \"{search}\"",
+    "link_count": "{count, plural, one {# link} other {# links}}",
+    "next": "Next →",
+    "prev": "← Prev",
+    "sort_links": "Links",
+    "sort_name": "Name",
+    "species_count": "{count} species"
+  },
+  "species": {
+    "bird_call": "Bird call",
+    "facts": "Facts",
+    "foliage": "Foliage",
+    "habitat": "Habitat",
+    "iucn_status": "IUCN status",
+    "max_height": "Max height",
+    "max_height_value": "{value} m",
+    "relationships": "Ecological relationships",
+    "substrate": "Substrate",
+    "wingspan": "Wingspan",
+    "wingspan_value": "~{value} cm"
+  },
+  "contact": {
+    "subtitle": "Spotted an error? Want to suggest a species? Just want to say hello? Drop us a message.",
+    "title": "Contact"
+  },
+  "explore": {
+    "loading": "Building ecological network\u2026",
+    "subtitle": "{species} species · {relationships} relationships · click to zoom · double-click to open",
+    "title": "Ecological network"
+  },
+  "search": {
+    "placeholder": "Search species\u2026"
+  },
+  "kingdoms": {
+    "bird": "Bird",
+    "fungus": "Fungus",
+    "tree": "Tree"
+  },
+  "conservation": {
+    "CR": "Critically Endangered",
+    "DD": "Data Deficient",
+    "EN": "Endangered",
+    "EW": "Extinct in the Wild",
+    "EX": "Extinct",
+    "LC": "Least Concern",
+    "NE": "Not Evaluated",
+    "NT": "Near Threatened",
+    "VU": "Vulnerable"
+  },
+  "relationships": {
+    "disperses_seeds_of": "Disperses seeds of",
+    "disperses_seeds_of_inv": "Seeds dispersed by",
+    "disperses_spores_of": "Disperses spores of",
+    "disperses_spores_of_inv": "Spores dispersed by",
+    "feeds_on": "Feeds on",
+    "feeds_on_inv": "Eaten by",
+    "grows_on": "Grows on",
+    "grows_on_inv": "Host of",
+    "mycorrhiza_with": "Mycorrhizal partner of",
+    "mycorrhiza_with_inv": "Mycorrhizal partner of",
+    "nests_in": "Nests in",
+    "nests_in_inv": "Nesting site for",
+    "parasitises": "Parasitises",
+    "parasitises_inv": "Parasitised by",
+    "symbiosis_with": "Symbiosis with",
+    "symbiosis_with_inv": "Symbiosis with"
+  }
+}

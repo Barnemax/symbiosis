@@ -1,19 +1,29 @@
 'use client'
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { Link, usePathname, useRouter } from '@/i18n/navigation'
+import { routing } from '@/i18n/routing'
+import { useLocale, useTranslations } from 'next-intl'
 import { siteInfo } from '@/lib/strings/siteInfo'
 
-const NAV_LINKS = [
-  { href: '/birds', label: 'Birds' },
-  { href: '/trees', label: 'Trees' },
-  { href: '/fungi', label: 'Fungi' },
-  { href: '/explore', label: 'Explore' },
-  { href: '/contact', label: 'Contact' },
-]
+type StaticPathname = Exclude<keyof typeof routing['pathnames'], `${string}/[${string}]`>
 
 export default function PublicNav(): React.JSX.Element {
   const pathname = usePathname()
+  const router = useRouter()
+  const locale = useLocale()
+  const t = useTranslations('nav')
+
+  const NAV_LINKS: { href: StaticPathname; label: string }[] = [
+    { href: '/birds', label: t('birds') },
+    { href: '/trees', label: t('trees') },
+    { href: '/fungi', label: t('fungi') },
+    { href: '/explore', label: t('explore') },
+    { href: '/contact', label: t('contact') },
+  ]
+
+  function switchLocale(next: string): void {
+    router.replace(pathname as StaticPathname, { locale: next })
+  }
 
   return (
     <header className="sticky top-0 z-10 border-b border-stone-200 bg-white">
@@ -21,20 +31,33 @@ export default function PublicNav(): React.JSX.Element {
         <Link href="/" className="text-base font-semibold tracking-tight text-stone-900">
           {siteInfo.name}
         </Link>
-        <nav className="flex gap-1">
-          {NAV_LINKS.map(link => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${pathname.startsWith(link.href)
+        <div className="flex items-center gap-3">
+          <nav className="flex gap-1">
+            {NAV_LINKS.map(link => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${pathname.startsWith(link.href)
                   ? 'bg-stone-900 text-white'
                   : 'text-stone-600 hover:bg-stone-100'
-                }`}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+                  }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+          <div className="flex overflow-hidden rounded-full border border-stone-200 text-xs font-medium">
+            {routing.locales.map((l, i) => (
+              <button
+                key={l}
+                onClick={() => switchLocale(l)}
+                className={`px-2.5 py-1 transition-colors cursor-pointer ${i > 0 ? 'border-l border-stone-200' : ''} ${locale === l ? 'bg-stone-900 text-white' : 'text-stone-500 hover:bg-stone-100'}`}
+              >
+                {l.toUpperCase()}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </header>
   )

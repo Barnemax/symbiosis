@@ -1,3 +1,6 @@
+import type { AppLocale } from '@/i18n/routing'
+
+export type { AppLocale }
 export type Kingdom = 'bird' | 'tree' | 'fungus'
 
 export type ConservationStatus = 'EX' | 'EW' | 'CR' | 'EN' | 'VU' | 'NT' | 'LC' | 'DD' | 'NE'
@@ -11,8 +14,14 @@ export interface Family {
 
 export interface CommonName {
   '@id': string
-  locale: 'en' | 'fr' | 'la'
+  locale: AppLocale | 'la'
   name: string
+}
+
+export interface SpeciesTranslation {
+  locale: AppLocale
+  habitat: string | null
+  substrate: string | null
 }
 
 export interface Media {
@@ -34,8 +43,14 @@ export interface Species {
   maxHeight: number | null
   substrate: string | null
   commonNames: CommonName[]
+  translations: SpeciesTranslation[]
   media: Media[]
   relationshipCount: number
+}
+
+export interface RelationshipTranslation {
+  locale: AppLocale
+  notes: string | null
 }
 
 export interface Relationship {
@@ -45,6 +60,7 @@ export interface Relationship {
   object: Species
   type: string
   notes: string | null
+  translations: RelationshipTranslation[]
 }
 
 // Lightweight shape returned by /api/relationships/graph, no full species data

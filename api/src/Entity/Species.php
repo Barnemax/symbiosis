@@ -92,6 +92,11 @@ class Species
     #[Groups(['species:read', 'species:write', 'relationship:read'])]
     private Collection $commonNames;
 
+    /** @var Collection<int, SpeciesTranslation> */
+    #[ORM\OneToMany(targetEntity: SpeciesTranslation::class, mappedBy: 'species', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[Groups(['species:read', 'species:write'])]
+    private Collection $translations;
+
     /** @var Collection<int, Media> */
     #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'species', cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[Groups(['species:read'])]
@@ -108,6 +113,7 @@ class Species
     public function __construct()
     {
         $this->commonNames = new ArrayCollection();
+        $this->translations = new ArrayCollection();
         $this->media = new ArrayCollection();
         $this->relationships = new ArrayCollection();
         $this->objectRelationships = new ArrayCollection();
@@ -243,6 +249,33 @@ class Species
         if ($this->commonNames->removeElement($commonName)) {
             if ($commonName->getSpecies() === $this) {
                 $commonName->setSpecies(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /** @return Collection<int, SpeciesTranslation> */
+    public function getTranslations(): Collection
+    {
+        return $this->translations;
+    }
+
+    public function addTranslation(SpeciesTranslation $translation): static
+    {
+        if (!$this->translations->contains($translation)) {
+            $this->translations->add($translation);
+            $translation->setSpecies($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTranslation(SpeciesTranslation $translation): static
+    {
+        if ($this->translations->removeElement($translation)) {
+            if ($translation->getSpecies() === $this) {
+                $translation->setSpecies(null);
             }
         }
 

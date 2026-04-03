@@ -1,32 +1,35 @@
-import Link from 'next/link'
 import Image from 'next/image'
+import { Link } from '@/i18n/navigation'
 import { getSpecies, PAGE_SIZE } from '@/lib/api'
-import { CONSERVATION_STATUSES, KINGDOM_MAP } from '@/lib/constants'
+import { CONSERVATION_STATUSES, KINGDOM_MAP, KINGDOM_HREFS, KINGDOM_SLUG_HREFS } from '@/lib/constants'
 import { getCommonName, resolveMediaUrl } from '@/lib/helpers'
+import type { AppLocale } from '@/lib/types'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import SearchInput from '@/components/SearchInput'
+import { getTranslations, getLocale } from 'next-intl/server'
 
-function buildUrl(kingdom: string, p: { search: string; sort: string; page: number }): string {
-  const qs = new URLSearchParams()
+type KingdomHref = (typeof KINGDOM_HREFS)[keyof typeof KINGDOM_HREFS]
+
+function buildHref(href: KingdomHref, p: { search: string; sort: string; page: number }): { pathname: KingdomHref; query?: Record<string, string> } {
+  const query: Record<string, string> = {}
   if (p.search) {
-qs.set('search', p.search)
-}
+    query.search = p.search
+  }
   if (p.sort && p.sort !== 'links') {
-qs.set('sort', p.sort)
-}
+    query.sort = p.sort
+  }
   if (p.page > 1) {
-qs.set('page', String(p.page))
-}
-  const q = qs.toString()
-  return `/${kingdom}${q ? `?${q}` : ''}`
+    query.page = String(p.page)
+  }
+  return { pathname: href, ...(Object.keys(query).length > 0 ? { query } : {}) }
 }
 
 export default async function KingdomPage({
   params,
   searchParams,
 }: {
-  params: Promise<{ kingdom: string }>
+  params: Promise<{ kingdom: string; locale: string }>
   searchParams: Promise<{ search?: string; sort?: string; page?: string }>
 }): Promise<React.JSX.Element> {
   const { kingdom } = await params
@@ -34,14 +37,23 @@ export default async function KingdomPage({
 
   const apiKingdom = KINGDOM_MAP[kingdom]
   if (!apiKingdom) {
-notFound()
-}
+    notFound()
+  }
+
+  const kingdomHref = KINGDOM_HREFS[apiKingdom]
+  const kingdomSlugHref = KINGDOM_SLUG_HREFS[apiKingdom] as '/birds/[slug]' | '/trees/[slug]' | '/fungi/[slug]'
+
+  const [t, ts, tc, locale] = await Promise.all([
+    getTranslations('kingdom'),
+    getTranslations('search'),
+    getTranslations('conservation'),
+    getLocale(),
+  ])
 
   const currentPage = Math.max(1, parseInt(page) || 1)
   const data = await getSpecies({ kingdom: apiKingdom, page: currentPage, search, sort })
 
   const species = data.member
-
   const totalPages = Math.ceil(data.totalItems / PAGE_SIZE)
 
   return (
@@ -50,21 +62,21 @@ notFound()
       <div className="mb-6 flex gap-3">
         <div className="flex-1">
           <Suspense>
-            <SearchInput key={kingdom} defaultValue={search} />
+            <SearchInput key={kingdom} defaultValue={search} placeholder={ts('placeholder')} />
           </Suspense>
         </div>
         <div className="flex overflow-hidden rounded-lg border border-stone-200 bg-white text-sm font-medium">
           <Link
-            href={buildUrl(kingdom, { page: 1, search, sort: 'name' })}
+            href={buildHref(kingdomHref, { page: 1, search, sort: 'name' })}
             className={`px-4 py-2 transition-colors ${sort === 'name' ? 'bg-stone-900 text-white' : 'text-stone-600 hover:bg-stone-50'}`}
           >
-            Name
+            {t('sort_name')}
           </Link>
           <Link
-            href={buildUrl(kingdom, { page: 1, search, sort: 'links' })}
+            href={buildHref(kingdomHref, { page: 1, search, sort: 'links' })}
             className={`border-l border-stone-200 px-4 py-2 transition-colors ${sort === 'links' ? 'bg-stone-900 text-white' : 'text-stone-600 hover:bg-stone-50'}`}
           >
-            Links
+            {t('sort_links')}
           </Link>
         </div>
       </div>
@@ -74,7 +86,10 @@ notFound()
         {species.map(s => (
           <Link
             key={s.id}
-            href={`/${kingdom}/${s.slug}`}
+            href={{
+              params: { slug: s.slug ?? s.id.toString() },
+              pathname: kingdomSlugHref
+            }}
             className="group overflow-hidden rounded-xl border border-stone-200 bg-white transition-shadow hover:shadow-md"
           >
             {(() => {
@@ -82,7 +97,7 @@ notFound()
               return img ? (
                 <Image
                   src={resolveMediaUrl(img.url)}
-                  alt={getCommonName(s)}
+                  alt={getCommonName(s, locale as AppLocale)}
                   width={400}
                   height={200}
                   className="h-48 w-full object-cover object-top"
@@ -96,14 +111,14 @@ notFound()
               <div className="flex items-start justify-between gap-2">
                 <div>
                   <p className="font-medium text-stone-900 group-hover:text-stone-600">
-                    {getCommonName(s)}
+                    {getCommonName(s, locale as AppLocale)}
                   </p>
                   <p className="text-sm italic text-stone-400">{s.scientificName}</p>
                 </div>
                 {s.conservationStatus && (
                   <span
                     className={`shrink-0 rounded px-1.5 py-0.5 text-xs font-semibold ${CONSERVATION_STATUSES[s.conservationStatus]?.className ?? 'bg-stone-100 text-stone-600'}`}
-                    title={CONSERVATION_STATUSES[s.conservationStatus]?.label}
+                    title={tc(s.conservationStatus)}
                   >
                     {s.conservationStatus}
                   </span>
@@ -115,7 +130,7 @@ notFound()
                 </p>
                 {s.relationshipCount > 0 && (
                   <p className="text-xs text-stone-400">
-                    {s.relationshipCount} {s.relationshipCount === 1 ? 'link' : 'links'}
+                    {t('link_count', { count: s.relationshipCount })}
                   </p>
                 )}
               </div>
@@ -126,33 +141,33 @@ notFound()
 
       {/* Empty state */}
       {species.length === 0 && (
-        <p className="py-16 text-center text-sm text-stone-400">No species found for &ldquo;{search}&rdquo;</p>
+        <p className="py-16 text-center text-sm text-stone-400">{t('empty', { search })}</p>
       )}
 
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="mt-8 flex items-center justify-center gap-2 text-sm">
           {currentPage > 1 ? (
-            <Link href={buildUrl(kingdom, { page: currentPage - 1, search, sort })} className="rounded-lg px-3 py-1.5 text-stone-600 hover:bg-stone-100">
-              ← Prev
+            <Link href={buildHref(kingdomHref, { page: currentPage - 1, search, sort })} className="rounded-lg px-3 py-1.5 text-stone-600 hover:bg-stone-100">
+              {t('prev')}
             </Link>
           ) : (
-            <span className="rounded-lg px-3 py-1.5 text-stone-300">← Prev</span>
+            <span className="rounded-lg px-3 py-1.5 text-stone-300">{t('prev')}</span>
           )}
           <span className="px-2 text-stone-400">
             {currentPage} / {totalPages}
           </span>
           {currentPage < totalPages ? (
-            <Link href={buildUrl(kingdom, { page: currentPage + 1, search, sort })} className="rounded-lg px-3 py-1.5 text-stone-600 hover:bg-stone-100">
-              Next →
+            <Link href={buildHref(kingdomHref, { page: currentPage + 1, search, sort })} className="rounded-lg px-3 py-1.5 text-stone-600 hover:bg-stone-100">
+              {t('next')}
             </Link>
           ) : (
-            <span className="rounded-lg px-3 py-1.5 text-stone-300">Next →</span>
+            <span className="rounded-lg px-3 py-1.5 text-stone-300">{t('next')}</span>
           )}
         </div>
       )}
 
-      <p className="mt-6 text-center text-sm text-stone-400">{data.totalItems} species</p>
+      <p className="mt-6 text-center text-sm text-stone-400">{t('species_count', { count: data.totalItems })}</p>
     </main>
   )
 }
