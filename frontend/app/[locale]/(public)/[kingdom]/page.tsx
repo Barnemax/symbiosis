@@ -1,13 +1,48 @@
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import { getSpecies, PAGE_SIZE } from '@/lib/api'
 import { CONSERVATION_STATUSES, KINGDOM_MAP, KINGDOM_HREFS, KINGDOM_SLUG_HREFS } from '@/lib/constants'
 import { getCommonName, resolveMediaUrl } from '@/lib/helpers'
+import { buildAlternates, buildLocalizedUrl } from '@/lib/routing-utils'
+import { siteInfo } from '@/lib/strings/siteInfo'
 import type { AppLocale } from '@/lib/types'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import SearchInput from '@/components/SearchInput'
 import { getTranslations, getLocale } from 'next-intl/server'
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ kingdom: string; locale: string }>
+}): Promise<Metadata> {
+  const { kingdom, locale } = await params
+  const apiKingdom = KINGDOM_MAP[kingdom]
+  if (!apiKingdom) {
+return {}
+}
+
+  const tn = await getTranslations({ locale, namespace: 'nav' })
+  const internalPath = KINGDOM_HREFS[apiKingdom]
+  const navKey = internalPath.slice(1) as 'birds' | 'trees' | 'fungi'
+  const title = tn(navKey)
+  const canonicalUrl = buildLocalizedUrl(siteInfo.url, internalPath, locale)
+
+  return {
+    alternates: {
+      canonical: canonicalUrl,
+      ...buildAlternates(siteInfo.url, internalPath),
+    },
+    openGraph: {
+      siteName: siteInfo.name,
+      title,
+      type: 'website',
+      url: canonicalUrl,
+    },
+    title,
+  }
+}
 
 type KingdomHref = (typeof KINGDOM_HREFS)[keyof typeof KINGDOM_HREFS]
 
@@ -43,12 +78,17 @@ export default async function KingdomPage({
   const kingdomHref = KINGDOM_HREFS[apiKingdom]
   const kingdomSlugHref = KINGDOM_SLUG_HREFS[apiKingdom] as '/birds/[slug]' | '/trees/[slug]' | '/fungi/[slug]'
 
-  const [t, ts, tc, locale] = await Promise.all([
+  const [t, ts, tc, tn, th, locale] = await Promise.all([
     getTranslations('kingdom'),
     getTranslations('search'),
     getTranslations('conservation'),
+    getTranslations('nav'),
+    getTranslations('home'),
     getLocale(),
   ])
+
+  const navKey = KINGDOM_HREFS[apiKingdom].slice(1) as 'birds' | 'trees' | 'fungi'
+  const KINGDOM_ICONS = { bird: '🪶', fungus: '🍄', tree: '🌳' } as const
 
   const currentPage = Math.max(1, parseInt(page) || 1)
   const data = await getSpecies({ kingdom: apiKingdom, page: currentPage, search, sort })
@@ -58,6 +98,15 @@ export default async function KingdomPage({
 
   return (
     <main className="mx-auto max-w-4xl px-6 py-8">
+      {/* Kingdom header */}
+      <div className="mb-8 flex items-center gap-4">
+        <span className="text-5xl" role="img" aria-hidden="true">{KINGDOM_ICONS[apiKingdom]}</span>
+        <div>
+          <h1 className="text-2xl font-semibold text-stone-900">{tn(navKey)}</h1>
+          <p className="mt-0.5 text-sm text-stone-400">{th(`${navKey}_desc` as 'birds_desc' | 'trees_desc' | 'fungi_desc')}</p>
+        </div>
+      </div>
+
       {/* Controls */}
       <div className="mb-6 flex gap-3">
         <div className="flex-1">
@@ -95,14 +144,16 @@ export default async function KingdomPage({
             {(() => {
               const img = s.media.find(m => m.type === 'image')
               return img ? (
-                <Image
-                  src={resolveMediaUrl(img.url)}
-                  alt={getCommonName(s, locale as AppLocale)}
-                  width={400}
-                  height={200}
-                  className="h-48 w-full object-cover object-top"
-                  unoptimized
-                />
+                <div className="overflow-hidden">
+                  <Image
+                    src={resolveMediaUrl(img.url)}
+                    alt={getCommonName(s, locale as AppLocale)}
+                    width={400}
+                    height={200}
+                    className="h-48 w-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
+                    unoptimized
+                  />
+                </div>
               ) : (
                 <div className="h-48 w-full bg-stone-100" />
               )

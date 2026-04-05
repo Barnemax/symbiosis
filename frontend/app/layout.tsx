@@ -16,8 +16,11 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  description: 'A nature encyclopedia',
-  title: siteInfo.name,
+  description: 'A nature encyclopedia exploring ecological relationships between birds, trees, and fungi.',
+  title: {
+    default: siteInfo.name,
+    template: `%s | ${siteInfo.name}`,
+  },
 }
 
 export default async function RootLayout({

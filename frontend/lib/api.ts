@@ -60,6 +60,14 @@ throw new Error(`Species not found: ${slug}`)
   return species
 }
 
+export async function getSpeciesByIds(ids: number[]): Promise<HydraCollection<Species>> {
+  if (ids.length === 0) {
+return { member: [], totalItems: 0 }
+}
+  const qs = ids.map(id => `id[]=${id}`).join('&')
+  return apiFetch(`/api/species?${qs}&pagination=false`, { next: { revalidate: false, tags: ['species'] } })
+}
+
 export async function getRelationshipsForSpecies(id: number | string): Promise<{
   asSubject: Relationship[]
   asObject: Relationship[]

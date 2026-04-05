@@ -32,6 +32,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     paginationClientEnabled: true,
 )]
 #[ApiFilter(SearchFilter::class, properties: [
+    'id' => 'exact',
     'family.name' => 'partial',
     'family.kingdom' => 'exact',
     'slug' => 'exact',

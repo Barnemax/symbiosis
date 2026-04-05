@@ -1,11 +1,13 @@
 'use client'
 
+import Image from 'next/image'
 import { Link, usePathname, useRouter } from '@/i18n/navigation'
 import { routing } from '@/i18n/routing'
 import { useLocale, useTranslations } from 'next-intl'
 import { siteInfo } from '@/lib/strings/siteInfo'
 
 type StaticPathname = Exclude<keyof typeof routing['pathnames'], `${string}/[${string}]`>
+type DynamicPathname = Extract<keyof typeof routing['pathnames'], `${string}/[${string}]`>
 
 export default function PublicNav(): React.JSX.Element {
   const pathname = usePathname()
@@ -22,14 +24,42 @@ export default function PublicNav(): React.JSX.Element {
   ]
 
   function switchLocale(next: string): void {
+    // Dynamic routes (e.g. /oiseaux/garrulus-glandarius) need params passed separately.
+    // Two segments = species page; find the matching internal template via routing.pathnames.
+    const parts = pathname.split('/').filter(Boolean)
+    if (parts.length === 2) {
+      const slug = parts[1]
+      for (const [template, localePaths] of Object.entries(routing.pathnames)) {
+        if (!template.includes('[slug]')) {
+continue
+}
+        const prefixes = typeof localePaths === 'string'
+          ? [localePaths.split('[')[0]]
+          : Object.values(localePaths as Record<string, string>).map(p => p.split('[')[0])
+        if (prefixes.some(prefix => pathname.startsWith(prefix))) {
+          router.replace(
+            { params: { slug }, pathname: template as DynamicPathname } as never,
+            { locale: next },
+          )
+          return
+        }
+      }
+    }
     router.replace(pathname as StaticPathname, { locale: next })
   }
 
   return (
     <header className="sticky top-0 z-10 border-b border-stone-200 bg-white">
       <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
-        <Link href="/" className="text-base font-semibold tracking-tight text-stone-900">
-          {siteInfo.name}
+        <Link href="/" className="flex items-center gap-2">
+          <Image
+            src="/media/icon.png"
+            alt={siteInfo.name}
+            width={28}
+            height={28}
+            style={{ imageRendering: 'pixelated' }}
+          />
+          <span className="text-base font-semibold tracking-tight text-stone-900">{siteInfo.name}</span>
         </Link>
         <div className="flex items-center gap-3">
           <nav className="flex gap-1">
