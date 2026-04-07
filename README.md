@@ -12,7 +12,7 @@ A nature encyclopedia built with **Symfony 8 + API Platform 4** and a **Next.js 
 |---|---|
 | Backend | Symfony 8, API Platform 4, Doctrine ORM |
 | Database | PostgreSQL 16 |
-| Web server | Nginx + PHP-FPM |
+| Web server | FrankenPHP (Caddy) |
 | Frontend | Next.js 16, React 19 (App Router) |
 | Auth | NextAuth v5 (Credentials provider) |
 | Containerization | Docker + Docker Compose |
@@ -39,6 +39,7 @@ cd symbiosis
 cp frontend/.env.example frontend/.env.local
 # edit api/.env.local and frontend/.env.local with your secrets
 docker compose up -d
+docker compose exec php composer install
 ```
 
 Seed the database:

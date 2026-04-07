@@ -23,7 +23,7 @@ export function pluralKingdom(kingdom: string): string {
 }
 
 /**
- * Resolves a media URL. Local paths (/media/...) are served by the API server (Nginx),
+ * Resolves a media URL. Local paths (/media/...) are served by the API server,
  * so the public API base URL is prepended for the browser to reach them.
  */
 export function resolveMediaUrl(url: string): string {

@@ -33,6 +33,7 @@ scripts/suggestions-*.md
 
 # Docker
 docker/postgres/data/
+compose.override.yml
 
 # Downloaded media
 api/public/media/

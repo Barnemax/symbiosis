@@ -141,6 +141,7 @@ class ImportMediaCommand extends Command
         // Step 1 | resolve the lead image filename + direct URL
         // Try language editions in order until one returns a lead image
         $imageUrl = null;
+        $page = null;
         foreach (['en', 'de', 'fr', 'la'] as $lang) {
             try {
                 $res = $this->httpClient->request('GET', "https://{$lang}.wikipedia.org/w/api.php", [
