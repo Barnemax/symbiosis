@@ -16,6 +16,11 @@ class RelationshipTest extends ApiTestCase
     // Lifecycle
     // ---------------------------------------------------------------------------
 
+    protected function setUp(): void
+    {
+        static::getContainer()->get('cache.app')->clear();
+    }
+
     protected function tearDown(): void
     {
         /** @var EntityManagerInterface $em */

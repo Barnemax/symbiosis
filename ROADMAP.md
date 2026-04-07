@@ -1,8 +1,7 @@
-# Next Steps
-- [ ] Migrate to OXC?
-
 ## Up Next
-- [ ] i18n (EN/FR) on the frontend
+- [ ] Feathers for bird (same spot as leaves for trees)
+- [ ] Change font
+- [ ] Better design for relationship graph
 - [ ] Deployment (Railway / VPS)
 
 ## Ideas
