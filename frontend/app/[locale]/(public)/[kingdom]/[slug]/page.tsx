@@ -106,9 +106,8 @@ export default async function SpeciesPage({
     })),
   ]
 
-  const image = species.media.find(m => m.type === 'image')
-  const leaf = species.media.find(m => m.type === 'leaf')
-  const audio = species.media.find(m => m.type === 'audio')
+  const mediaByType = Object.fromEntries(species.media.map(m => [m.type, m]))
+  const { image, leaf, feather, audio } = mediaByType
   const habitat = getTranslatedField(species, 'habitat', l)
   const substrate = getTranslatedField(species, 'substrate', l)
 
@@ -210,6 +209,23 @@ export default async function SpeciesPage({
           />
           <figcaption className="bg-stone-100 px-3 py-1.5 text-right text-xs text-stone-400">
             {ts('foliage')}{leaf.credit ? ` · ${leaf.credit}` : ''}
+          </figcaption>
+        </figure>
+      )}
+
+      {/* Feather image */}
+      {feather && (
+        <figure className="mb-8 overflow-hidden rounded-xl">
+          <Image
+            src={resolveMediaUrl(feather.url)}
+            alt={`${getCommonName(species, l)} ${ts('feather').toLowerCase()}`}
+            width={800}
+            height={400}
+            className="h-56 w-full object-cover object-center"
+            unoptimized
+          />
+          <figcaption className="bg-stone-100 px-3 py-1.5 text-right text-xs text-stone-400">
+            {ts('feather')}{feather.credit ? ` · ${feather.credit}` : ''}
           </figcaption>
         </figure>
       )}

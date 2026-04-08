@@ -36,6 +36,7 @@ class ImportMediaCommand extends Command
             ->addOption('no-audio', null, InputOption::VALUE_NONE, 'Skip bird audio from xeno-canto')
             ->addOption('xeno-canto-key', null, InputOption::VALUE_REQUIRED, 'xeno-canto API v3 key (or set XENO_CANTO_API_KEY env var)')
             ->addOption('no-leaves', null, InputOption::VALUE_NONE, 'Skip leaf images from iNaturalist')
+            ->addOption('no-feathers', null, InputOption::VALUE_NONE, 'Skip feather images from iNaturalist')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Overwrite media that already exists');
     }
 
@@ -44,6 +45,7 @@ class ImportMediaCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $kingdom = $input->getOption('kingdom');
         $withLeaves = !(bool) $input->getOption('no-leaves');
+        $withFeathers = !(bool) $input->getOption('no-feathers');
         $force = (bool) $input->getOption('force');
         $xenoCantoKey = $input->getOption('xeno-canto-key') ?? $_ENV['XENO_CANTO_API_KEY'] ?? null;
         $withAudio = !(bool) $input->getOption('no-audio');
@@ -95,6 +97,25 @@ class ImportMediaCommand extends Command
                         ++$imported;
                     } else {
                         $io->warning('  ✗ no leaf image found on iNaturalist');
+                        ++$failed;
+                    }
+                }
+            }
+
+            // ── Feather image (birds only) ────────────────────────────────────
+            if ($withFeathers && 'bird' === $species->getFamily()?->getKingdom()) {
+                if (!$force && $this->hasMediaType($species, 'feather')) {
+                    $io->text('  – feather image already exists (use --force to overwrite)');
+                    ++$skipped;
+                } else {
+                    [$url, $credit] = $this->fetchInatFeather($species->getScientificName(), $io);
+                    if (null !== $url) {
+                        $this->upsertMedia($species, 'feather', $url, $credit, $force);
+                        $io->text("  ✓ feather → $url");
+                        $io->text("    credit: $credit");
+                        ++$imported;
+                    } else {
+                        $io->warning('  ✗ no feather image found on iNaturalist');
                         ++$failed;
                     }
                 }
@@ -241,6 +262,42 @@ class ImportMediaCommand extends Command
         }
 
         // Replace the square thumbnail with medium resolution
+        $url = (string) preg_replace('/\/square(\.\w+)$/', '/medium$1', (string) ($photo['url'] ?? ''));
+        $credit = $photo['attribution'] ?? 'iNaturalist';
+
+        return '' !== $url ? [$url, $credit] : [null, null];
+    }
+
+    /** @return array{0: string|null, 1: string|null} */
+    private function fetchInatFeather(string $scientificName, SymfonyStyle $io): array
+    {
+        try {
+            $res = $this->httpClient->request('GET', 'https://api.inaturalist.org/v1/observations', [
+                'headers' => ['User-Agent' => "$this->appName/1.0 (nature encyclopedia)"],
+                'query' => [
+                    'taxon_name' => $scientificName,
+                    'quality_grade' => 'research',
+                    'photos' => 'true',
+                    'photo_license' => 'cc-by,cc-by-sa,cc0,cc-by-nd',
+                    'term_id' => 22,  // annotation: Evidence of Presence
+                    'term_value_id' => 23,  // annotation value: Feather
+                    'order_by' => 'votes',
+                    'order' => 'desc',
+                    'per_page' => 1,
+                ],
+            ]);
+            $data = $res->toArray();
+        } catch (\Throwable $e) {
+            $io->text("  API error (iNaturalist): {$e->getMessage()}");
+
+            return [null, null];
+        }
+
+        $photo = $data['results'][0]['photos'][0] ?? null;
+        if (null === $photo) {
+            return [null, null];
+        }
+
         $url = (string) preg_replace('/\/square(\.\w+)$/', '/medium$1', (string) ($photo['url'] ?? ''));
         $credit = $photo['attribution'] ?? 'iNaturalist';
 

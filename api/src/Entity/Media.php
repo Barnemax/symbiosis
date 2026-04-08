@@ -25,7 +25,7 @@ class Media
 
     #[ORM\Column(length: 10)]
     #[Assert\NotBlank]
-    #[Assert\Choice(choices: ['image', 'audio', 'leaf'])]
+    #[Assert\Choice(choices: ['image', 'audio', 'leaf', 'feather'])]
     #[Groups(['species:read'])]
     private string $type = '';
 
