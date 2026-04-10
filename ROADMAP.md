@@ -1,5 +1,4 @@
 ## Up Next
-- [ ] Feathers for bird (same spot as leaves for trees)
 - [ ] Change font
 - [ ] Better design for relationship graph
 - [ ] Deployment (Railway / VPS)

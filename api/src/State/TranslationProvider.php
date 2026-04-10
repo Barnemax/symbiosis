@@ -5,8 +5,9 @@ namespace App\State;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Locale;
+use App\Exception\EntityNotFoundException;
+use App\Exception\InvalidLocaleException;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /** @implements ProviderInterface<object> */
 final class TranslationProvider implements ProviderInterface
@@ -17,7 +18,7 @@ final class TranslationProvider implements ProviderInterface
     {
         $locale = $uriVariables['locale'];
         if (!in_array($locale, Locale::SUPPORTED, true)) {
-            throw new NotFoundHttpException(sprintf('Invalid locale "%s".', $locale));
+            throw new InvalidLocaleException($locale);
         }
 
         $extra = $operation->getExtraProperties();
@@ -27,7 +28,7 @@ final class TranslationProvider implements ProviderInterface
         /** @var object|null $parent */
         $parent = $this->em->find($parentClass, $uriVariables[$parentProperty . 'Id']); // @phpstan-ignore argument.templateType
         if (!$parent) {
-            throw new NotFoundHttpException(ucfirst($parentProperty) . ' not found.');
+            throw new EntityNotFoundException(ucfirst($parentProperty), $uriVariables[$parentProperty . 'Id']);
         }
 
         $translationClass = $operation->getClass();

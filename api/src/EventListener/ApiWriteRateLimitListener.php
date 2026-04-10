@@ -5,7 +5,7 @@ namespace App\EventListener;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
+use App\Exception\RateLimitExceededException;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
 
 #[AsEventListener(event: 'kernel.request', priority: 20)]
@@ -38,7 +38,7 @@ final readonly class ApiWriteRateLimitListener
         $limit = $limiter->consume();
 
         if (!$limit->isAccepted()) {
-            throw new TooManyRequestsHttpException(
+            throw new RateLimitExceededException(
                 $limit->getRetryAfter()->getTimestamp() - time(),
             );
         }
