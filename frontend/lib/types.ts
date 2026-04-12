@@ -26,7 +26,7 @@ export interface SpeciesTranslation {
 
 export interface Media {
   '@id': string
-  type: 'image' | 'audio' | 'leaf'
+  type: 'image' | 'audio' | 'leaf' | 'feather'
   url: string
   credit: string | null
 }

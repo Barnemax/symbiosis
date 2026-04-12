@@ -23,7 +23,7 @@ export function buildLocalizedUrl(
   params?: Record<string, string>,
 ): string {
   const pathConfig = routing.pathnames[internalPath as keyof typeof routing.pathnames] as LocalePath | undefined
-  let localePath = pathConfig ? resolveLocalePath(pathConfig, locale) : internalPath
+  let localePath = pathConfig !== undefined ? resolveLocalePath(pathConfig, locale) : internalPath
 
   if (params) {
     for (const [key, value] of Object.entries(params)) {

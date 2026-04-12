@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { getAllSpecies } from '@/lib/api'
-import { KINGDOM_HREFS } from '@/lib/constants'
+import { KINGDOMS } from '@/lib/constants'
 import { buildAlternates, buildLocalizedUrl } from '@/lib/routing-utils'
 import { siteInfo } from '@/lib/strings/siteInfo'
 import { routing } from '@/i18n/routing'
@@ -21,7 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     if (!species.slug) {
 return []
 }
-    const internalPath = `${KINGDOM_HREFS[species.family.kingdom]}/[slug]`
+    const internalPath = `${KINGDOMS[species.family.kingdom].href}/[slug]`
     return [{
       alternates: buildAlternates(url, internalPath, { slug: species.slug }),
       url: buildLocalizedUrl(url, internalPath, routing.defaultLocale, { slug: species.slug }),

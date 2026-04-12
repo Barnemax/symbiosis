@@ -13,7 +13,7 @@ export default function Combobox({
   defaultValue,
   placeholder = 'Search…',
   required,
-  disabled,
+  disabled = false,
   onChange,
 }: {
   name: string
@@ -40,7 +40,7 @@ export default function Combobox({
 
   useEffect(() => {
     function onMouseDown(e: MouseEvent): void {
-      if (!containerRef.current?.contains(e.target as Node)) {
+      if (containerRef.current?.contains(e.target as Node) === false) {
         setOpen(false)
         setQuery('')
       }
@@ -59,21 +59,31 @@ export default function Combobox({
   function handleKeyDown(e: React.KeyboardEvent): void {
     if (!open) {
       if (e.key === 'ArrowDown' || e.key === 'Enter') {
- setOpen(true); e.preventDefault() 
-}
+        setOpen(true)
+        e.preventDefault()
+      }
       return
     }
-    if (e.key === 'ArrowDown') {
- setHighlighted(h => Math.min(h + 1, filtered.length - 1)); e.preventDefault() 
-} else if (e.key === 'ArrowUp') {
- setHighlighted(h => Math.max(h - 1, 0)); e.preventDefault() 
-} else if (e.key === 'Enter') {
- if (filtered[highlighted]) {
-select(filtered[highlighted]);
-} e.preventDefault() 
-} else if (e.key === 'Escape') {
- setOpen(false); setQuery('') 
-}
+    switch (e.key) {
+      case 'ArrowDown':
+        setHighlighted(h => Math.min(h + 1, filtered.length - 1))
+        e.preventDefault()
+        break
+      case 'ArrowUp':
+        setHighlighted(h => Math.max(h - 1, 0))
+        e.preventDefault()
+        break
+      case 'Enter':
+        if (highlighted < filtered.length) {
+          select(filtered[highlighted])
+        }
+        e.preventDefault()
+        break
+      case 'Escape':
+        setOpen(false)
+        setQuery('')
+        break
+    }
   }
 
   return (

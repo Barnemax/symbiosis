@@ -3,8 +3,9 @@
 import dynamic from 'next/dynamic'
 import { forceCollide } from 'd3-force'
 import { useRouter } from 'next/navigation'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { ForceGraphMethods, LinkObject, NodeObject } from 'react-force-graph-2d'
+import { KINGDOMS } from '@/lib/constants'
 import type { Kingdom } from '@/lib/types'
 import { escapeHtml } from '@/lib/utils'
 
@@ -31,12 +32,6 @@ export interface GraphLink {
 interface Props {
   nodes: GraphNode[]
   links: GraphLink[]
-}
-
-const KINGDOM_COLOR: Record<Kingdom, string> = {
-  bird: '#3b82f6',
-  fungus: '#f97316',
-  tree: '#22c55e',
 }
 
 const nodeRadius = (degree: number): number => Math.min(14, 3 + Math.sqrt(degree) * 4)
@@ -104,13 +99,13 @@ export default function RelationshipGraph({ nodes, links }: Props): React.JSX.El
     const r = nodeRadius(n.degree)
     ctx.beginPath()
     ctx.arc(n.x, n.y, r, 0, 2 * Math.PI)
-    ctx.fillStyle = KINGDOM_COLOR[n.kingdom]
+    ctx.fillStyle = KINGDOMS[n.kingdom].color
     ctx.fill()
 
     // Draw thumbnail image clipped to the circle when zoomed in enough
     if (n.imageUrl && r * globalScale >= 10) {
       const img = imageCache.current.get(n.imageUrl)
-      if (img?.complete && img.naturalWidth > 0) {
+      if (img !== undefined && img.complete && img.naturalWidth > 0) {
         ctx.save()
         ctx.beginPath()
         ctx.arc(n.x, n.y, r, 0, 2 * Math.PI)
@@ -141,6 +136,23 @@ export default function RelationshipGraph({ nodes, links }: Props): React.JSX.El
     ctx.fill()
   }, [])
 
+  const adjacency = useMemo(() => {
+    const map = new Map<number, Set<number>>()
+    for (const l of links) {
+      const src = typeof l.source === 'object' ? (l.source as NodeObject<GraphNode>).id : l.source as number
+      const tgt = typeof l.target === 'object' ? (l.target as NodeObject<GraphNode>).id : l.target as number
+      if (map.has(src) === false) {
+        map.set(src, new Set())
+      }
+      if (map.has(tgt) === false) {
+        map.set(tgt, new Set())
+      }
+      map.get(src)!.add(tgt)
+      map.get(tgt)!.add(src)
+    }
+    return map
+  }, [links])
+
   const lastClickRef = useRef<{ id: number; time: number } | null>(null)
 
   const handleClick = useCallback((node: NodeObject<object>) => {
@@ -156,20 +168,10 @@ export default function RelationshipGraph({ nodes, links }: Props): React.JSX.El
     } else {
       // Single click: zoom to fit the node and its direct neighbors
       lastClickRef.current = { id: n.id, time: now }
-      const neighborIds = new Set<number>([n.id])
-      for (const l of links) {
-        const src = typeof l.source === 'object' ? (l.source as NodeObject<GraphNode>).id : l.source as number
-        const tgt = typeof l.target === 'object' ? (l.target as NodeObject<GraphNode>).id : l.target as number
-        if (src === n.id) {
-          neighborIds.add(tgt as number)
-        }
-        if (tgt === n.id) {
-          neighborIds.add(src as number)
-        }
-      }
+      const neighborIds = new Set<number>([n.id, ...(adjacency.get(n.id) ?? [])])
       graphRef.current?.zoomToFit(500, 120, (nd: NodeObject<object>) => neighborIds.has((nd as NodeObject<GraphNode>).id))
     }
-  }, [router, links])
+  }, [router, adjacency])
 
   // Set forces on first mount, runs before most simulation ticks
   useEffect(() => {
@@ -179,8 +181,8 @@ export default function RelationshipGraph({ nodes, links }: Props): React.JSX.El
     }
     fg.d3Force('charge')?.strength(-180)
     fg.d3Force('link')?.distance((link: LinkObject<object, object>) => {
-      const srcDeg = typeof link.source === 'object' && link.source ? (link.source as NodeObject<GraphNode>).degree ?? 1 : 1
-      const tgtDeg = typeof link.target === 'object' && link.target ? (link.target as NodeObject<GraphNode>).degree ?? 1 : 1
+      const srcDeg = typeof link.source === 'object' ? (link.source as NodeObject<GraphNode>).degree : 1
+      const tgtDeg = typeof link.target === 'object' ? (link.target as NodeObject<GraphNode>).degree : 1
       return 60 + Math.max(srcDeg, tgtDeg) * 9
     })
     // Strengthen centering to prevent the cluster drifting bottom-heavy
@@ -244,9 +246,9 @@ export default function RelationshipGraph({ nodes, links }: Props): React.JSX.El
         onEngineStop={handleEngineStop}
       />
       <div className="absolute bottom-4 right-4 flex flex-col gap-1.5 rounded-lg border border-stone-200 bg-white px-3 py-2 shadow-sm">
-        {(Object.entries(KINGDOM_COLOR) as [Kingdom, string][]).map(([k, color]) => (
+        {(Object.entries(KINGDOMS) as [Kingdom, (typeof KINGDOMS)[Kingdom]][]).map(([k, cfg]) => (
           <div key={k} className="flex items-center gap-2">
-            <span className="inline-block h-3 w-3 rounded-full" style={{ background: color }} />
+            <span className="inline-block h-3 w-3 rounded-full" style={{ background: cfg.color }} />
             <span className="text-xs capitalize text-stone-600">{k}</span>
           </div>
         ))}

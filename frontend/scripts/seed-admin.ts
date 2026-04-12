@@ -37,17 +37,19 @@ async function main(): Promise<void> {
   }
 
   // Create the user via Better Auth (handles password hashing)
-  const res = await auth.api.signUpEmail({
-    body: { email: EMAIL, name: 'Admin', password: PASSWORD },
-  })
-
-  if (!res.user) {
+  let userId: string
+  try {
+    const res = await auth.api.signUpEmail({
+      body: { email: EMAIL, name: 'Admin', password: PASSWORD },
+    })
+    userId = res.user.id
+  } catch {
     console.error('Failed to create user')
     process.exit(1)
   }
 
   // Promote to admin directly in the database
-  await db.update(user).set({ role: 'admin' }).where(eq(user.id, res.user.id))
+  await db.update(user).set({ role: 'admin' }).where(eq(user.id, userId))
 
   console.log(`Admin created: ${EMAIL}`)
   process.exit(0)

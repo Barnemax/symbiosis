@@ -14,8 +14,8 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
     ...init,
   })
   if (!res.ok) {
-throw new Error(`API error ${res.status}: ${path}`)
-}
+    throw new Error(`API error ${res.status}: ${path}`)
+  }
   return res.json() as Promise<T>
 }
 
@@ -29,14 +29,14 @@ export async function getSpecies(params?: {
 }): Promise<HydraCollection<Species>> {
   const query = new URLSearchParams()
   if (params?.kingdom) {
-query.set('family.kingdom', params.kingdom)
-}
+    query.set('family.kingdom', params.kingdom)
+  }
   if (params?.page && params.page > 1) {
-query.set('page', String(params.page))
-}
+    query.set('page', String(params.page))
+  }
   if (params?.search) {
-query.set('commonNames.name', params.search)
-}
+    query.set('commonNames.name', params.search)
+  }
   if (params?.sort === 'links') {
     query.set('order[relationshipCount]', 'desc')
   } else {
@@ -53,17 +53,17 @@ export async function getSpeciesBySlug(kingdom: string, slug: string): Promise<S
     `/api/species?family.kingdom=${kingdom}&slug=${encodeURIComponent(slug)}`,
     { next: { revalidate: false, tags: ['species'] } },
   )
-  const species = data.member[0]
-  if (!species) {
-throw new Error(`Species not found: ${slug}`)
-}
+  const species = data.member.at(0)
+  if (species == null) {
+    throw new Error(`Species not found: ${slug}`)
+  }
   return species
 }
 
 export async function getSpeciesByIds(ids: number[]): Promise<HydraCollection<Species>> {
   if (ids.length === 0) {
-return { member: [], totalItems: 0 }
-}
+    return { member: [], totalItems: 0 }
+  }
   const qs = ids.map(id => `id[]=${id}`).join('&')
   return apiFetch(`/api/species?${qs}&pagination=false`, { next: { revalidate: false, tags: ['species'] } })
 }
@@ -73,8 +73,8 @@ export async function getRelationshipsForSpecies(id: number | string): Promise<{
   asObject: Relationship[]
 }> {
   const [subjectData, objectData] = await Promise.all([
-    apiFetch<HydraCollection<Relationship>>(`/api/relationships?subject=${id}`, { next: { revalidate: false, tags: ['relationships'] } }),
-    apiFetch<HydraCollection<Relationship>>(`/api/relationships?object=${id}`, { next: { revalidate: false, tags: ['relationships'] } }),
+    apiFetch<HydraCollection<Relationship>>(`/api/relationships?subject=${id}&pagination=false`, { next: { revalidate: false, tags: ['relationships'] } }),
+    apiFetch<HydraCollection<Relationship>>(`/api/relationships?object=${id}&pagination=false`, { next: { revalidate: false, tags: ['relationships'] } }),
   ])
   return { asObject: objectData.member, asSubject: subjectData.member }
 }
@@ -96,10 +96,10 @@ export async function getSpeciesBySlugAdmin(slug: string): Promise<Species> {
     `/api/species?slug=${encodeURIComponent(slug)}`,
     { next: { revalidate: 0 } },
   )
-  const species = data.member[0]
-  if (!species) {
-throw new Error(`Species not found: ${slug}`)
-}
+  const species = data.member.at(0)
+  if (species == null) {
+    throw new Error(`Species not found: ${slug}`)
+  }
   return species
 }
 

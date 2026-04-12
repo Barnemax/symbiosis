@@ -1,4 +1,4 @@
-import { KINGDOM_HREFS } from './constants'
+import { KINGDOMS } from './constants'
 import { getCommonName, resolveMediaUrl } from './helpers'
 import { buildLocalizedUrl } from './routing-utils'
 import { siteInfo } from './strings/siteInfo'
@@ -14,7 +14,7 @@ export function buildTaxonSchema(species: Species, asSubject: Relationship[]): o
   const speciesSlug = species.slug ?? species.id.toString()
   const speciesUrl = buildLocalizedUrl(
     siteInfo.url,
-    `${KINGDOM_HREFS[species.family.kingdom]}/[slug]`,
+    `${KINGDOMS[species.family.kingdom].href}/[slug]`,
     'en',
     { slug: speciesSlug },
   )
@@ -45,7 +45,7 @@ export function buildTaxonSchema(species: Species, asSubject: Relationship[]): o
           name: getCommonName(rel.object, 'en'),
           url: buildLocalizedUrl(
             siteInfo.url,
-            `${KINGDOM_HREFS[rel.object.family.kingdom]}/[slug]`,
+            `${KINGDOMS[rel.object.family.kingdom].href}/[slug]`,
             'en',
             { slug: rel.object.slug ?? rel.object.id.toString() },
           ),

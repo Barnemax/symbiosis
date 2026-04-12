@@ -12,8 +12,6 @@ import type { Species } from './types'
 
 import { siteInfo } from '@/lib/strings/siteInfo'
 
-const API_KEY = process.env.ADMIN_PASSWORD ?? ''
-
 const contactSchema = z.object({
   email: z.email('Please enter a valid email address'),
   message: z.string().min(1, 'Please enter a message').max(5000, 'Message is too long (max 5000 characters)'),
@@ -22,7 +20,39 @@ const contactSchema = z.object({
 })
 
 function writeHeaders(contentType: string): Record<string, string> {
-  return { Accept: 'application/ld+json', 'Content-Type': contentType, 'X-API-Key': API_KEY }
+  const apiKey = process.env.ADMIN_PASSWORD
+  if (apiKey == null) {
+    throw new Error('ADMIN_PASSWORD env var is not set')
+  }
+  return { Accept: 'application/ld+json', 'Content-Type': contentType, 'X-API-Key': apiKey }
+}
+
+function buildSpeciesBody(formData: FormData): Record<string, unknown> {
+  const kingdom = formData.get('kingdom') as string
+  const body: Record<string, unknown> = {
+    conservationStatus: (formData.get('conservationStatus') as string | null) || null,
+    family: `/api/families/${formData.get('familyId')}`,
+    habitat: (formData.get('habitat') as string)?.trim() || null,
+    scientificName: formData.get('scientificName'),
+  }
+
+  body.commonNames = COMMON_NAME_LOCALES
+    .map(locale => ({ locale, name: (formData.get(`cn_${locale}`) as string).trim() }))
+    .filter(cn => cn.name.length > 0)
+
+  switch (kingdom) {
+    case 'bird':
+      body.wingspan = (formData.get('wingspan') as string | null) ? Number(formData.get('wingspan')) : null
+      break
+    case 'tree':
+      body.maxHeight = (formData.get('maxHeight') as string | null) ? Number(formData.get('maxHeight')) : null
+      break
+    case 'fungus':
+      body.substrate = (formData.get('substrate') as string)?.trim() || null
+      break
+  }
+
+  return body
 }
 
 export async function login(
@@ -32,8 +62,9 @@ export async function login(
   const email = (formData.get('email') as string)?.trim()
   const password = formData.get('password') as string
 
-  const res = await auth.api.signInEmail({ body: { email, password } })
-  if (!res.user) {
+  try {
+    await auth.api.signInEmail({ body: { email, password } })
+  } catch {
     return { error: 'Incorrect email or password' }
   }
 
@@ -49,33 +80,7 @@ export async function createSpecies(
   _prevState: { error: string } | null,
   formData: FormData,
 ): Promise<{ error: string } | null> {
-  const kingdom = formData.get('kingdom') as string
-  const body: Record<string, unknown> = {
-    conservationStatus: formData.get('conservationStatus') || null,
-    family: `/api/families/${formData.get('familyId')}`,
-    habitat: (formData.get('habitat') as string)?.trim() || null,
-    scientificName: formData.get('scientificName'),
-  }
-
-  const commonNames = COMMON_NAME_LOCALES
-    .map(locale => ({ locale, name: (formData.get(`cn_${locale}`) as string).trim() }))
-    .filter(cn => cn.name.length > 0)
-  if (commonNames.length > 0) {
-    body.commonNames = commonNames
-  }
-
-  if (kingdom === 'bird' && formData.get('wingspan')) {
-    body.wingspan = Number(formData.get('wingspan'))
-  }
-  if (kingdom === 'tree' && formData.get('maxHeight')) {
-    body.maxHeight = Number(formData.get('maxHeight'))
-  }
-  if (kingdom === 'fungus') {
-    const substrate = (formData.get('substrate') as string)?.trim() || null
-    if (substrate) {
-      body.substrate = substrate
-    }
-  }
+  const body = buildSpeciesBody(formData)
 
   const res = await fetch(`${API_URL}/api/species`, {
     body: JSON.stringify(body),
@@ -85,14 +90,13 @@ export async function createSpecies(
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({})) as { detail?: string }
-
     return { error: err.detail ?? `API error ${res.status}` }
   }
 
   const created = await res.json() as Species
   revalidateTag('species', { expire: 0 })
-  const plural = pluralKingdom(kingdom)
-  redirect(`/${plural}/${created.slug ?? created.id}`)
+  const kingdom = formData.get('kingdom') as string
+  redirect(`/${pluralKingdom(kingdom)}/${created.slug ?? created.id}`)
 }
 
 export async function updateSpecies(
@@ -100,28 +104,7 @@ export async function updateSpecies(
   _prevState: { error: string } | null,
   formData: FormData,
 ): Promise<{ error: string } | null> {
-  const kingdom = formData.get('kingdom') as string
-  const body: Record<string, unknown> = {
-    conservationStatus: formData.get('conservationStatus') || null,
-    family: `/api/families/${formData.get('familyId')}`,
-    habitat: (formData.get('habitat') as string)?.trim() || null,
-    scientificName: formData.get('scientificName'),
-  }
-
-  const commonNames = COMMON_NAME_LOCALES
-    .map(locale => ({ locale, name: (formData.get(`cn_${locale}`) as string).trim() }))
-    .filter(cn => cn.name.length > 0)
-  body.commonNames = commonNames
-
-  if (kingdom === 'bird') {
-    body.wingspan = formData.get('wingspan') ? Number(formData.get('wingspan')) : null
-  }
-  if (kingdom === 'tree') {
-    body.maxHeight = formData.get('maxHeight') ? Number(formData.get('maxHeight')) : null
-  }
-  if (kingdom === 'fungus') {
-    body.substrate = (formData.get('substrate') as string)?.trim() || null
-  }
+  const body = buildSpeciesBody(formData)
 
   const res = await fetch(`${API_URL}/api/species/${id}`, {
     body: JSON.stringify(body),
@@ -136,8 +119,8 @@ export async function updateSpecies(
 
   const updated = await res.json() as Species
   revalidateTag('species', { expire: 0 })
-  const plural = pluralKingdom(kingdom)
-  redirect(`/${plural}/${updated.slug ?? updated.id}`)
+  const kingdom = formData.get('kingdom') as string
+  redirect(`/${pluralKingdom(kingdom)}/${updated.slug ?? updated.id}`)
 }
 
 export async function updateRelationship(
@@ -146,7 +129,7 @@ export async function updateRelationship(
   formData: FormData,
 ): Promise<{ error: string } | null> {
   const body = {
-    notes: formData.get('notes') || null,
+    notes: (formData.get('notes') as string | null) || null,
     object: `/api/species/${formData.get('objectId')}`,
     subject: `/api/species/${formData.get('subjectId')}`,
     type: formData.get('type'),
@@ -224,7 +207,7 @@ export async function createRelationship(
   formData: FormData,
 ): Promise<{ error: string } | null> {
   const body = {
-    notes: formData.get('notes') || null,
+    notes: (formData.get('notes') as string | null) || null,
     object: `/api/species/${formData.get('objectId')}`,
     subject: `/api/species/${formData.get('subjectId')}`,
     type: formData.get('type'),

@@ -6,10 +6,25 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   {
+    languageOptions: {
+      parserOptions: {
+        projectService: {
+          allowDefaultProject: ['*.mjs'],
+        },
+      },
+    },
     rules: {
       '@typescript-eslint/explicit-function-return-type': ['error', {
         allowExpressions: true,
         allowTypedFunctionExpressions: true,
+      }],
+      '@typescript-eslint/strict-boolean-expressions': ['error', {
+        allowNullableBoolean: false,
+        allowNullableNumber: true,
+        allowNullableObject: true,
+        allowNullableString: true,
+        allowNumber: true,
+        allowString: true,
       }],
       'brace-style': ['error', '1tbs', { allowSingleLine: false }],
       'curly': ['error', 'all'],

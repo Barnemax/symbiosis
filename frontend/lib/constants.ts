@@ -3,17 +3,12 @@ import type { ConservationStatus, Kingdom } from './types'
 
 export const COMMON_NAME_LOCALES = [...routing.locales, 'la'] as const
 
-export const KINGDOM_HREFS = {
-  bird: '/birds',
-  fungus: '/fungi',
-  tree: '/trees',
-} as const satisfies Record<Kingdom, string>
+export const KINGDOMS = {
+  bird:   { color: '#3b82f6', href: '/birds', icon: '🪶', plural: 'birds', slugHref: '/birds/[slug]' },
+  fungus: { color: '#f97316', href: '/fungi', icon: '🍄', plural: 'fungi', slugHref: '/fungi/[slug]' },
+  tree:   { color: '#22c55e', href: '/trees', icon: '🌳', plural: 'trees', slugHref: '/trees/[slug]' },
+} as const satisfies Record<Kingdom, { color: string; href: string; icon: string; plural: string; slugHref: string }>
 
-export const KINGDOM_SLUG_HREFS = {
-  bird: '/birds/[slug]',
-  fungus: '/fungi/[slug]',
-  tree: '/trees/[slug]',
-} as const satisfies Record<Kingdom, string>
 
 export const CONSERVATION_STATUSES: Record<ConservationStatus, { label: string; className: string }> = {
   CR: { className: 'bg-red-100 text-red-800', label: 'Critically Endangered' },

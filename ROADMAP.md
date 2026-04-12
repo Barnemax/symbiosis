@@ -2,6 +2,7 @@
 - [ ] Change font
 - [ ] Better design for relationship graph
 - [ ] Deployment (Railway / VPS)
+- [ ] Generate frontend types from OpenAPI schema (`openapi-typescript` from `/api/docs.json`)
 
 ## Ideas
 

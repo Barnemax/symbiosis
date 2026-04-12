@@ -18,13 +18,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     return new NextResponse(`Upstream error ${upstream.status}`, { status: 502 })
   }
 
-  const buffer = await upstream.arrayBuffer()
-  const contentType = upstream.headers.get('Content-Type') ?? 'image/jpeg'
-
-  return new NextResponse(buffer, {
+  return new NextResponse(upstream.body, {
     headers: {
       'Cache-Control': 'public, max-age=604800',
-      'Content-Type': contentType,
+      'Content-Type': upstream.headers.get('Content-Type') ?? 'image/jpeg',
     },
   })
 }

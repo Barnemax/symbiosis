@@ -2,12 +2,12 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import { getSpeciesBySlug, getRelationshipsForSpecies, getSpeciesByIds } from '@/lib/api'
-import { KINGDOM_MAP, KINGDOM_HREFS, KINGDOM_SLUG_HREFS } from '@/lib/constants'
+import { KINGDOM_MAP, KINGDOMS } from '@/lib/constants'
 import { getCommonName, getTranslatedField, resolveMediaUrl } from '@/lib/helpers'
 import { buildAlternates, buildLocalizedUrl } from '@/lib/routing-utils'
 import { buildTaxonSchema } from '@/lib/schemas'
 import { siteInfo } from '@/lib/strings/siteInfo'
-import type { AppLocale } from '@/lib/types'
+import type { AppLocale, Media, Species } from '@/lib/types'
 import { notFound } from 'next/navigation'
 import { AdminEditLink } from '@/components/AdminEditLink'
 import JsonLd from '@/components/JsonLd'
@@ -31,7 +31,7 @@ return {}
 
   const commonName = getCommonName(species, locale as AppLocale)
   const image = species.media.find(m => m.type === 'image')
-  const internalPath = `${KINGDOM_HREFS[apiKingdom]}/[slug]`
+  const internalPath = `${KINGDOMS[apiKingdom].href}/[slug]`
   const canonicalUrl = buildLocalizedUrl(siteInfo.url, internalPath, locale, { slug })
 
   return {
@@ -87,7 +87,7 @@ export default async function SpeciesPage({
   ])]
   const relatedSpeciesMap = await getSpeciesByIds(relatedIds)
     .then(data => new Map(data.member.map(s => [s.id, s])))
-    .catch(() => new Map())
+    .catch(() => new Map<number, Species>())
 
   const relationships = [
     ...asSubject.map(rel => ({
@@ -106,7 +106,7 @@ export default async function SpeciesPage({
     })),
   ]
 
-  const mediaByType = Object.fromEntries(species.media.map(m => [m.type, m]))
+  const mediaByType: Partial<Record<string, Media>> = Object.fromEntries(species.media.map(m => [m.type, m]))
   const { image, leaf, feather, audio } = mediaByType
   const habitat = getTranslatedField(species, 'habitat', l)
   const substrate = getTranslatedField(species, 'substrate', l)
@@ -256,7 +256,7 @@ export default async function SpeciesPage({
                         <Link
                           href={{
                             params: { slug: rel.other.slug ?? rel.other.id.toString() },
-                            pathname: KINGDOM_SLUG_HREFS[rel.other.family.kingdom]
+                            pathname: KINGDOMS[rel.other.family.kingdom].slugHref
                           }}
                           className="font-medium text-stone-900 hover:underline"
                         >
