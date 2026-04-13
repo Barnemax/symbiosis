@@ -8,13 +8,12 @@ afterEach(() => {
 
 function makeSpecies(overrides: Partial<Species> = {}): Species {
   return {
-    '@id': '/api/species/1',
     commonNames: [
-      { '@id': '/api/common-names/1', locale: 'en', name: 'Eurasian Jay' },
-      { '@id': '/api/common-names/2', locale: 'fr', name: 'Geai des chênes' },
+      { locale: 'en', name: 'Eurasian Jay' },
+      { locale: 'fr', name: 'Geai des chênes' },
     ],
     conservationStatus: null,
-    family: { '@id': '/api/families/1', id: 1, kingdom: 'bird', name: 'Corvidae' },
+    family: { id: 1, kingdom: 'bird', name: 'Corvidae' },
     habitat: null,
     id: 1,
     maxHeight: null,
@@ -26,21 +25,19 @@ function makeSpecies(overrides: Partial<Species> = {}): Species {
     translations: [],
     wingspan: null,
     ...overrides,
-  }
+  } as Species
 }
 
 function makeRelationship(overrides: Partial<Relationship> = {}): Relationship {
   const subject = makeSpecies()
   const object = makeSpecies({
-    '@id': '/api/species/2',
-    commonNames: [{ '@id': '/api/common-names/3', locale: 'en', name: 'Pedunculate Oak' }],
-    family: { '@id': '/api/families/2', id: 2, kingdom: 'tree', name: 'Fagaceae' },
+    commonNames: [{ locale: 'en', name: 'Pedunculate Oak' }],
+    family: { id: 2, kingdom: 'tree', name: 'Fagaceae' },
     id: 2,
     scientificName: 'Quercus robur',
     slug: 'quercus-robur',
   })
   return {
-    '@id': '/api/relationships/1',
     id: 1,
     notes: null,
     object,
@@ -48,7 +45,7 @@ function makeRelationship(overrides: Partial<Relationship> = {}): Relationship {
     translations: [],
     type: 'nests_in',
     ...overrides,
-  }
+  } as Relationship
 }
 
 // ---------------------------------------------------------------------------
@@ -115,7 +112,7 @@ describe('buildTaxonSchema — image', () => {
 
   it('omits image when species only has non-image media', () => {
     const species = makeSpecies({
-      media: [{ '@id': '/api/media/1', credit: null, type: 'audio', url: 'https://xeno-canto.org/foo.mp3' }],
+      media: [{ credit: null, type: 'audio', url: 'https://xeno-canto.org/foo.mp3' }],
     })
     const schema = buildTaxonSchema(species, []) as Record<string, unknown>
     expect(schema).not.toHaveProperty('image')
@@ -124,7 +121,7 @@ describe('buildTaxonSchema — image', () => {
   it('includes the resolved image URL when an image media entry exists', () => {
     vi.stubEnv('NEXT_PUBLIC_API_URL', 'http://localhost:8080')
     const species = makeSpecies({
-      media: [{ '@id': '/api/media/1', credit: null, type: 'image', url: '/media/image/garrulus-glandarius.webp' }],
+      media: [{ credit: null, type: 'image', url: '/media/image/garrulus-glandarius.webp' }],
     })
     const schema = buildTaxonSchema(species, []) as Record<string, unknown>
     expect(schema.image).toBe('http://localhost:8080/media/image/garrulus-glandarius.webp')
@@ -172,12 +169,10 @@ describe('buildTaxonSchema — additionalProperty', () => {
 
   it('handles multiple relationships', () => {
     const rel2 = makeRelationship({
-      '@id': '/api/relationships/2',
       id: 2,
       object: makeSpecies({
-        '@id': '/api/species/3',
-        commonNames: [{ '@id': '/api/common-names/4', locale: 'en', name: 'Fly Agaric' }],
-        family: { '@id': '/api/families/3', id: 3, kingdom: 'fungus', name: 'Amanitaceae' },
+        commonNames: [{ locale: 'en', name: 'Fly Agaric' }],
+        family: { id: 3, kingdom: 'fungus', name: 'Amanitaceae' },
         id: 3,
         scientificName: 'Amanita muscaria',
         slug: 'amanita-muscaria',

@@ -5,13 +5,12 @@ import type { Species } from '@/lib/types'
 // Minimal Species fixture — only the fields the helper functions inspect.
 function makeSpecies(overrides: Partial<Species> = {}): Species {
   return {
-    '@id': '/api/species/1',
     commonNames: [
-      { '@id': '/api/common-names/1', locale: 'en', name: 'Eurasian Jay' },
-      { '@id': '/api/common-names/2', locale: 'fr', name: 'Geai des chênes' },
+      { locale: 'en', name: 'Eurasian Jay' },
+      { locale: 'fr', name: 'Geai des chênes' },
     ],
     conservationStatus: null,
-    family: { '@id': '/api/families/1', id: 1, kingdom: 'bird', name: 'Corvidae' },
+    family: { id: 1, kingdom: 'bird', name: 'Corvidae' },
     habitat: null,
     id: 1,
     maxHeight: null,
@@ -26,7 +25,7 @@ function makeSpecies(overrides: Partial<Species> = {}): Species {
     ],
     wingspan: null,
     ...overrides,
-  }
+  } as Species
 }
 
 afterEach(() => {
@@ -67,7 +66,7 @@ describe('getCommonName', () => {
   })
 
   it('falls back to scientificName when the locale has no common name', () => {
-    const species = makeSpecies({ commonNames: [{ '@id': '/api/common-names/1', locale: 'en', name: 'Eurasian Jay' }] })
+    const species = makeSpecies({ commonNames: [{ locale: 'en', name: 'Eurasian Jay' }] })
     expect(getCommonName(species, 'fr')).toBe('Garrulus glandarius')
   })
 

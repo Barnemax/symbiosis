@@ -1,4 +1,4 @@
-import type { CommonName, Species, SpeciesTranslation } from './types'
+import type { CommonName, RelationshipSpecies, Species, SpeciesTranslation } from './types'
 import { RELATIONSHIP_LABELS } from './constants'
 
 /** Returns the display label for a relationship type, falling back to a formatted version of the raw string. */
@@ -6,8 +6,8 @@ export function getRelationshipLabel(type: string): string {
   return RELATIONSHIP_LABELS[type] ?? type.replace(/_/g, ' ').replace(/^\w/, c => c.toUpperCase())
 }
 
-export function getCommonName(species: Species, locale: CommonName['locale'] = 'en'): string {
-  return species.commonNames?.find(n => n.locale === locale)?.name ?? species.scientificName
+export function getCommonName(species: Species | RelationshipSpecies, locale: CommonName['locale'] = 'en'): string {
+  return species.commonNames.find(n => n.locale === locale)?.name ?? species.scientificName
 }
 
 export function getTranslatedField(
@@ -15,7 +15,7 @@ export function getTranslatedField(
   field: keyof Pick<SpeciesTranslation, 'habitat' | 'substrate'>,
   locale: string,
 ): string | null {
-  return species.translations?.find(t => t.locale === locale)?.[field] ?? species[field] ?? null
+  return species.translations.find(t => t.locale === locale)?.[field] ?? species[field] ?? null
 }
 
 export function pluralKingdom(kingdom: string): string {

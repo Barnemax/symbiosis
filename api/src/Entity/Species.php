@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -45,6 +46,7 @@ class Species
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[ApiProperty(writable: false, identifier: true, required: true, schema: ['type' => 'integer'])]
     #[Groups(['species:read', 'relationship:read', 'relationship:graph'])]
     private ?int $id = null;
 
@@ -90,16 +92,19 @@ class Species
 
     /** @var Collection<int, CommonName> */
     #[ORM\OneToMany(targetEntity: CommonName::class, mappedBy: 'species', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ApiProperty(required: true)]
     #[Groups(['species:read', 'species:write', 'relationship:read'])]
     private Collection $commonNames;
 
     /** @var Collection<int, SpeciesTranslation> */
     #[ORM\OneToMany(targetEntity: SpeciesTranslation::class, mappedBy: 'species', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ApiProperty(required: true)]
     #[Groups(['species:read', 'species:write'])]
     private Collection $translations;
 
     /** @var Collection<int, Media> */
     #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'species', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ApiProperty(required: true)]
     #[Groups(['species:read'])]
     private Collection $media;
 

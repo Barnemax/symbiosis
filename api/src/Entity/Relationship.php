@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -54,6 +55,7 @@ class Relationship
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[ApiProperty(writable: false, identifier: true, required: true, schema: ['type' => 'integer'])]
     #[Groups(['relationship:read'])]
     private ?int $id = null;
 
@@ -81,6 +83,7 @@ class Relationship
 
     /** @var Collection<int, RelationshipTranslation> */
     #[ORM\OneToMany(targetEntity: RelationshipTranslation::class, mappedBy: 'relationship', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ApiProperty(required: true)]
     #[Groups(['relationship:read', 'relationship:write'])]
     private Collection $translations;
 

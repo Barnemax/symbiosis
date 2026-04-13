@@ -106,7 +106,7 @@ export default async function SpeciesPage({
     })),
   ]
 
-  const mediaByType: Partial<Record<string, Media>> = Object.fromEntries(species.media.map(m => [m.type, m]))
+  const mediaByType = Object.fromEntries(species.media.map(m => [m.type, m])) as Partial<Record<string, Media>>
   const { image, leaf, feather, audio } = mediaByType
   const habitat = getTranslatedField(species, 'habitat', l)
   const substrate = getTranslatedField(species, 'substrate', l)

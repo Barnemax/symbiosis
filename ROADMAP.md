@@ -1,6 +1,4 @@
 ## Up Next
-- [ ] Better design for relationship graph
-- [ ] Generate frontend types from OpenAPI schema (`openapi-typescript` from `/api/docs.json`)
 - [ ] Deployment (Railway / VPS)
 
 ## Ideas

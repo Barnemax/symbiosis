@@ -1,76 +1,24 @@
-import type { AppLocale } from '@/i18n/routing'
+import type { components } from './api-types'
 
-export type { AppLocale }
-export type Kingdom = 'bird' | 'tree' | 'fungus'
+type Schemas = components['schemas']
 
-export type ConservationStatus = 'EX' | 'EW' | 'CR' | 'EN' | 'VU' | 'NT' | 'LC' | 'DD' | 'NE'
+export type Kingdom = Schemas['Family-species.read']['kingdom']
+export type ConservationStatus = NonNullable<Schemas['Species-species.read']['conservationStatus']>
 
-export interface Family {
-  '@id': string
-  id: number
-  name: string
-  kingdom: Kingdom
-}
+export type Family = Schemas['Family-species.read']
+export type CommonName = Schemas['CommonName-species.read']
+export type SpeciesTranslation = Schemas['SpeciesTranslation-species.read']
+export type Media = Schemas['Media-species.read']
+export type Species = Schemas['Species-species.read']
 
-export interface CommonName {
-  '@id': string
-  locale: AppLocale | 'la'
-  name: string
-}
+export type RelationshipSpecies = Schemas['Species-relationship.read']
+export type RelationshipTranslation = Schemas['RelationshipTranslation-relationship.read']
+export type Relationship = Schemas['Relationship-relationship.read']
+export type GraphRelationship = Schemas['Relationship-relationship.graph']
 
-export interface SpeciesTranslation {
-  locale: AppLocale
-  habitat: string | null
-  substrate: string | null
-}
-
-export interface Media {
-  '@id': string
-  type: 'image' | 'audio' | 'leaf' | 'feather'
-  url: string
-  credit: string | null
-}
-
-export interface Species {
-  '@id': string
-  id: number
-  scientificName: string
-  slug: string | null
-  family: Family
-  conservationStatus: ConservationStatus | null
-  habitat: string | null
-  wingspan: number | null
-  maxHeight: number | null
-  substrate: string | null
-  commonNames: CommonName[]
-  translations: SpeciesTranslation[]
-  media: Media[]
-  relationshipCount: number
-}
-
-export interface RelationshipTranslation {
-  locale: AppLocale
-  notes: string | null
-}
-
-export interface Relationship {
-  '@id': string
-  id: number
-  subject: Species
-  object: Species
-  type: string
-  notes: string | null
-  translations: RelationshipTranslation[]
-}
-
-// Lightweight shape returned by /api/relationships/graph, no full species data
-export interface GraphRelationship {
-  subject: { id: number }
-  object: { id: number }
-  type: string
-}
-
-export interface HydraCollection<T> {
-  member: T[]
+export type HydraCollection<T> = Schemas['HydraCollectionBaseSchemaNoPagination'] & {
   totalItems: number
+  member: T[]
 }
+
+export type { AppLocale } from '@/i18n/routing'
