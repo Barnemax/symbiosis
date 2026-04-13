@@ -34,7 +34,15 @@ interface Props {
   links: GraphLink[]
 }
 
-const nodeRadius = (degree: number): number => Math.min(14, 3 + Math.sqrt(degree) * 4)
+// Base radius used by the force simulation (world-space, zoom-independent)
+const BASE_RADIUS = (degree: number): number => Math.min(14, 3 + Math.sqrt(degree) * 4)
+// Drawn radius: grows with zoom but at a dampened rate (square root of scale)
+// so nodes get bigger when zoomed in, but not so big they overlap
+const drawnRadius = (degree: number, globalScale: number): number => {
+  const base = BASE_RADIUS(degree)
+  // At scale 1: full base size. At scale 4: base * 2/4 = half. At scale 9: base * 3/9 = third.
+  return base * Math.pow(globalScale, 0.65) / globalScale
+}
 
 export default function RelationshipGraph({ nodes, links }: Props): React.JSX.Element {
   const router = useRouter()
@@ -86,7 +94,7 @@ export default function RelationshipGraph({ nodes, links }: Props): React.JSX.El
     // Same screen-size cap as node labels: constant ~9px when zoomed in, shrinks when zoomed out
     const fontSize = Math.min(5, 9 / globalScale)
     ctx.save()
-    ctx.font = `${fontSize}px sans-serif`
+    ctx.font = `${fontSize}px "Miranda Sans", sans-serif`
     ctx.fillStyle = '#a8a29e'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
@@ -96,7 +104,7 @@ export default function RelationshipGraph({ nodes, links }: Props): React.JSX.El
 
   const paintNode = useCallback((node: NodeObject<object>, ctx: CanvasRenderingContext2D, globalScale: number) => {
     const n = node as NodeObject<GraphNode> & { x: number; y: number }
-    const r = nodeRadius(n.degree)
+    const r = drawnRadius(n.degree, globalScale)
     ctx.beginPath()
     ctx.arc(n.x, n.y, r, 0, 2 * Math.PI)
     ctx.fillStyle = KINGDOMS[n.kingdom].color
@@ -110,26 +118,49 @@ export default function RelationshipGraph({ nodes, links }: Props): React.JSX.El
         ctx.beginPath()
         ctx.arc(n.x, n.y, r, 0, 2 * Math.PI)
         ctx.clip()
-        ctx.drawImage(img, n.x - r, n.y - r, r * 2, r * 2)
+        // Center-crop: use the largest centered square from the source
+        const side = Math.min(img.naturalWidth, img.naturalHeight)
+        const sx = (img.naturalWidth - side) / 2
+        const sy = (img.naturalHeight - side) / 2
+        ctx.drawImage(img, sx, sy, side, side, n.x - r, n.y - r, r * 2, r * 2)
         ctx.restore()
       }
     }
 
-    // Labels are drawn in world space so they scale naturally with zoom.
-    // Cap at 14px screen-equivalent to avoid enormous labels when very zoomed in.
+    // Labels: constant screen size via inverse zoom scaling
     if (globalScale >= 1.2 || n.degree >= 4) {
       const fontSize = Math.min(11, 14 / globalScale)
-      ctx.font = `${fontSize}px sans-serif`
-      ctx.fillStyle = '#1c1917'
+      ctx.font = `${fontSize}px "Miranda Sans", sans-serif`
       ctx.textAlign = 'center'
       ctx.textBaseline = 'top'
-      ctx.fillText(n.name, n.x, n.y + r + 2)
+
+      const labelY = n.y + r + 2 / globalScale
+      const textWidth = ctx.measureText(n.name).width
+      const padX = fontSize * 0.35
+      const padY = fontSize * 0.2
+
+      // Rounded rectangle background
+      const rw = textWidth + padX * 2
+      const rh = fontSize + padY * 2
+      const rx = n.x - rw / 2
+      const ry = labelY - padY
+      const cr = fontSize * 0.25
+      ctx.beginPath()
+      ctx.roundRect(rx, ry, rw, rh, cr)
+      ctx.fillStyle = 'rgba(250, 250, 249, 0.85)'
+      ctx.fill()
+      ctx.strokeStyle = 'rgba(168, 162, 158, 0.4)'
+      ctx.lineWidth = 0.5 / globalScale
+      ctx.stroke()
+
+      ctx.fillStyle = '#1c1917'
+      ctx.fillText(n.name, n.x, labelY)
     }
   }, [])
 
-  const paintNodeArea = useCallback((node: NodeObject<object>, color: string, ctx: CanvasRenderingContext2D) => {
+  const paintNodeArea = useCallback((node: NodeObject<object>, color: string, ctx: CanvasRenderingContext2D, globalScale: number) => {
     const n = node as NodeObject<GraphNode> & { x: number; y: number }
-    const r = nodeRadius(n.degree)
+    const r = drawnRadius(n.degree, globalScale)
     ctx.beginPath()
     ctx.arc(n.x, n.y, r, 0, 2 * Math.PI)
     ctx.fillStyle = color
@@ -179,20 +210,27 @@ export default function RelationshipGraph({ nodes, links }: Props): React.JSX.El
     if (!fg) {
       return
     }
-    fg.d3Force('charge')?.strength(-180)
+    fg.d3Force('charge')?.strength(-400).distanceMax(300)
     fg.d3Force('link')?.distance((link: LinkObject<object, object>) => {
       const srcDeg = typeof link.source === 'object' ? (link.source as NodeObject<GraphNode>).degree : 1
       const tgtDeg = typeof link.target === 'object' ? (link.target as NodeObject<GraphNode>).degree : 1
-      return 60 + Math.max(srcDeg, tgtDeg) * 9
+      return 80 + Math.max(srcDeg, tgtDeg) * 14
     })
     // Strengthen centering to prevent the cluster drifting bottom-heavy
     fg.d3Force('center')?.strength(1)
-    // Collision force: prevents nodes from overlapping based on their actual drawn radius
-    fg.d3Force('collide', forceCollide((node: NodeObject<object>) => nodeRadius((node as NodeObject<GraphNode>).degree ?? 0) + 10))
+    // Collision force: prevents nodes from overlapping based on their actual drawn radius + label
+    fg.d3Force('collide', forceCollide((node: NodeObject<object>) => {
+      const n = node as NodeObject<GraphNode>
+      return BASE_RADIUS(n.degree ?? 0) + 28
+    }).strength(1).iterations(10))
   }, [])
 
+  const hasInitialFit = useRef(false)
   const handleEngineStop = useCallback(() => {
-    setTimeout(() => graphRef.current?.zoomToFit(400, 48), 50)
+    if (!hasInitialFit.current) {
+      hasInitialFit.current = true
+      setTimeout(() => graphRef.current?.zoomToFit(400, 48), 50)
+    }
   }, [])
 
   // Imperative tooltip, avoids re-rendering the graph on every hover
@@ -236,8 +274,8 @@ export default function RelationshipGraph({ nodes, links }: Props): React.JSX.El
         linkCanvasObjectMode={() => 'after'}
         linkCanvasObject={paintLink}
         linkColor={() => '#c7c3bf'}
-        linkDirectionalArrowLength={4}
-        linkDirectionalArrowRelPos={1}
+        linkDirectionalArrowLength={2}
+        linkDirectionalArrowRelPos={0.85}
         linkCurvature={(link: LinkObject) => (link as unknown as GraphLink).curvature}
         backgroundColor="#fafaf9"
         cooldownTicks={300}

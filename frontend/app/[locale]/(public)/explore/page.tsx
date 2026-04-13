@@ -5,8 +5,9 @@ import type { AppLocale } from '@/lib/types'
 import { getTranslations, getLocale } from 'next-intl/server'
 
 export default async function ExplorePage(): Promise<React.JSX.Element> {
-  const [t, locale, { member: species }, { member: relationships }] = await Promise.all([
+  const [t, tRel, locale, { member: species }, { member: relationships }] = await Promise.all([
     getTranslations('explore'),
+    getTranslations('relationships'),
     getLocale(),
     getAllSpecies(),
     getGraphRelationships(),
@@ -35,28 +36,30 @@ export default async function ExplorePage(): Promise<React.JSX.Element> {
       }
     })
 
-  const rawLinks = relationships.map(rel => ({
-    label: rel.type.replace(/_/g, ' '),
-    source: rel.subject.id,
-    target: rel.object.id,
-  }))
-
-  const targetGroups = new Map<number, typeof rawLinks>()
-  for (const link of rawLinks) {
-    const group = targetGroups.get(link.target) ?? []
-    group.push(link)
-    targetGroups.set(link.target, group)
+  // Merge parallel relationships between the same pair of species into one link
+  const pairMap = new Map<string, string[]>()
+  for (const rel of relationships) {
+    const key = [Math.min(rel.subject.id, rel.object.id), Math.max(rel.subject.id, rel.object.id)].join('-')
+    const labels = pairMap.get(key) ?? []
+    labels.push(tRel(rel.type))
+    pairMap.set(key, labels)
   }
 
-  const links: GraphLink[] = rawLinks.map(link => {
-    const group = targetGroups.get(link.target) ?? []
-    const idx = group.indexOf(link)
-    const spread = 0.25
-    const curvature = group.length > 1
-      ? spread * (idx - (group.length - 1) / 2) / Math.max(1, (group.length - 1) / 2)
-      : 0
-    return { curvature, ...link }
-  })
+  // Deduplicate by source-target pair, keeping direction of the first occurrence
+  const seen = new Set<string>()
+  const mergedLinks: { source: number; target: number; label: string }[] = []
+  for (const rel of relationships) {
+    const key = [Math.min(rel.subject.id, rel.object.id), Math.max(rel.subject.id, rel.object.id)].join('-')
+    if (seen.has(key)) continue
+    seen.add(key)
+    mergedLinks.push({
+      source: rel.subject.id,
+      target: rel.object.id,
+      label: pairMap.get(key)!.join(', '),
+    })
+  }
+
+  const links: GraphLink[] = mergedLinks.map(link => ({ curvature: 0, ...link }))
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-8">
