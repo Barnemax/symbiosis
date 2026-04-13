@@ -956,7 +956,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *             cast_fn?: mixed,
  *             default?: mixed,
  *             filter_class?: mixed,
- *             ...<string, mixed>
+ *             ...<mixed>
  *         }>,
  *         strict_query_parameter_validation?: mixed,
  *         hide_hydra_operation?: mixed,
@@ -976,7 +976,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         name?: mixed,
  *         allow_create?: mixed,
  *         item_uri_template?: mixed,
- *         ...<string, mixed>
+ *         ...<mixed>
  *     },
  * }
  * @psalm-type DoctrineConfig = array{

@@ -57,10 +57,11 @@ docker compose exec php bin/console doctrine:fixtures:load
 
 ## Data
 
-All species data is hand-curated (~13 trees, ~22 birds, ~24 fungi) with real, documented ecological associations. Sources:
+All species data has real, documented ecological associations. The dataset is expanded using a Claude-assisted curation workflow (see below). Sources:
 
 - [Wikipedia](https://wikipedia.org/) — species descriptions
 - [Wikimedia Commons](https://commons.wikimedia.org/) — images (CC-licensed)
+- [iNaturalist](https://www.inaturalist.org/) — leaf and feather photos (CC-licensed)
 - [xeno-canto](https://xeno-canto.org/) — bird calls (CC-licensed)
 - [IUCN Red List](https://www.iucnredlist.org/) — conservation status
 

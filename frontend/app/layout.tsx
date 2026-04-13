@@ -1,19 +1,8 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 
 import { siteInfo } from '@/lib/strings/siteInfo'
 import { getLocale } from 'next-intl/server'
-
-const geistSans = Geist({
-  subsets: ['latin'],
-  variable: '--font-geist-sans',
-})
-
-const geistMono = Geist_Mono({
-  subsets: ['latin'],
-  variable: '--font-geist-mono',
-})
 
 export const metadata: Metadata = {
   description: 'A nature encyclopedia exploring ecological relationships between birds, trees, and fungi.',
@@ -31,8 +20,13 @@ export default async function RootLayout({
   const locale = await getLocale().catch(() => 'en')
   return (
     <html lang={locale}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Miranda+Sans:wght@100..900&display=swap" rel="stylesheet" />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className="antialiased"
       >
         {children}
       </body>
