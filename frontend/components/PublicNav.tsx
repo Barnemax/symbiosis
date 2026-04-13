@@ -9,16 +9,16 @@ import { siteInfo } from '@/lib/strings/siteInfo'
 type StaticPathname = Exclude<keyof typeof routing['pathnames'], `${string}/[${string}]`>
 type DynamicPathname = Extract<keyof typeof routing['pathnames'], `${string}/[${string}]`>
 
-export default function PublicNav(): React.JSX.Element {
+export default function PublicNav({ kingdomCounts }: { kingdomCounts?: Record<string, number> }): React.JSX.Element {
   const pathname = usePathname()
   const router = useRouter()
   const locale = useLocale()
   const t = useTranslations('nav')
 
-  const NAV_LINKS: { href: StaticPathname; label: string }[] = [
-    { href: '/birds', label: t('birds') },
-    { href: '/trees', label: t('trees') },
-    { href: '/fungi', label: t('fungi') },
+  const NAV_LINKS: { href: StaticPathname; label: string; count?: number }[] = [
+    { href: '/birds', label: t('birds'), count: kingdomCounts?.bird },
+    { href: '/trees', label: t('trees'), count: kingdomCounts?.tree },
+    { href: '/fungi', label: t('fungi'), count: kingdomCounts?.fungus },
     { href: '/explore', label: t('explore') },
     { href: '/contact', label: t('contact') },
   ]
@@ -73,6 +73,9 @@ continue
                   }`}
               >
                 {link.label}
+                {link.count != null && (
+                  <span className="ml-1.5 text-xs text-stone-400">{link.count}</span>
+                )}
               </Link>
             ))}
           </nav>

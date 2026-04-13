@@ -11,7 +11,14 @@
     "fungi_desc": "Champignons mycorhiziens et saprotrophes",
     "subtitle": "Explorez les relations entre espèces",
     "title": "Symbiose",
-    "trees_desc": "Plantes ligneuses et leur écologie"
+    "trees_desc": "Plantes ligneuses et leur écologie",
+    "species_count": "{count, plural, one {# espèce} other {# espèces}}",
+    "about_title": "De quoi s'agit-il\u00a0?",
+    "about_p1": "Symbiose est une encyclopédie naturaliste qui cartographie les relations écologiques entre oiseaux, arbres et champignons. Quel pic niche dans quel chêne\u00a0? Quel champignon forme des réseaux mycorhiziens avec quel arbre\u00a0? Chaque relation ici est documentée et sourcée.",
+    "about_p2": "Le jeu de données est volontairement restreint\u00a0: nous privilégions la profondeur à l'étendue. Chaque espèce est reliée à ses voisines par des associations écologiques réelles et publiées, et non par des suppositions générées par IA.",
+    "about_curation_title": "Comment nous curons les données",
+    "about_curation": "Les données proviennent de Wikipédia, les images de Wikimedia Commons et iNaturalist, les chants d'oiseaux de xeno-canto et les statuts de conservation de la Liste rouge de l'UICN. Les nouvelles espèces sont suggérées par l'API Anthropic à partir de liens écologiques documentés avec les espèces déjà présentes, puis vérifiées et ajoutées manuellement.",
+    "about_explore": "Explorer le réseau"
   },
   "kingdom": {
     "empty": "Aucune espèce trouvée pour « {search} »",

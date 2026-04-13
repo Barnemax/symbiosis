@@ -11,7 +11,14 @@
     "fungi_desc": "Mycorrhizal and saprotrophic fungi",
     "subtitle": "Explore relationships between species",
     "title": "Symbiosis",
-    "trees_desc": "Woody plants and their ecology"
+    "trees_desc": "Woody plants and their ecology",
+    "species_count": "{count, plural, one {# species} other {# species}}",
+    "about_title": "What is this?",
+    "about_p1": "Symbiosis is a nature encyclopedia that maps the ecological relationships between birds, trees and fungi. Which woodpecker nests in which oak? Which fungus forms mycorrhizal networks with which tree? Every relationship here is documented and sourced.",
+    "about_p2": "The dataset is small on purpose: we favour depth over breadth. Each species is linked to its neighbours through real, published ecological associations rather than AI-generated guesses.",
+    "about_curation_title": "How we curate",
+    "about_curation": "Species data comes from Wikipedia, images from Wikimedia Commons and iNaturalist, bird calls from xeno-canto and conservation statuses from the IUCN Red List. New species are suggested by the Anthropic API based on documented ecological links to what's already in the dataset, then reviewed and added by hand.",
+    "about_explore": "Explore the network"
   },
   "kingdom": {
     "empty": "No species found for \"{search}\"",

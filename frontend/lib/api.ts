@@ -48,6 +48,15 @@ export async function getSpecies(params?: {
 
 export { PAGE_SIZE }
 
+export async function getKingdomCounts(): Promise<Record<string, number>> {
+  const [birds, trees, fungi] = await Promise.all([
+    apiFetch<HydraCollection<Species>>('/api/species?family.kingdom=bird&itemsPerPage=1', { next: { revalidate: false, tags: ['species'] } }),
+    apiFetch<HydraCollection<Species>>('/api/species?family.kingdom=tree&itemsPerPage=1', { next: { revalidate: false, tags: ['species'] } }),
+    apiFetch<HydraCollection<Species>>('/api/species?family.kingdom=fungus&itemsPerPage=1', { next: { revalidate: false, tags: ['species'] } }),
+  ])
+  return { bird: birds.totalItems, fungus: fungi.totalItems, tree: trees.totalItems }
+}
+
 export async function getSpeciesBySlug(kingdom: string, slug: string): Promise<Species> {
   const data = await apiFetch<HydraCollection<Species>>(
     `/api/species?family.kingdom=${kingdom}&slug=${encodeURIComponent(slug)}`,
