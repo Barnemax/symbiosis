@@ -14,6 +14,7 @@ const eslintConfig = defineConfig([
       },
     },
     rules: {
+      '@next/next/no-page-custom-font': 'off',
       '@typescript-eslint/explicit-function-return-type': ['error', {
         allowExpressions: true,
         allowTypedFunctionExpressions: true,

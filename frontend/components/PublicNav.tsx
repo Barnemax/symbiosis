@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { Link, usePathname, useRouter } from '@/i18n/navigation'
 import { routing } from '@/i18n/routing'
 import { useLocale, useTranslations } from 'next-intl'
+import { useParams } from 'next/navigation'
 import { siteInfo } from '@/lib/strings/siteInfo'
 
 type StaticPathname = Exclude<keyof typeof routing['pathnames'], `${string}/[${string}]`>
@@ -16,23 +17,22 @@ export default function PublicNav({ kingdomCounts }: { kingdomCounts?: Record<st
   const t = useTranslations('nav')
 
   const NAV_LINKS: { href: StaticPathname; label: string; count?: number }[] = [
-    { href: '/birds', label: t('birds'), count: kingdomCounts?.bird },
-    { href: '/trees', label: t('trees'), count: kingdomCounts?.tree },
-    { href: '/fungi', label: t('fungi'), count: kingdomCounts?.fungus },
+    { count: kingdomCounts?.bird, href: '/birds', label: t('birds') },
+    { count: kingdomCounts?.tree, href: '/trees', label: t('trees') },
+    { count: kingdomCounts?.fungus, href: '/fungi', label: t('fungi') },
     { href: '/explore', label: t('explore') },
     { href: '/contact', label: t('contact') },
   ]
 
+  const params = useParams()
+
   function switchLocale(next: string): void {
-    // Dynamic routes (e.g. /oiseaux/garrulus-glandarius) need params passed separately.
-    // Two segments = species page; find the matching internal template via routing.pathnames.
-    const parts = pathname.split('/').filter(Boolean)
-    if (parts.length === 2) {
-      const slug = parts[1]
+    const slug = typeof params.slug === 'string' ? params.slug : undefined
+    if (slug !== undefined) {
       for (const [template, localePaths] of Object.entries(routing.pathnames)) {
         if (!template.includes('[slug]')) {
-continue
-}
+          continue
+        }
         const prefixes = typeof localePaths === 'string'
           ? [localePaths.split('[')[0]]
           : Object.values(localePaths as Record<string, string>).map(p => p.split('[')[0])

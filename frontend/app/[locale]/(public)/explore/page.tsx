@@ -50,12 +50,14 @@ export default async function ExplorePage(): Promise<React.JSX.Element> {
   const mergedLinks: { source: number; target: number; label: string }[] = []
   for (const rel of relationships) {
     const key = [Math.min(rel.subject.id, rel.object.id), Math.max(rel.subject.id, rel.object.id)].join('-')
-    if (seen.has(key)) continue
+    if (seen.has(key)) {
+      continue
+    }
     seen.add(key)
     mergedLinks.push({
+      label: pairMap.get(key)!.join(', '),
       source: rel.subject.id,
       target: rel.object.id,
-      label: pairMap.get(key)!.join(', '),
     })
   }
 

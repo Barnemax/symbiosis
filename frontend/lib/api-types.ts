@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/api/common_names": {
+    '/api/common_names': {
         parameters: {
             query?: never;
             header?: never;
@@ -15,7 +15,7 @@ export interface paths {
          * Retrieves the collection of CommonName resources.
          * @description Retrieves the collection of CommonName resources.
          */
-        get: operations["api_common_names_get_collection"];
+        get: operations['api_common_names_get_collection'];
         put?: never;
         post?: never;
         delete?: never;
@@ -24,7 +24,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/common_names/{id}": {
+    '/api/common_names/{id}': {
         parameters: {
             query?: never;
             header?: never;
@@ -35,7 +35,7 @@ export interface paths {
          * Retrieves a CommonName resource.
          * @description Retrieves a CommonName resource.
          */
-        get: operations["api_common_names_id_get"];
+        get: operations['api_common_names_id_get'];
         put?: never;
         post?: never;
         delete?: never;
@@ -44,7 +44,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/families": {
+    '/api/families': {
         parameters: {
             query?: never;
             header?: never;
@@ -55,7 +55,7 @@ export interface paths {
          * Retrieves the collection of Family resources.
          * @description Retrieves the collection of Family resources.
          */
-        get: operations["api_families_get_collection"];
+        get: operations['api_families_get_collection'];
         put?: never;
         post?: never;
         delete?: never;
@@ -64,7 +64,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/families/{id}": {
+    '/api/families/{id}': {
         parameters: {
             query?: never;
             header?: never;
@@ -75,7 +75,7 @@ export interface paths {
          * Retrieves a Family resource.
          * @description Retrieves a Family resource.
          */
-        get: operations["api_families_id_get"];
+        get: operations['api_families_id_get'];
         put?: never;
         post?: never;
         delete?: never;
@@ -84,7 +84,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/media": {
+    '/api/media': {
         parameters: {
             query?: never;
             header?: never;
@@ -95,7 +95,7 @@ export interface paths {
          * Retrieves the collection of Media resources.
          * @description Retrieves the collection of Media resources.
          */
-        get: operations["api_media_get_collection"];
+        get: operations['api_media_get_collection'];
         put?: never;
         post?: never;
         delete?: never;
@@ -104,7 +104,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/media/{id}": {
+    '/api/media/{id}': {
         parameters: {
             query?: never;
             header?: never;
@@ -115,7 +115,7 @@ export interface paths {
          * Retrieves a Media resource.
          * @description Retrieves a Media resource.
          */
-        get: operations["api_media_id_get"];
+        get: operations['api_media_id_get'];
         put?: never;
         post?: never;
         delete?: never;
@@ -124,7 +124,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/relationships": {
+    '/api/relationships': {
         parameters: {
             query?: never;
             header?: never;
@@ -135,20 +135,20 @@ export interface paths {
          * Retrieves the collection of Relationship resources.
          * @description Retrieves the collection of Relationship resources.
          */
-        get: operations["api_relationships_get_collection"];
+        get: operations['api_relationships_get_collection'];
         put?: never;
         /**
          * Creates a Relationship resource.
          * @description Creates a Relationship resource.
          */
-        post: operations["api_relationships_post"];
+        post: operations['api_relationships_post'];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/relationships/graph": {
+    '/api/relationships/graph': {
         parameters: {
             query?: never;
             header?: never;
@@ -159,7 +159,7 @@ export interface paths {
          * Retrieves the collection of Relationship resources.
          * @description Retrieves the collection of Relationship resources.
          */
-        get: operations["api_relationshipsgraph_get_collection"];
+        get: operations['api_relationshipsgraph_get_collection'];
         put?: never;
         post?: never;
         delete?: never;
@@ -168,7 +168,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/relationships/{id}": {
+    '/api/relationships/{id}': {
         parameters: {
             query?: never;
             header?: never;
@@ -179,7 +179,7 @@ export interface paths {
          * Retrieves a Relationship resource.
          * @description Retrieves a Relationship resource.
          */
-        get: operations["api_relationships_id_get"];
+        get: operations['api_relationships_id_get'];
         put?: never;
         post?: never;
         delete?: never;
@@ -189,10 +189,10 @@ export interface paths {
          * Updates the Relationship resource.
          * @description Updates the Relationship resource.
          */
-        patch: operations["api_relationships_id_patch"];
+        patch: operations['api_relationships_id_patch'];
         trace?: never;
     };
-    "/api/relationships/{relationshipId}/translations/{locale}": {
+    '/api/relationships/{relationshipId}/translations/{locale}': {
         parameters: {
             query?: never;
             header?: never;
@@ -209,10 +209,10 @@ export interface paths {
          * Updates the RelationshipTranslation resource.
          * @description Updates the RelationshipTranslation resource.
          */
-        patch: operations["api_relationships_relationshipIdtranslations_locale_patch"];
+        patch: operations['api_relationships_relationshipIdtranslations_locale_patch'];
         trace?: never;
     };
-    "/api/species": {
+    '/api/species': {
         parameters: {
             query?: never;
             header?: never;
@@ -223,20 +223,20 @@ export interface paths {
          * Retrieves the collection of Species resources.
          * @description Retrieves the collection of Species resources.
          */
-        get: operations["api_species_get_collection"];
+        get: operations['api_species_get_collection'];
         put?: never;
         /**
          * Creates a Species resource.
          * @description Creates a Species resource.
          */
-        post: operations["api_species_post"];
+        post: operations['api_species_post'];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/species/{id}": {
+    '/api/species/{id}': {
         parameters: {
             query?: never;
             header?: never;
@@ -247,7 +247,7 @@ export interface paths {
          * Retrieves a Species resource.
          * @description Retrieves a Species resource.
          */
-        get: operations["api_species_id_get"];
+        get: operations['api_species_id_get'];
         put?: never;
         post?: never;
         delete?: never;
@@ -257,10 +257,10 @@ export interface paths {
          * Updates the Species resource.
          * @description Updates the Species resource.
          */
-        patch: operations["api_species_id_patch"];
+        patch: operations['api_species_id_patch'];
         trace?: never;
     };
-    "/api/species/{speciesId}/translations/{locale}": {
+    '/api/species/{speciesId}/translations/{locale}': {
         parameters: {
             query?: never;
             header?: never;
@@ -277,7 +277,7 @@ export interface paths {
          * Updates the SpeciesTranslation resource.
          * @description Updates the SpeciesTranslation resource.
          */
-        patch: operations["api_species_speciesIdtranslations_locale_patch"];
+        patch: operations['api_species_speciesIdtranslations_locale_patch'];
         trace?: never;
     };
 }
@@ -295,38 +295,38 @@ export interface components {
              * @default
              * @enum {string}
              */
-            locale: "en" | "fr" | "la";
+            locale: 'en' | 'fr' | 'la';
             /** @default  */
             name: string;
         };
-        "CommonName-relationship.read": {
+        'CommonName-relationship.read': {
             /**
              * @default
              * @enum {string}
              */
-            locale: "en" | "fr" | "la";
+            locale: 'en' | 'fr' | 'la';
             /** @default  */
             name: string;
         };
-        "CommonName-species.read": {
+        'CommonName-species.read': {
             /**
              * @default
              * @enum {string}
              */
-            locale: "en" | "fr" | "la";
+            locale: 'en' | 'fr' | 'la';
             /** @default  */
             name: string;
         };
-        "CommonName-species.write": {
+        'CommonName-species.write': {
             /**
              * @default
              * @enum {string}
              */
-            locale: "en" | "fr" | "la";
+            locale: 'en' | 'fr' | 'la';
             /** @default  */
             name: string;
         };
-        "CommonName.jsonld": components["schemas"]["HydraItemBaseSchema"] & {
+        'CommonName.jsonld': components['schemas']['HydraItemBaseSchema'] & {
             readonly id?: number;
             /**
              * Format: iri-reference
@@ -337,25 +337,25 @@ export interface components {
              * @default
              * @enum {string}
              */
-            locale: "en" | "fr" | "la";
+            locale: 'en' | 'fr' | 'la';
             /** @default  */
             name: string;
         };
-        "CommonName.jsonld-relationship.read": components["schemas"]["HydraItemBaseSchema"] & {
+        'CommonName.jsonld-relationship.read': components['schemas']['HydraItemBaseSchema'] & {
             /**
              * @default
              * @enum {string}
              */
-            locale: "en" | "fr" | "la";
+            locale: 'en' | 'fr' | 'la';
             /** @default  */
             name: string;
         };
-        "CommonName.jsonld-species.read": components["schemas"]["HydraItemBaseSchema"] & {
+        'CommonName.jsonld-species.read': components['schemas']['HydraItemBaseSchema'] & {
             /**
              * @default
              * @enum {string}
              */
-            locale: "en" | "fr" | "la";
+            locale: 'en' | 'fr' | 'la';
             /** @default  */
             name: string;
         };
@@ -383,7 +383,7 @@ export interface components {
             readonly instance?: string | null;
         };
         /** @description Unprocessable entity */
-        "ConstraintViolation.jsonld": components["schemas"]["HydraItemBaseSchema"] & {
+        'ConstraintViolation.jsonld': components['schemas']['HydraItemBaseSchema'] & {
             /** @default 422 */
             status: number;
             violations?: {
@@ -423,7 +423,7 @@ export interface components {
             readonly type?: string;
         };
         /** @description A representation of common errors. */
-        "Error.jsonld": components["schemas"]["HydraItemBaseSchema"] & {
+        'Error.jsonld': components['schemas']['HydraItemBaseSchema'] & {
             /** @description A short, human-readable summary of the problem. */
             readonly title?: string | null;
             /** @description A human-readable explanation specific to this occurrence of the problem. */
@@ -447,10 +447,10 @@ export interface components {
              * @default
              * @enum {string}
              */
-            kingdom: "bird" | "tree" | "fungus";
+            kingdom: 'bird' | 'tree' | 'fungus';
             readonly species?: string[];
         };
-        "Family-relationship.read": {
+        'Family-relationship.read': {
             id: number;
             /** @default  */
             name: string;
@@ -458,9 +458,9 @@ export interface components {
              * @default
              * @enum {string}
              */
-            kingdom: "bird" | "tree" | "fungus";
+            kingdom: 'bird' | 'tree' | 'fungus';
         };
-        "Family-species.read": {
+        'Family-species.read': {
             id: number;
             /** @default  */
             name: string;
@@ -468,9 +468,9 @@ export interface components {
              * @default
              * @enum {string}
              */
-            kingdom: "bird" | "tree" | "fungus";
+            kingdom: 'bird' | 'tree' | 'fungus';
         };
-        "Family.jsonld": components["schemas"]["HydraItemBaseSchema"] & {
+        'Family.jsonld': components['schemas']['HydraItemBaseSchema'] & {
             id: number;
             /** @default  */
             name: string;
@@ -478,10 +478,10 @@ export interface components {
              * @default
              * @enum {string}
              */
-            kingdom: "bird" | "tree" | "fungus";
+            kingdom: 'bird' | 'tree' | 'fungus';
             readonly species?: string[];
         };
-        "Family.jsonld-relationship.read": components["schemas"]["HydraItemBaseSchema"] & {
+        'Family.jsonld-relationship.read': components['schemas']['HydraItemBaseSchema'] & {
             id: number;
             /** @default  */
             name: string;
@@ -489,9 +489,9 @@ export interface components {
              * @default
              * @enum {string}
              */
-            kingdom: "bird" | "tree" | "fungus";
+            kingdom: 'bird' | 'tree' | 'fungus';
         };
-        "Family.jsonld-species.read": components["schemas"]["HydraItemBaseSchema"] & {
+        'Family.jsonld-species.read': components['schemas']['HydraItemBaseSchema'] & {
             id: number;
             /** @default  */
             name: string;
@@ -499,9 +499,9 @@ export interface components {
              * @default
              * @enum {string}
              */
-            kingdom: "bird" | "tree" | "fungus";
+            kingdom: 'bird' | 'tree' | 'fungus';
         };
-        HydraCollectionBaseSchema: components["schemas"]["HydraCollectionBaseSchemaNoPagination"] & {
+        HydraCollectionBaseSchema: components['schemas']['HydraCollectionBaseSchemaNoPagination'] & {
             /**
              * @example {
              *       "@id": "string",
@@ -514,8 +514,8 @@ export interface components {
              */
             view?: {
                 /** Format: iri-reference */
-                "@id"?: string;
-                "@type"?: string;
+                '@id'?: string;
+                '@type'?: string;
                 /** Format: iri-reference */
                 first?: string;
                 /** Format: iri-reference */
@@ -529,11 +529,11 @@ export interface components {
         HydraCollectionBaseSchemaNoPagination: {
             totalItems?: number;
             search?: {
-                "@type"?: string;
+                '@type'?: string;
                 template?: string;
                 variableRepresentation?: string;
                 mapping?: {
-                    "@type"?: string;
+                    '@type'?: string;
                     variable?: string;
                     property?: string | null;
                     required?: boolean;
@@ -541,15 +541,15 @@ export interface components {
             };
         };
         HydraItemBaseSchema: {
-            "@context"?: string | ({
-                "@vocab": string;
+            '@context'?: string | ({
+                '@vocab': string;
                 /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
+                hydra: 'http://www.w3.org/ns/hydra/core#';
             } & {
                 [key: string]: unknown;
             });
-            "@id": string;
-            "@type": string;
+            '@id': string;
+            '@type': string;
         };
         Media: {
             readonly id?: number;
@@ -562,22 +562,22 @@ export interface components {
              * @default
              * @enum {string}
              */
-            type: "image" | "audio" | "leaf" | "feather";
+            type: 'image' | 'audio' | 'leaf' | 'feather';
             /** @default  */
             url: string;
             credit?: string | null;
         };
-        "Media-species.read": {
+        'Media-species.read': {
             /**
              * @default
              * @enum {string}
              */
-            type: "image" | "audio" | "leaf" | "feather";
+            type: 'image' | 'audio' | 'leaf' | 'feather';
             /** @default  */
             url: string;
             credit?: string | null;
         };
-        "Media.jsonld": components["schemas"]["HydraItemBaseSchema"] & {
+        'Media.jsonld': components['schemas']['HydraItemBaseSchema'] & {
             readonly id?: number;
             /**
              * Format: iri-reference
@@ -588,43 +588,43 @@ export interface components {
              * @default
              * @enum {string}
              */
-            type: "image" | "audio" | "leaf" | "feather";
+            type: 'image' | 'audio' | 'leaf' | 'feather';
             /** @default  */
             url: string;
             credit?: string | null;
         };
-        "Media.jsonld-species.read": components["schemas"]["HydraItemBaseSchema"] & {
+        'Media.jsonld-species.read': components['schemas']['HydraItemBaseSchema'] & {
             /**
              * @default
              * @enum {string}
              */
-            type: "image" | "audio" | "leaf" | "feather";
+            type: 'image' | 'audio' | 'leaf' | 'feather';
             /** @default  */
             url: string;
             credit?: string | null;
         };
-        "Relationship-relationship.graph": {
-            subject: components["schemas"]["Species-relationship.graph"];
-            object: components["schemas"]["Species-relationship.graph"];
+        'Relationship-relationship.graph': {
+            subject: components['schemas']['Species-relationship.graph'];
+            object: components['schemas']['Species-relationship.graph'];
             /**
              * @default
              * @enum {string}
              */
-            type: "nests_in" | "grows_on" | "feeds_on" | "symbiosis_with" | "disperses_seeds_of" | "disperses_spores_of" | "mycorrhiza_with" | "parasitises";
+            type: 'nests_in' | 'grows_on' | 'feeds_on' | 'symbiosis_with' | 'disperses_seeds_of' | 'disperses_spores_of' | 'mycorrhiza_with' | 'parasitises';
         };
-        "Relationship-relationship.read": {
+        'Relationship-relationship.read': {
             id: number;
-            subject: components["schemas"]["Species-relationship.read"];
-            object: components["schemas"]["Species-relationship.read"];
+            subject: components['schemas']['Species-relationship.read'];
+            object: components['schemas']['Species-relationship.read'];
             /**
              * @default
              * @enum {string}
              */
-            type: "nests_in" | "grows_on" | "feeds_on" | "symbiosis_with" | "disperses_seeds_of" | "disperses_spores_of" | "mycorrhiza_with" | "parasitises";
+            type: 'nests_in' | 'grows_on' | 'feeds_on' | 'symbiosis_with' | 'disperses_seeds_of' | 'disperses_spores_of' | 'mycorrhiza_with' | 'parasitises';
             notes?: string | null;
-            translations: components["schemas"]["RelationshipTranslation-relationship.read"][];
+            translations: components['schemas']['RelationshipTranslation-relationship.read'][];
         };
-        "Relationship-relationship.write": {
+        'Relationship-relationship.write': {
             /**
              * Format: iri-reference
              * @example https://example.com/
@@ -639,11 +639,11 @@ export interface components {
              * @default
              * @enum {string}
              */
-            type: "nests_in" | "grows_on" | "feeds_on" | "symbiosis_with" | "disperses_seeds_of" | "disperses_spores_of" | "mycorrhiza_with" | "parasitises";
+            type: 'nests_in' | 'grows_on' | 'feeds_on' | 'symbiosis_with' | 'disperses_seeds_of' | 'disperses_spores_of' | 'mycorrhiza_with' | 'parasitises';
             notes?: string | null;
-            translations: components["schemas"]["RelationshipTranslation-relationship.write.jsonMergePatch"][];
+            translations: components['schemas']['RelationshipTranslation-relationship.write.jsonMergePatch'][];
         };
-        "Relationship-relationship.write.jsonMergePatch": {
+        'Relationship-relationship.write.jsonMergePatch': {
             /**
              * Format: iri-reference
              * @example https://example.com/
@@ -658,76 +658,76 @@ export interface components {
              * @default
              * @enum {string}
              */
-            type: "nests_in" | "grows_on" | "feeds_on" | "symbiosis_with" | "disperses_seeds_of" | "disperses_spores_of" | "mycorrhiza_with" | "parasitises";
+            type: 'nests_in' | 'grows_on' | 'feeds_on' | 'symbiosis_with' | 'disperses_seeds_of' | 'disperses_spores_of' | 'mycorrhiza_with' | 'parasitises';
             notes?: string | null;
-            translations?: components["schemas"]["RelationshipTranslation-relationship.write.jsonMergePatch"][];
+            translations?: components['schemas']['RelationshipTranslation-relationship.write.jsonMergePatch'][];
         };
-        "Relationship.jsonld-relationship.graph": components["schemas"]["HydraItemBaseSchema"] & {
-            subject: components["schemas"]["Species.jsonld-relationship.graph"];
-            object: components["schemas"]["Species.jsonld-relationship.graph"];
+        'Relationship.jsonld-relationship.graph': components['schemas']['HydraItemBaseSchema'] & {
+            subject: components['schemas']['Species.jsonld-relationship.graph'];
+            object: components['schemas']['Species.jsonld-relationship.graph'];
             /**
              * @default
              * @enum {string}
              */
-            type: "nests_in" | "grows_on" | "feeds_on" | "symbiosis_with" | "disperses_seeds_of" | "disperses_spores_of" | "mycorrhiza_with" | "parasitises";
+            type: 'nests_in' | 'grows_on' | 'feeds_on' | 'symbiosis_with' | 'disperses_seeds_of' | 'disperses_spores_of' | 'mycorrhiza_with' | 'parasitises';
         };
-        "Relationship.jsonld-relationship.read": components["schemas"]["HydraItemBaseSchema"] & {
+        'Relationship.jsonld-relationship.read': components['schemas']['HydraItemBaseSchema'] & {
             id: number;
-            subject: components["schemas"]["Species.jsonld-relationship.read"];
-            object: components["schemas"]["Species.jsonld-relationship.read"];
+            subject: components['schemas']['Species.jsonld-relationship.read'];
+            object: components['schemas']['Species.jsonld-relationship.read'];
             /**
              * @default
              * @enum {string}
              */
-            type: "nests_in" | "grows_on" | "feeds_on" | "symbiosis_with" | "disperses_seeds_of" | "disperses_spores_of" | "mycorrhiza_with" | "parasitises";
+            type: 'nests_in' | 'grows_on' | 'feeds_on' | 'symbiosis_with' | 'disperses_seeds_of' | 'disperses_spores_of' | 'mycorrhiza_with' | 'parasitises';
             notes?: string | null;
-            translations: components["schemas"]["RelationshipTranslation.jsonld-relationship.read"][];
+            translations: components['schemas']['RelationshipTranslation.jsonld-relationship.read'][];
         };
-        "RelationshipTranslation-relationship.read": {
+        'RelationshipTranslation-relationship.read': {
             /**
              * @default
              * @enum {string}
              */
-            locale: "en" | "fr";
+            locale: 'en' | 'fr';
             notes?: string | null;
         };
-        "RelationshipTranslation-relationship.write.jsonMergePatch": {
+        'RelationshipTranslation-relationship.write.jsonMergePatch': {
             /**
              * @default
              * @enum {string}
              */
-            locale: "en" | "fr";
+            locale: 'en' | 'fr';
             notes?: string | null;
         };
-        "RelationshipTranslation-translation.write.jsonMergePatch": {
+        'RelationshipTranslation-translation.write.jsonMergePatch': {
             notes?: string | null;
         };
-        "RelationshipTranslation.jsonld-relationship.read": components["schemas"]["HydraItemBaseSchema"] & {
+        'RelationshipTranslation.jsonld-relationship.read': components['schemas']['HydraItemBaseSchema'] & {
             /**
              * @default
              * @enum {string}
              */
-            locale: "en" | "fr";
+            locale: 'en' | 'fr';
             notes?: string | null;
         };
-        "Species-relationship.graph": {
+        'Species-relationship.graph': {
             id: number;
         };
-        "Species-relationship.read": {
+        'Species-relationship.read': {
             id: number;
             /** @default  */
             scientificName: string;
-            family: components["schemas"]["Family-relationship.read"];
+            family: components['schemas']['Family-relationship.read'];
             slug?: string | null;
-            commonNames: components["schemas"]["CommonName-relationship.read"][];
+            commonNames: components['schemas']['CommonName-relationship.read'][];
         };
-        "Species-species.read": {
+        'Species-species.read': {
             id: number;
             /** @default  */
             scientificName: string;
-            family: components["schemas"]["Family-species.read"];
+            family: components['schemas']['Family-species.read'];
             /** @enum {string|null} */
-            conservationStatus?: "EX" | "EW" | "CR" | "EN" | "VU" | "NT" | "LC" | "DD" | "NE" | null;
+            conservationStatus?: 'EX' | 'EW' | 'CR' | 'EN' | 'VU' | 'NT' | 'LC' | 'DD' | 'NE' | null;
             habitat?: string | null;
             wingspan?: number | null;
             maxHeight?: number | null;
@@ -735,11 +735,11 @@ export interface components {
             substrate?: string | null;
             /** @default 0 */
             relationshipCount: number;
-            commonNames: components["schemas"]["CommonName-species.read"][];
-            translations: components["schemas"]["SpeciesTranslation-species.read"][];
-            readonly media: components["schemas"]["Media-species.read"][];
+            commonNames: components['schemas']['CommonName-species.read'][];
+            translations: components['schemas']['SpeciesTranslation-species.read'][];
+            readonly media: components['schemas']['Media-species.read'][];
         };
-        "Species-species.write": {
+        'Species-species.write': {
             /** @default  */
             scientificName: string;
             /**
@@ -748,15 +748,15 @@ export interface components {
              */
             family: string;
             /** @enum {string|null} */
-            conservationStatus?: "EX" | "EW" | "CR" | "EN" | "VU" | "NT" | "LC" | "DD" | "NE" | null;
+            conservationStatus?: 'EX' | 'EW' | 'CR' | 'EN' | 'VU' | 'NT' | 'LC' | 'DD' | 'NE' | null;
             habitat?: string | null;
             wingspan?: number | null;
             maxHeight?: number | null;
             substrate?: string | null;
-            commonNames: components["schemas"]["CommonName-species.write"][];
-            translations: components["schemas"]["SpeciesTranslation-species.write.jsonMergePatch"][];
+            commonNames: components['schemas']['CommonName-species.write'][];
+            translations: components['schemas']['SpeciesTranslation-species.write.jsonMergePatch'][];
         };
-        "Species-species.write.jsonMergePatch": {
+        'Species-species.write.jsonMergePatch': {
             /** @default  */
             scientificName: string;
             /**
@@ -765,32 +765,32 @@ export interface components {
              */
             family?: string;
             /** @enum {string|null} */
-            conservationStatus?: "EX" | "EW" | "CR" | "EN" | "VU" | "NT" | "LC" | "DD" | "NE" | null;
+            conservationStatus?: 'EX' | 'EW' | 'CR' | 'EN' | 'VU' | 'NT' | 'LC' | 'DD' | 'NE' | null;
             habitat?: string | null;
             wingspan?: number | null;
             maxHeight?: number | null;
             substrate?: string | null;
-            commonNames?: components["schemas"]["CommonName-species.write"][];
-            translations?: components["schemas"]["SpeciesTranslation-species.write.jsonMergePatch"][];
+            commonNames?: components['schemas']['CommonName-species.write'][];
+            translations?: components['schemas']['SpeciesTranslation-species.write.jsonMergePatch'][];
         };
-        "Species.jsonld-relationship.graph": components["schemas"]["HydraItemBaseSchema"] & {
+        'Species.jsonld-relationship.graph': components['schemas']['HydraItemBaseSchema'] & {
             id: number;
         };
-        "Species.jsonld-relationship.read": components["schemas"]["HydraItemBaseSchema"] & {
+        'Species.jsonld-relationship.read': components['schemas']['HydraItemBaseSchema'] & {
             id: number;
             /** @default  */
             scientificName: string;
-            family: components["schemas"]["Family.jsonld-relationship.read"];
+            family: components['schemas']['Family.jsonld-relationship.read'];
             slug?: string | null;
-            commonNames: components["schemas"]["CommonName.jsonld-relationship.read"][];
+            commonNames: components['schemas']['CommonName.jsonld-relationship.read'][];
         };
-        "Species.jsonld-species.read": components["schemas"]["HydraItemBaseSchema"] & {
+        'Species.jsonld-species.read': components['schemas']['HydraItemBaseSchema'] & {
             id: number;
             /** @default  */
             scientificName: string;
-            family: components["schemas"]["Family.jsonld-species.read"];
+            family: components['schemas']['Family.jsonld-species.read'];
             /** @enum {string|null} */
-            conservationStatus?: "EX" | "EW" | "CR" | "EN" | "VU" | "NT" | "LC" | "DD" | "NE" | null;
+            conservationStatus?: 'EX' | 'EW' | 'CR' | 'EN' | 'VU' | 'NT' | 'LC' | 'DD' | 'NE' | null;
             habitat?: string | null;
             wingspan?: number | null;
             maxHeight?: number | null;
@@ -798,38 +798,38 @@ export interface components {
             substrate?: string | null;
             /** @default 0 */
             relationshipCount: number;
-            commonNames: components["schemas"]["CommonName.jsonld-species.read"][];
-            translations: components["schemas"]["SpeciesTranslation.jsonld-species.read"][];
-            readonly media: components["schemas"]["Media.jsonld-species.read"][];
+            commonNames: components['schemas']['CommonName.jsonld-species.read'][];
+            translations: components['schemas']['SpeciesTranslation.jsonld-species.read'][];
+            readonly media: components['schemas']['Media.jsonld-species.read'][];
         };
-        "SpeciesTranslation-species.read": {
+        'SpeciesTranslation-species.read': {
             /**
              * @default
              * @enum {string}
              */
-            locale: "en" | "fr";
+            locale: 'en' | 'fr';
             habitat?: string | null;
             substrate?: string | null;
         };
-        "SpeciesTranslation-species.write.jsonMergePatch": {
+        'SpeciesTranslation-species.write.jsonMergePatch': {
             /**
              * @default
              * @enum {string}
              */
-            locale: "en" | "fr";
+            locale: 'en' | 'fr';
             habitat?: string | null;
             substrate?: string | null;
         };
-        "SpeciesTranslation-translation.write.jsonMergePatch": {
+        'SpeciesTranslation-translation.write.jsonMergePatch': {
             habitat?: string | null;
             substrate?: string | null;
         };
-        "SpeciesTranslation.jsonld-species.read": components["schemas"]["HydraItemBaseSchema"] & {
+        'SpeciesTranslation.jsonld-species.read': components['schemas']['HydraItemBaseSchema'] & {
             /**
              * @default
              * @enum {string}
              */
-            locale: "en" | "fr";
+            locale: 'en' | 'fr';
             habitat?: string | null;
             substrate?: string | null;
         };
@@ -860,10 +860,10 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
-                        member: components["schemas"]["CommonName.jsonld"][];
+                    'application/ld+json': components['schemas']['HydraCollectionBaseSchema'] & {
+                        member: components['schemas']['CommonName.jsonld'][];
                     };
-                    "application/json": components["schemas"]["CommonName"][];
+                    'application/json': components['schemas']['CommonName'][];
                 };
             };
         };
@@ -886,8 +886,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["CommonName.jsonld"];
-                    "application/json": components["schemas"]["CommonName"];
+                    'application/ld+json': components['schemas']['CommonName.jsonld'];
+                    'application/json': components['schemas']['CommonName'];
                 };
             };
             /** @description Not found */
@@ -896,9 +896,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
+                    'application/ld+json': components['schemas']['Error.jsonld'];
+                    'application/problem+json': components['schemas']['Error'];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -921,10 +921,10 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
-                        member: components["schemas"]["Family.jsonld"][];
+                    'application/ld+json': components['schemas']['HydraCollectionBaseSchema'] & {
+                        member: components['schemas']['Family.jsonld'][];
                     };
-                    "application/json": components["schemas"]["Family"][];
+                    'application/json': components['schemas']['Family'][];
                 };
             };
         };
@@ -947,8 +947,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Family.jsonld"];
-                    "application/json": components["schemas"]["Family"];
+                    'application/ld+json': components['schemas']['Family.jsonld'];
+                    'application/json': components['schemas']['Family'];
                 };
             };
             /** @description Not found */
@@ -957,9 +957,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
+                    'application/ld+json': components['schemas']['Error.jsonld'];
+                    'application/problem+json': components['schemas']['Error'];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -982,10 +982,10 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
-                        member: components["schemas"]["Media.jsonld"][];
+                    'application/ld+json': components['schemas']['HydraCollectionBaseSchema'] & {
+                        member: components['schemas']['Media.jsonld'][];
                     };
-                    "application/json": components["schemas"]["Media"][];
+                    'application/json': components['schemas']['Media'][];
                 };
             };
         };
@@ -1008,8 +1008,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Media.jsonld"];
-                    "application/json": components["schemas"]["Media"];
+                    'application/ld+json': components['schemas']['Media.jsonld'];
+                    'application/json': components['schemas']['Media'];
                 };
             };
             /** @description Not found */
@@ -1018,9 +1018,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
+                    'application/ld+json': components['schemas']['Error.jsonld'];
+                    'application/problem+json': components['schemas']['Error'];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -1033,11 +1033,11 @@ export interface operations {
                 /** @description Enable or disable pagination */
                 pagination?: boolean;
                 type?: string;
-                "type[]"?: string[];
+                'type[]'?: string[];
                 subject?: string;
-                "subject[]"?: string[];
+                'subject[]'?: string[];
                 object?: string;
-                "object[]"?: string[];
+                'object[]'?: string[];
             };
             header?: never;
             path?: never;
@@ -1051,10 +1051,10 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
-                        member: components["schemas"]["Relationship.jsonld-relationship.read"][];
+                    'application/ld+json': components['schemas']['HydraCollectionBaseSchema'] & {
+                        member: components['schemas']['Relationship.jsonld-relationship.read'][];
                     };
-                    "application/json": components["schemas"]["Relationship-relationship.read"][];
+                    'application/json': components['schemas']['Relationship-relationship.read'][];
                 };
             };
         };
@@ -1069,8 +1069,8 @@ export interface operations {
         /** @description The new Relationship resource */
         requestBody: {
             content: {
-                "application/ld+json": components["schemas"]["Relationship-relationship.write"];
-                "application/json": components["schemas"]["Relationship-relationship.write"];
+                'application/ld+json': components['schemas']['Relationship-relationship.write'];
+                'application/json': components['schemas']['Relationship-relationship.write'];
             };
         };
         responses: {
@@ -1080,8 +1080,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Relationship.jsonld-relationship.read"];
-                    "application/json": components["schemas"]["Relationship-relationship.read"];
+                    'application/ld+json': components['schemas']['Relationship.jsonld-relationship.read'];
+                    'application/json': components['schemas']['Relationship-relationship.read'];
                 };
             };
             /** @description Invalid input */
@@ -1090,9 +1090,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
+                    'application/ld+json': components['schemas']['Error.jsonld'];
+                    'application/problem+json': components['schemas']['Error'];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description Forbidden */
@@ -1101,9 +1101,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
+                    'application/ld+json': components['schemas']['Error.jsonld'];
+                    'application/problem+json': components['schemas']['Error'];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description An error occurred */
@@ -1112,9 +1112,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
-                    "application/problem+json": components["schemas"]["ConstraintViolation"];
-                    "application/json": components["schemas"]["ConstraintViolation"];
+                    'application/ld+json': components['schemas']['ConstraintViolation.jsonld'];
+                    'application/problem+json': components['schemas']['ConstraintViolation'];
+                    'application/json': components['schemas']['ConstraintViolation'];
                 };
             };
         };
@@ -1125,11 +1125,11 @@ export interface operations {
                 /** @description Enable or disable pagination */
                 pagination?: boolean;
                 type?: string;
-                "type[]"?: string[];
+                'type[]'?: string[];
                 subject?: string;
-                "subject[]"?: string[];
+                'subject[]'?: string[];
                 object?: string;
-                "object[]"?: string[];
+                'object[]'?: string[];
             };
             header?: never;
             path?: never;
@@ -1143,10 +1143,10 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchemaNoPagination"] & {
-                        member: components["schemas"]["Relationship.jsonld-relationship.graph"][];
+                    'application/ld+json': components['schemas']['HydraCollectionBaseSchemaNoPagination'] & {
+                        member: components['schemas']['Relationship.jsonld-relationship.graph'][];
                     };
-                    "application/json": components["schemas"]["Relationship-relationship.graph"][];
+                    'application/json': components['schemas']['Relationship-relationship.graph'][];
                 };
             };
         };
@@ -1169,8 +1169,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Relationship.jsonld-relationship.read"];
-                    "application/json": components["schemas"]["Relationship-relationship.read"];
+                    'application/ld+json': components['schemas']['Relationship.jsonld-relationship.read'];
+                    'application/json': components['schemas']['Relationship-relationship.read'];
                 };
             };
             /** @description Not found */
@@ -1179,9 +1179,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
+                    'application/ld+json': components['schemas']['Error.jsonld'];
+                    'application/problem+json': components['schemas']['Error'];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -1199,7 +1199,7 @@ export interface operations {
         /** @description The updated Relationship resource */
         requestBody: {
             content: {
-                "application/merge-patch+json": components["schemas"]["Relationship-relationship.write.jsonMergePatch"];
+                'application/merge-patch+json': components['schemas']['Relationship-relationship.write.jsonMergePatch'];
             };
         };
         responses: {
@@ -1209,8 +1209,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Relationship.jsonld-relationship.read"];
-                    "application/json": components["schemas"]["Relationship-relationship.read"];
+                    'application/ld+json': components['schemas']['Relationship.jsonld-relationship.read'];
+                    'application/json': components['schemas']['Relationship-relationship.read'];
                 };
             };
             /** @description Invalid input */
@@ -1219,9 +1219,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
+                    'application/ld+json': components['schemas']['Error.jsonld'];
+                    'application/problem+json': components['schemas']['Error'];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description Forbidden */
@@ -1230,9 +1230,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
+                    'application/ld+json': components['schemas']['Error.jsonld'];
+                    'application/problem+json': components['schemas']['Error'];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description Not found */
@@ -1241,9 +1241,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
+                    'application/ld+json': components['schemas']['Error.jsonld'];
+                    'application/problem+json': components['schemas']['Error'];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description An error occurred */
@@ -1252,9 +1252,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
-                    "application/problem+json": components["schemas"]["ConstraintViolation"];
-                    "application/json": components["schemas"]["ConstraintViolation"];
+                    'application/ld+json': components['schemas']['ConstraintViolation.jsonld'];
+                    'application/problem+json': components['schemas']['ConstraintViolation'];
+                    'application/json': components['schemas']['ConstraintViolation'];
                 };
             };
         };
@@ -1274,7 +1274,7 @@ export interface operations {
         /** @description The updated RelationshipTranslation resource */
         requestBody: {
             content: {
-                "application/merge-patch+json": components["schemas"]["RelationshipTranslation-translation.write.jsonMergePatch"];
+                'application/merge-patch+json': components['schemas']['RelationshipTranslation-translation.write.jsonMergePatch'];
             };
         };
         responses: {
@@ -1284,8 +1284,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["RelationshipTranslation.jsonld-relationship.read"];
-                    "application/json": components["schemas"]["RelationshipTranslation-relationship.read"];
+                    'application/ld+json': components['schemas']['RelationshipTranslation.jsonld-relationship.read'];
+                    'application/json': components['schemas']['RelationshipTranslation-relationship.read'];
                 };
             };
             /** @description Invalid input */
@@ -1294,9 +1294,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
+                    'application/ld+json': components['schemas']['Error.jsonld'];
+                    'application/problem+json': components['schemas']['Error'];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description Forbidden */
@@ -1305,9 +1305,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
+                    'application/ld+json': components['schemas']['Error.jsonld'];
+                    'application/problem+json': components['schemas']['Error'];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description Not found */
@@ -1316,9 +1316,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
+                    'application/ld+json': components['schemas']['Error.jsonld'];
+                    'application/problem+json': components['schemas']['Error'];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description An error occurred */
@@ -1327,9 +1327,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
-                    "application/problem+json": components["schemas"]["ConstraintViolation"];
-                    "application/json": components["schemas"]["ConstraintViolation"];
+                    'application/ld+json': components['schemas']['ConstraintViolation.jsonld'];
+                    'application/problem+json': components['schemas']['ConstraintViolation'];
+                    'application/json': components['schemas']['ConstraintViolation'];
                 };
             };
         };
@@ -1342,16 +1342,16 @@ export interface operations {
                 /** @description Enable or disable pagination */
                 pagination?: boolean;
                 id?: number;
-                "id[]"?: number[];
-                "family.name"?: string;
-                "family.kingdom"?: string;
-                "family.kingdom[]"?: string[];
+                'id[]'?: number[];
+                'family.name'?: string;
+                'family.kingdom'?: string;
+                'family.kingdom[]'?: string[];
                 slug?: string;
-                "slug[]"?: string[];
+                'slug[]'?: string[];
                 scientificName?: string;
-                "commonNames.name"?: string;
-                "order[scientificName]"?: "asc" | "desc";
-                "order[relationshipCount]"?: "asc" | "desc";
+                'commonNames.name'?: string;
+                'order[scientificName]'?: 'asc' | 'desc';
+                'order[relationshipCount]'?: 'asc' | 'desc';
             };
             header?: never;
             path?: never;
@@ -1365,10 +1365,10 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["HydraCollectionBaseSchema"] & {
-                        member: components["schemas"]["Species.jsonld-species.read"][];
+                    'application/ld+json': components['schemas']['HydraCollectionBaseSchema'] & {
+                        member: components['schemas']['Species.jsonld-species.read'][];
                     };
-                    "application/json": components["schemas"]["Species-species.read"][];
+                    'application/json': components['schemas']['Species-species.read'][];
                 };
             };
         };
@@ -1383,8 +1383,8 @@ export interface operations {
         /** @description The new Species resource */
         requestBody: {
             content: {
-                "application/ld+json": components["schemas"]["Species-species.write"];
-                "application/json": components["schemas"]["Species-species.write"];
+                'application/ld+json': components['schemas']['Species-species.write'];
+                'application/json': components['schemas']['Species-species.write'];
             };
         };
         responses: {
@@ -1394,8 +1394,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Species.jsonld-species.read"];
-                    "application/json": components["schemas"]["Species-species.read"];
+                    'application/ld+json': components['schemas']['Species.jsonld-species.read'];
+                    'application/json': components['schemas']['Species-species.read'];
                 };
             };
             /** @description Invalid input */
@@ -1404,9 +1404,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
+                    'application/ld+json': components['schemas']['Error.jsonld'];
+                    'application/problem+json': components['schemas']['Error'];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description Forbidden */
@@ -1415,9 +1415,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
+                    'application/ld+json': components['schemas']['Error.jsonld'];
+                    'application/problem+json': components['schemas']['Error'];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description An error occurred */
@@ -1426,9 +1426,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
-                    "application/problem+json": components["schemas"]["ConstraintViolation"];
-                    "application/json": components["schemas"]["ConstraintViolation"];
+                    'application/ld+json': components['schemas']['ConstraintViolation.jsonld'];
+                    'application/problem+json': components['schemas']['ConstraintViolation'];
+                    'application/json': components['schemas']['ConstraintViolation'];
                 };
             };
         };
@@ -1451,8 +1451,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Species.jsonld-species.read"];
-                    "application/json": components["schemas"]["Species-species.read"];
+                    'application/ld+json': components['schemas']['Species.jsonld-species.read'];
+                    'application/json': components['schemas']['Species-species.read'];
                 };
             };
             /** @description Not found */
@@ -1461,9 +1461,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
+                    'application/ld+json': components['schemas']['Error.jsonld'];
+                    'application/problem+json': components['schemas']['Error'];
+                    'application/json': components['schemas']['Error'];
                 };
             };
         };
@@ -1481,7 +1481,7 @@ export interface operations {
         /** @description The updated Species resource */
         requestBody: {
             content: {
-                "application/merge-patch+json": components["schemas"]["Species-species.write.jsonMergePatch"];
+                'application/merge-patch+json': components['schemas']['Species-species.write.jsonMergePatch'];
             };
         };
         responses: {
@@ -1491,8 +1491,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Species.jsonld-species.read"];
-                    "application/json": components["schemas"]["Species-species.read"];
+                    'application/ld+json': components['schemas']['Species.jsonld-species.read'];
+                    'application/json': components['schemas']['Species-species.read'];
                 };
             };
             /** @description Invalid input */
@@ -1501,9 +1501,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
+                    'application/ld+json': components['schemas']['Error.jsonld'];
+                    'application/problem+json': components['schemas']['Error'];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description Forbidden */
@@ -1512,9 +1512,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
+                    'application/ld+json': components['schemas']['Error.jsonld'];
+                    'application/problem+json': components['schemas']['Error'];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description Not found */
@@ -1523,9 +1523,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
+                    'application/ld+json': components['schemas']['Error.jsonld'];
+                    'application/problem+json': components['schemas']['Error'];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description An error occurred */
@@ -1534,9 +1534,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
-                    "application/problem+json": components["schemas"]["ConstraintViolation"];
-                    "application/json": components["schemas"]["ConstraintViolation"];
+                    'application/ld+json': components['schemas']['ConstraintViolation.jsonld'];
+                    'application/problem+json': components['schemas']['ConstraintViolation'];
+                    'application/json': components['schemas']['ConstraintViolation'];
                 };
             };
         };
@@ -1556,7 +1556,7 @@ export interface operations {
         /** @description The updated SpeciesTranslation resource */
         requestBody: {
             content: {
-                "application/merge-patch+json": components["schemas"]["SpeciesTranslation-translation.write.jsonMergePatch"];
+                'application/merge-patch+json': components['schemas']['SpeciesTranslation-translation.write.jsonMergePatch'];
             };
         };
         responses: {
@@ -1566,8 +1566,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["SpeciesTranslation.jsonld-species.read"];
-                    "application/json": components["schemas"]["SpeciesTranslation-species.read"];
+                    'application/ld+json': components['schemas']['SpeciesTranslation.jsonld-species.read'];
+                    'application/json': components['schemas']['SpeciesTranslation-species.read'];
                 };
             };
             /** @description Invalid input */
@@ -1576,9 +1576,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
+                    'application/ld+json': components['schemas']['Error.jsonld'];
+                    'application/problem+json': components['schemas']['Error'];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description Forbidden */
@@ -1587,9 +1587,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
+                    'application/ld+json': components['schemas']['Error.jsonld'];
+                    'application/problem+json': components['schemas']['Error'];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description Not found */
@@ -1598,9 +1598,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["Error.jsonld"];
-                    "application/problem+json": components["schemas"]["Error"];
-                    "application/json": components["schemas"]["Error"];
+                    'application/ld+json': components['schemas']['Error.jsonld'];
+                    'application/problem+json': components['schemas']['Error'];
+                    'application/json': components['schemas']['Error'];
                 };
             };
             /** @description An error occurred */
@@ -1609,9 +1609,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/ld+json": components["schemas"]["ConstraintViolation.jsonld"];
-                    "application/problem+json": components["schemas"]["ConstraintViolation"];
-                    "application/json": components["schemas"]["ConstraintViolation"];
+                    'application/ld+json': components['schemas']['ConstraintViolation.jsonld'];
+                    'application/problem+json': components['schemas']['ConstraintViolation'];
+                    'application/json': components['schemas']['ConstraintViolation'];
                 };
             };
         };
