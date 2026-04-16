@@ -125,7 +125,7 @@ class SpeciesTest extends ApiTestCase
         $species = $this->createSpecies($family);
 
         $client = static::createClient();
-        $response = $client->request('GET', '/api/species/'.$species->getId());
+        $response = $client->request('GET', '/api/species/' . $species->getId());
 
         $this->assertResponseIsSuccessful();
         $data = $response->toArray();
@@ -150,7 +150,7 @@ class SpeciesTest extends ApiTestCase
             'headers' => ['Content-Type' => 'application/ld+json'],
             'json' => [
                 'scientificName' => 'Parus major',
-                'family' => '/api/families/'.$family->getId(),
+                'family' => '/api/families/' . $family->getId(),
             ],
         ]);
 
@@ -166,7 +166,7 @@ class SpeciesTest extends ApiTestCase
             'headers' => ['Content-Type' => 'application/ld+json', 'X-API-Key' => 'test-api-key'],
             'json' => [
                 'scientificName' => 'Parus major',
-                'family' => '/api/families/'.$family->getId(),
+                'family' => '/api/families/' . $family->getId(),
                 'conservationStatus' => 'LC',
                 'commonNames' => [
                     ['locale' => 'en', 'name' => 'Great Tit'],
@@ -191,7 +191,7 @@ class SpeciesTest extends ApiTestCase
             'headers' => ['Content-Type' => 'application/ld+json', 'X-API-Key' => 'test-api-key'],
             'json' => [
                 'scientificName' => 'Parus major',
-                'family' => '/api/families/'.$family->getId(),
+                'family' => '/api/families/' . $family->getId(),
                 'conservationStatus' => 'INVALID',
             ],
         ]);
@@ -205,7 +205,7 @@ class SpeciesTest extends ApiTestCase
         $species = $this->createSpecies($family);
 
         $client = static::createClient();
-        $client->request('PATCH', '/api/species/'.$species->getId(), [
+        $client->request('PATCH', '/api/species/' . $species->getId(), [
             'headers' => ['Content-Type' => 'application/merge-patch+json', 'X-API-Key' => 'test-api-key'],
             'json' => ['scientificName' => 'Corvus corax'],
         ]);
@@ -224,7 +224,7 @@ class SpeciesTest extends ApiTestCase
             'headers' => ['Content-Type' => 'application/ld+json', 'X-API-Key' => 'test-api-key'],
             'json' => [
                 'scientificName' => 'Lophophanes cristatus',
-                'family' => '/api/families/'.$family->getId(),
+                'family' => '/api/families/' . $family->getId(),
             ],
         ]);
 
@@ -256,7 +256,7 @@ class SpeciesTest extends ApiTestCase
         $oak = $this->createSpecies($treeFamily, 'Quercus robur');
         $this->createRelationship($jay, $oak, 'disperses_seeds_of');
 
-        $response = static::createClient()->request('GET', '/api/species/'.$jay->getId());
+        $response = static::createClient()->request('GET', '/api/species/' . $jay->getId());
 
         $this->assertResponseIsSuccessful();
         $this->assertSame(1, $response->toArray()['relationshipCount']);
@@ -270,7 +270,7 @@ class SpeciesTest extends ApiTestCase
         $oak = $this->createSpecies($treeFamily, 'Quercus robur');
         $this->createRelationship($jay, $oak, 'disperses_seeds_of');
 
-        $response = static::createClient()->request('GET', '/api/species/'.$oak->getId());
+        $response = static::createClient()->request('GET', '/api/species/' . $oak->getId());
 
         $this->assertResponseIsSuccessful();
         $this->assertSame(1, $response->toArray()['relationshipCount']);
@@ -288,7 +288,7 @@ class SpeciesTest extends ApiTestCase
         $this->createRelationship($bolete, $oak, 'mycorrhiza_with');   // oak is object (2)
         $this->createRelationship($oak, $jay, 'feeds_on');           // oak is subject (1)
 
-        $response = static::createClient()->request('GET', '/api/species/'.$oak->getId());
+        $response = static::createClient()->request('GET', '/api/species/' . $oak->getId());
 
         $this->assertResponseIsSuccessful();
         $this->assertSame(3, $response->toArray()['relationshipCount']);
@@ -373,10 +373,10 @@ class SpeciesTest extends ApiTestCase
     public function testOrderByRelationshipCountDescending(): void
     {
         $family = $this->createFamily();
-        $jay     = $this->createSpecies($family, 'Garrulus glandarius');
-        $robin   = $this->createSpecies($family, 'Erithacus rubecula');
+        $jay = $this->createSpecies($family, 'Garrulus glandarius');
+        $robin = $this->createSpecies($family, 'Erithacus rubecula');
         $warbler = $this->createSpecies($family, 'Phylloscopus sibilatrix');
-        $tit     = $this->createSpecies($family, 'Parus major');
+        $tit = $this->createSpecies($family, 'Parus major');
 
         // Jay: 3 links (subject ×2, object ×1)
         $this->createRelationship($jay, $robin, 'feeds_on');

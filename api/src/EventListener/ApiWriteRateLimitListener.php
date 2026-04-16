@@ -2,10 +2,10 @@
 
 namespace App\EventListener;
 
+use App\Exception\RateLimitExceededException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
-use App\Exception\RateLimitExceededException;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
 
 #[AsEventListener(event: 'kernel.request', priority: 20)]
@@ -16,7 +16,8 @@ final readonly class ApiWriteRateLimitListener
     public function __construct(
         #[Autowire(service: 'limiter.api_writes')]
         private RateLimiterFactory $apiWritesLimiter,
-    ) {}
+    ) {
+    }
 
     public function __invoke(RequestEvent $event): void
     {
@@ -38,9 +39,7 @@ final readonly class ApiWriteRateLimitListener
         $limit = $limiter->consume();
 
         if (!$limit->isAccepted()) {
-            throw new RateLimitExceededException(
-                $limit->getRetryAfter()->getTimestamp() - time(),
-            );
+            throw new RateLimitExceededException($limit->getRetryAfter()->getTimestamp() - time());
         }
     }
 }

@@ -84,8 +84,8 @@ class RelationshipTest extends ApiTestCase
         $client->request('POST', '/api/relationships', [
             'headers' => ['Content-Type' => 'application/ld+json'],
             'json' => [
-                'subject' => '/api/species/'.$bird->getId(),
-                'object' => '/api/species/'.$tree->getId(),
+                'subject' => '/api/species/' . $bird->getId(),
+                'object' => '/api/species/' . $tree->getId(),
                 'type' => 'disperses_seeds_of',
             ],
         ]);
@@ -102,8 +102,8 @@ class RelationshipTest extends ApiTestCase
         $client->request('POST', '/api/relationships', [
             'headers' => ['Content-Type' => 'application/ld+json', 'X-API-Key' => 'test-api-key'],
             'json' => [
-                'subject' => '/api/species/'.$bird->getId(),
-                'object' => '/api/species/'.$tree->getId(),
+                'subject' => '/api/species/' . $bird->getId(),
+                'object' => '/api/species/' . $tree->getId(),
                 'type' => 'disperses_seeds_of',
                 'notes' => 'Eurasian Jay buries acorns across forests.',
             ],
@@ -124,8 +124,8 @@ class RelationshipTest extends ApiTestCase
         $client->request('POST', '/api/relationships', [
             'headers' => ['Content-Type' => 'application/ld+json', 'X-API-Key' => 'test-api-key'],
             'json' => [
-                'subject' => '/api/species/'.$bird->getId(),
-                'object' => '/api/species/'.$tree->getId(),
+                'subject' => '/api/species/' . $bird->getId(),
+                'object' => '/api/species/' . $tree->getId(),
                 'type' => 'unknown_type',
             ],
         ]);
@@ -158,7 +158,7 @@ class RelationshipTest extends ApiTestCase
         $rel = $this->createRelationship($bird, $tree, 'disperses_seeds_of');
 
         $client = static::createClient();
-        $client->request('PATCH', '/api/relationships/'.$rel->getId(), [
+        $client->request('PATCH', '/api/relationships/' . $rel->getId(), [
             'headers' => ['Content-Type' => 'application/merge-patch+json', 'X-API-Key' => 'test-api-key'],
             'json' => ['notes' => 'Updated notes.'],
         ]);
@@ -175,7 +175,7 @@ class RelationshipTest extends ApiTestCase
         $rel = $this->createRelationship($bird, $tree, 'nests_in');
 
         $client = static::createClient();
-        $response = $client->request('GET', '/api/relationships/'.$rel->getId());
+        $response = $client->request('GET', '/api/relationships/' . $rel->getId());
 
         $this->assertResponseIsSuccessful();
         $data = $response->toArray();

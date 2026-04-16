@@ -4,15 +4,17 @@ namespace App\State;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
-use App\Locale;
 use App\Exception\EntityNotFoundException;
 use App\Exception\InvalidLocaleException;
+use App\Locale;
 use Doctrine\ORM\EntityManagerInterface;
 
 /** @implements ProviderInterface<object> */
 final class TranslationProvider implements ProviderInterface
 {
-    public function __construct(private readonly EntityManagerInterface $em) {}
+    public function __construct(private readonly EntityManagerInterface $em)
+    {
+    }
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object
     {
@@ -35,7 +37,7 @@ final class TranslationProvider implements ProviderInterface
         $translation = $this->em->getRepository($translationClass)
             ->findOneBy([$parentProperty => $parent, 'locale' => $locale]);
 
-        if ($translation === null) {
+        if (null === $translation) {
             $translation = new $translationClass();
             $translation->{'set' . ucfirst($parentProperty)}($parent);
             $translation->setLocale($locale);

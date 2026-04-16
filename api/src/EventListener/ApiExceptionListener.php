@@ -40,7 +40,7 @@ final class ApiExceptionListener
 
     /**
      * Derives a stable error code from the exception class name.
-     * App\Exception\RateLimitExceededException → "rate_limit_exceeded"
+     * App\Exception\RateLimitExceededException → "rate_limit_exceeded".
      */
     private function errorCode(\Throwable $throwable): string
     {

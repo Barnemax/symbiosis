@@ -331,7 +331,7 @@ class ImportMediaCommand extends Command
 
         $rec = $recordings[0];
         // v3 returns a full https:// URL; v2 returned //xeno-canto.org/...
-        $url = str_starts_with($rec['file'], 'http') ? $rec['file'] : 'https:'.$rec['file'];
+        $url = str_starts_with($rec['file'], 'http') ? $rec['file'] : 'https:' . $rec['file'];
         $credit = sprintf('© %s / XC%s / %s', $rec['rec'], $rec['id'], $rec['lic']);
 
         return [$url, $credit];

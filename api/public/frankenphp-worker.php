@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__DIR__).'/vendor/autoload.php';
+require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 use App\Kernel;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +25,7 @@ $handler = static function () use ($kernel): void {
 };
 
 $maxRequests = (int) ($_SERVER['FRANKENPHP_MAX_REQUESTS'] ?? 500);
-for ($i = 1; frankenphp_handle_request($handler); $i++) {
+for ($i = 1; frankenphp_handle_request($handler); ++$i) {
     if ($i >= $maxRequests) {
         break;
     }
