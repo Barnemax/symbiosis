@@ -24,4 +24,23 @@ class SpeciesRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /** @return array<string, int> Map of kingdom value → species count */
+    public function countByKingdom(): array
+    {
+        $rows = $this->createQueryBuilder('s')
+            ->select('f.kingdom AS kingdom, COUNT(s.id) AS total')
+            ->join('s.family', 'f')
+            ->groupBy('f.kingdom')
+            ->getQuery()
+            ->getArrayResult();
+
+        $counts = [];
+        foreach ($rows as $row) {
+            $key = $row['kingdom'] instanceof \App\Enum\Kingdom ? $row['kingdom']->value : (string) $row['kingdom'];
+            $counts[$key] = (int) $row['total'];
+        }
+
+        return $counts;
+    }
 }

@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use App\Enum\Kingdom;
 use App\Repository\FamilyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -29,11 +30,10 @@ class Family
     #[Groups(['species:read', 'relationship:read'])]
     private string $name = '';
 
-    #[ORM\Column(length: 20)]
-    #[Assert\NotBlank]
-    #[Assert\Choice(choices: ['bird', 'tree', 'fungus'])]
+    #[ORM\Column(length: 20, enumType: Kingdom::class)]
+    #[Assert\NotNull]
     #[Groups(['species:read', 'relationship:read'])]
-    private string $kingdom = '';
+    private Kingdom $kingdom;
 
     /** @var Collection<int, Species> */
     #[ORM\OneToMany(targetEntity: Species::class, mappedBy: 'family')]
@@ -61,12 +61,12 @@ class Family
         return $this;
     }
 
-    public function getKingdom(): string
+    public function getKingdom(): Kingdom
     {
         return $this->kingdom;
     }
 
-    public function setKingdom(string $kingdom): static
+    public function setKingdom(Kingdom $kingdom): static
     {
         $this->kingdom = $kingdom;
 

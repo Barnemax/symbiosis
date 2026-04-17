@@ -4,6 +4,7 @@ namespace App\Command;
 
 use App\Entity\Media;
 use App\Entity\Species;
+use App\Enum\Kingdom;
 use App\Repository\SpeciesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -84,7 +85,7 @@ class ImportMediaCommand extends Command
             }
 
             // ── Leaf image (trees only) ───────────────────────────────────────
-            if ($withLeaves && 'tree' === $species->getFamily()?->getKingdom()) {
+            if ($withLeaves && Kingdom::Tree === $species->getFamily()?->getKingdom()) {
                 if (!$force && $this->hasMediaType($species, 'leaf')) {
                     $io->text('  – leaf image already exists (use --force to overwrite)');
                     ++$skipped;
@@ -103,7 +104,7 @@ class ImportMediaCommand extends Command
             }
 
             // ── Feather image (birds only) ────────────────────────────────────
-            if ($withFeathers && 'bird' === $species->getFamily()?->getKingdom()) {
+            if ($withFeathers && Kingdom::Bird === $species->getFamily()?->getKingdom()) {
                 if (!$force && $this->hasMediaType($species, 'feather')) {
                     $io->text('  – feather image already exists (use --force to overwrite)');
                     ++$skipped;
@@ -122,7 +123,7 @@ class ImportMediaCommand extends Command
             }
 
             // ── Audio (birds only) ─────────────────────────────────────────────
-            if ($withAudio && 'bird' === $species->getFamily()?->getKingdom()) {
+            if ($withAudio && Kingdom::Bird === $species->getFamily()?->getKingdom()) {
                 if (!$force && $this->hasMediaType($species, 'audio')) {
                     $io->text('  – audio already exists (use --force to overwrite)');
                     ++$skipped;

@@ -1,4 +1,5 @@
-import type { Family, HydraCollection, Species, Relationship, GraphRelationship } from './types'
+import { KINGDOM_CONFIG } from './constants'
+import type { Family, HydraCollection, Kingdom, KingdomMeta, Species, Relationship, GraphRelationship } from './types'
 
 // Server components use API_INTERNAL_URL (Docker network), browser uses NEXT_PUBLIC_API_URL.
 //
@@ -48,13 +49,12 @@ export async function getSpecies(params?: {
 
 export { PAGE_SIZE }
 
-export async function getKingdomCounts(): Promise<Record<string, number>> {
-  const [birds, trees, fungi] = await Promise.all([
-    apiFetch<HydraCollection<Species>>('/api/species?family.kingdom=bird&itemsPerPage=1', { next: { revalidate: false, tags: ['species'] } }),
-    apiFetch<HydraCollection<Species>>('/api/species?family.kingdom=tree&itemsPerPage=1', { next: { revalidate: false, tags: ['species'] } }),
-    apiFetch<HydraCollection<Species>>('/api/species?family.kingdom=fungus&itemsPerPage=1', { next: { revalidate: false, tags: ['species'] } }),
-  ])
-  return { bird: birds.totalItems, fungus: fungi.totalItems, tree: trees.totalItems }
+export async function getKingdoms(): Promise<KingdomMeta[]> {
+  const data = await apiFetch<{ kingdoms: { key: Kingdom; plural: string; slug: string; count: number }[] }>(
+    '/api/kingdoms',
+    { next: { revalidate: false, tags: ['kingdoms', 'species'] } },
+  )
+  return data.kingdoms.map(k => ({ ...k, ...(KINGDOM_CONFIG[k.key] ?? { color: '#78716c', icon: '•' }) }))
 }
 
 export async function getSpeciesBySlug(kingdom: string, slug: string): Promise<Species> {
@@ -69,12 +69,12 @@ export async function getSpeciesBySlug(kingdom: string, slug: string): Promise<S
   return species
 }
 
-export async function getSpeciesByIds(ids: number[]): Promise<HydraCollection<Species>> {
+export async function getSpeciesByIds(ids: number[]): Promise<{ member: Species[] }> {
   if (ids.length === 0) {
-    return { member: [], totalItems: 0 }
+    return { member: [] }
   }
   const qs = ids.map(id => `id[]=${id}`).join('&')
-  return apiFetch(`/api/species?${qs}&pagination=false`, { next: { revalidate: false, tags: ['species'] } })
+  return apiFetch<HydraCollection<Species>>(`/api/species?${qs}&pagination=false`, { next: { revalidate: false, tags: ['species'] } })
 }
 
 export async function getRelationshipsForSpecies(id: number | string): Promise<{

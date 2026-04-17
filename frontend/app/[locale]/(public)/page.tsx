@@ -1,8 +1,11 @@
 import type { Metadata } from 'next'
 import { Link } from '@/i18n/navigation'
+import { routing } from '@/i18n/routing'
 import { getTranslations } from 'next-intl/server'
+
+type StaticPathname = Exclude<keyof typeof routing['pathnames'], `${string}/[${string}]`>
 import { buildAlternates, buildLocalizedUrl } from '@/lib/routing-utils'
-import { getKingdomCounts } from '@/lib/api'
+import { getKingdoms } from '@/lib/api'
 import { siteInfo } from '@/lib/strings/siteInfo'
 
 export async function generateMetadata({
@@ -31,17 +34,19 @@ export async function generateMetadata({
 }
 
 export default async function HomePage(): Promise<React.JSX.Element> {
-  const [t, tn, counts] = await Promise.all([
+  const [t, tn, kingdoms] = await Promise.all([
     getTranslations('home'),
     getTranslations('nav'),
-    getKingdomCounts(),
+    getKingdoms(),
   ])
 
-  const KINGDOMS = [
-    { count: counts.bird, description: t('birds_desc'), href: '/birds' as const, icon: '🪶', label: tn('birds') },
-    { count: counts.tree, description: t('trees_desc'), href: '/trees' as const, icon: '🌳', label: tn('trees') },
-    { count: counts.fungus, description: t('fungi_desc'), href: '/fungi' as const, icon: '🍄', label: tn('fungi') },
-  ]
+  const KINGDOMS = kingdoms.map(k => ({
+    count: k.count,
+    description: t.has(`${k.plural}_desc`) ? t(`${k.plural}_desc`) : '',
+    href: `/${k.slug}` as StaticPathname,
+    icon: k.icon,
+    label: tn.has(k.plural) ? tn(k.plural) : k.plural,
+  }))
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-12">

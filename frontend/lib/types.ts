@@ -3,6 +3,7 @@ import type { components } from './api-types'
 type Schemas = components['schemas']
 
 export type Kingdom = Schemas['Family-species.read']['kingdom']
+export type KingdomMeta = { key: Kingdom; plural: string; slug: string; count: number; color: string; icon: string }
 export type ConservationStatus = NonNullable<Schemas['Species-species.read']['conservationStatus']>
 
 export type Family = Schemas['Family-species.read']
