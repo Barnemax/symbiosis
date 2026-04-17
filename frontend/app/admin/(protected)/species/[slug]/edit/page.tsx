@@ -1,4 +1,4 @@
-import { getFamilies, getSpeciesBySlugAdmin } from '@/lib/api'
+import { getFamilies, getKingdoms, getSpeciesBySlugAdmin } from '@/lib/api'
 import { updateSpecies, updateSpeciesTranslation } from '@/lib/actions'
 import { routing } from '@/i18n/routing'
 import SpeciesForm from '../../new/_form'
@@ -10,7 +10,7 @@ export default async function EditSpeciesPage({
   params: Promise<{ slug: string }>
 }): Promise<React.JSX.Element> {
   const { slug } = await params
-  const [species, familiesData] = await Promise.all([getSpeciesBySlugAdmin(slug), getFamilies()])
+  const [species, familiesData, kingdoms] = await Promise.all([getSpeciesBySlugAdmin(slug), getFamilies(), getKingdoms()])
   const boundAction = updateSpecies.bind(null, species.id)
   const boundTranslationAction = updateSpeciesTranslation.bind(null, species.id)
   const hasTranslations = routing.locales.length > 1
@@ -25,6 +25,7 @@ export default async function EditSpeciesPage({
           <p className="mb-4 text-xs font-medium uppercase tracking-wide text-stone-400">{routing.defaultLocale}</p>
           <SpeciesForm
             families={familiesData.member}
+            kingdoms={kingdoms}
             action={boundAction}
             initialData={species}
             submitLabel="Save changes"

@@ -11,7 +11,11 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use App\Entity\Kingdoms\BirdSpecies;
+use App\Entity\Kingdoms\FungusSpecies;
+use App\Entity\Kingdoms\TreeSpecies;
 use App\Repository\SpeciesRepository;
+use App\State\SpeciesProvider;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -21,13 +25,20 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SpeciesRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[ORM\InheritanceType('SINGLE_TABLE')]
+#[ORM\DiscriminatorColumn(name: 'dtype', type: 'string', length: 20)]
+#[ORM\DiscriminatorMap([
+    'bird' => BirdSpecies::class,
+    'tree' => TreeSpecies::class,
+    'fungus' => FungusSpecies::class,
+])]
 #[ApiResource(
     normalizationContext: ['groups' => ['species:read']],
     denormalizationContext: ['groups' => ['species:write']],
     operations: [
         new Get(),
         new GetCollection(),
-        new Post(security: "is_granted('ROLE_ADMIN')"),
+        new Post(security: "is_granted('ROLE_ADMIN')", read: true, provider: SpeciesProvider::class),
         new Patch(security: "is_granted('ROLE_ADMIN')"),
     ],
     paginationClientEnabled: true,
@@ -41,7 +52,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     'commonNames.name' => 'ipartial',
 ])]
 #[ApiFilter(OrderFilter::class, properties: ['scientificName', 'relationshipCount'])]
-class Species
+abstract class Species
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -70,6 +81,14 @@ class Species
     #[Groups(['species:read', 'species:write'])]
     private ?string $habitat = null;
 
+    #[ORM\Column(length: 200, unique: true, nullable: true)]
+    #[Groups(['species:read', 'relationship:read'])]
+    private ?string $slug = null;
+
+    #[ORM\Column(options: ['default' => 0])]
+    #[Groups(['species:read'])]
+    private int $relationshipCount = 0;
+
     #[ORM\Column(nullable: true)]
     #[Groups(['species:read', 'species:write'])]
     private ?float $wingspan = null;
@@ -78,17 +97,9 @@ class Species
     #[Groups(['species:read', 'species:write'])]
     private ?float $maxHeight = null;
 
-    #[ORM\Column(length: 200, unique: true, nullable: true)]
-    #[Groups(['species:read', 'relationship:read'])]
-    private ?string $slug = null;
-
     #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['species:read', 'species:write'])]
     private ?string $substrate = null;
-
-    #[ORM\Column(options: ['default' => 0])]
-    #[Groups(['species:read'])]
-    private int $relationshipCount = 0;
 
     /** @var Collection<int, CommonName> */
     #[ORM\OneToMany(targetEntity: CommonName::class, mappedBy: 'species', cascade: ['persist', 'remove'], orphanRemoval: true)]
@@ -178,30 +189,6 @@ class Species
         return $this;
     }
 
-    public function getWingspan(): ?float
-    {
-        return $this->wingspan;
-    }
-
-    public function setWingspan(?float $wingspan): static
-    {
-        $this->wingspan = $wingspan;
-
-        return $this;
-    }
-
-    public function getMaxHeight(): ?float
-    {
-        return $this->maxHeight;
-    }
-
-    public function setMaxHeight(?float $maxHeight): static
-    {
-        $this->maxHeight = $maxHeight;
-
-        return $this;
-    }
-
     public function getSlug(): ?string
     {
         return $this->slug;
@@ -220,18 +207,6 @@ class Species
         if (null === $this->slug) {
             $this->slug = (new AsciiSlugger())->slug($this->scientificName)->lower()->toString();
         }
-    }
-
-    public function getSubstrate(): ?string
-    {
-        return $this->substrate;
-    }
-
-    public function setSubstrate(?string $substrate): static
-    {
-        $this->substrate = $substrate;
-
-        return $this;
     }
 
     /** @return Collection<int, CommonName> */
@@ -308,6 +283,42 @@ class Species
     public function setRelationshipCount(int $count): static
     {
         $this->relationshipCount = $count;
+
+        return $this;
+    }
+
+    public function getWingspan(): ?float
+    {
+        return $this->wingspan;
+    }
+
+    public function setWingspan(?float $wingspan): static
+    {
+        $this->wingspan = $wingspan;
+
+        return $this;
+    }
+
+    public function getMaxHeight(): ?float
+    {
+        return $this->maxHeight;
+    }
+
+    public function setMaxHeight(?float $maxHeight): static
+    {
+        $this->maxHeight = $maxHeight;
+
+        return $this;
+    }
+
+    public function getSubstrate(): ?string
+    {
+        return $this->substrate;
+    }
+
+    public function setSubstrate(?string $substrate): static
+    {
+        $this->substrate = $substrate;
 
         return $this;
     }

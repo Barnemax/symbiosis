@@ -5,9 +5,8 @@ import { revalidateTag } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod/v4'
 import { auth } from '@/lib/auth'
-import { COMMON_NAME_LOCALES } from './constants'
-import { API_URL } from './api'
-import { pluralKingdom } from './helpers'
+import { COMMON_NAME_LOCALES, KINGDOM_FIELDS } from './constants'
+import { API_URL, getKingdoms } from './api'
 import type { Species } from './types'
 
 import { siteInfo } from '@/lib/strings/siteInfo'
@@ -40,16 +39,13 @@ function buildSpeciesBody(formData: FormData): Record<string, unknown> {
     .map(locale => ({ locale, name: (formData.get(`cn_${locale}`) as string).trim() }))
     .filter(cn => cn.name.length > 0)
 
-  switch (kingdom) {
-    case 'bird':
-      body.wingspan = (formData.get('wingspan') as string | null) ? Number(formData.get('wingspan')) : null
-      break
-    case 'tree':
-      body.maxHeight = (formData.get('maxHeight') as string | null) ? Number(formData.get('maxHeight')) : null
-      break
-    case 'fungus':
-      body.substrate = (formData.get('substrate') as string)?.trim() || null
-      break
+  for (const field of KINGDOM_FIELDS[kingdom] ?? []) {
+    const raw = formData.get(field.name) as string | null
+    if (field.type === 'number') {
+      body[field.name] = raw ? Number(raw) : null
+    } else {
+      body[field.name] = raw?.trim() || null
+    }
   }
 
   return body
@@ -96,7 +92,9 @@ export async function createSpecies(
   const created = await res.json() as Species
   revalidateTag('species', { expire: 0 })
   const kingdom = formData.get('kingdom') as string
-  redirect(`/${pluralKingdom(kingdom)}/${created.slug ?? created.id}`)
+  const kingdoms = await getKingdoms()
+  const slug = kingdoms.find(k => k.key === kingdom)?.slug ?? kingdom
+  redirect(`/${slug}/${created.slug ?? created.id}`)
 }
 
 export async function updateSpecies(
@@ -120,7 +118,9 @@ export async function updateSpecies(
   const updated = await res.json() as Species
   revalidateTag('species', { expire: 0 })
   const kingdom = formData.get('kingdom') as string
-  redirect(`/${pluralKingdom(kingdom)}/${updated.slug ?? updated.id}`)
+  const kingdoms = await getKingdoms()
+  const slug = kingdoms.find(k => k.key === kingdom)?.slug ?? kingdom
+  redirect(`/${slug}/${updated.slug ?? updated.id}`)
 }
 
 export async function updateRelationship(

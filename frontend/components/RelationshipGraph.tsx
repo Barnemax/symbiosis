@@ -5,9 +5,11 @@ import { forceCollide } from 'd3-force'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { ForceGraphMethods, LinkObject, NodeObject } from 'react-force-graph-2d'
-import { KINGDOMS } from '@/lib/constants'
-import type { Kingdom } from '@/lib/types'
+import { KINGDOM_CONFIG } from '@/lib/constants'
+import type { Kingdom, KingdomMeta } from '@/lib/types'
 import { escapeHtml } from '@/lib/utils'
+
+const FALLBACK_KINGDOM_STYLE = { color: '#78716c', icon: '•' }
 
 const ForceGraph2D = dynamic(() => import('react-force-graph-2d'), { ssr: false })
 
@@ -32,6 +34,7 @@ export interface GraphLink {
 interface Props {
   nodes: GraphNode[]
   links: GraphLink[]
+  kingdoms: KingdomMeta[]
 }
 
 // Base radius used by the force simulation (world-space, zoom-independent)
@@ -44,7 +47,7 @@ const drawnRadius = (degree: number, globalScale: number): number => {
   return base * Math.pow(globalScale, 0.65) / globalScale
 }
 
-export default function RelationshipGraph({ nodes, links }: Props): React.JSX.Element {
+export default function RelationshipGraph({ nodes, links, kingdoms }: Props): React.JSX.Element {
   const router = useRouter()
   const containerRef = useRef<HTMLDivElement>(null)
   const graphRef = useRef<ForceGraphMethods>(undefined)
@@ -107,7 +110,7 @@ export default function RelationshipGraph({ nodes, links }: Props): React.JSX.El
     const r = drawnRadius(n.degree, globalScale)
     ctx.beginPath()
     ctx.arc(n.x, n.y, r, 0, 2 * Math.PI)
-    ctx.fillStyle = KINGDOMS[n.kingdom].color
+    ctx.fillStyle = KINGDOM_CONFIG[n.kingdom]?.color ?? FALLBACK_KINGDOM_STYLE.color
     ctx.fill()
 
     // Draw thumbnail image clipped to the circle when zoomed in enough
@@ -167,6 +170,11 @@ export default function RelationshipGraph({ nodes, links }: Props): React.JSX.El
     ctx.fill()
   }, [])
 
+  const slugByKingdom = useMemo(
+    () => new Map(kingdoms.map(k => [k.key, k.slug])),
+    [kingdoms],
+  )
+
   const adjacency = useMemo(() => {
     const map = new Map<number, Set<number>>()
     for (const l of links) {
@@ -194,15 +202,15 @@ export default function RelationshipGraph({ nodes, links }: Props): React.JSX.El
     if (last && last.id === n.id && now - last.time < 350) {
       // Double-click: navigate
       lastClickRef.current = null
-      const plural = n.kingdom === 'fungus' ? 'fungi' : `${n.kingdom}s`
-      router.push(`/${plural}/${n.slug}`)
+      const slug = slugByKingdom.get(n.kingdom) ?? n.kingdom
+      router.push(`/${slug}/${n.slug}`)
     } else {
       // Single click: zoom to fit the node and its direct neighbors
       lastClickRef.current = { id: n.id, time: now }
       const neighborIds = new Set<number>([n.id, ...(adjacency.get(n.id) ?? [])])
       graphRef.current?.zoomToFit(500, 120, (nd: NodeObject<object>) => neighborIds.has((nd as NodeObject<GraphNode>).id))
     }
-  }, [router, adjacency])
+  }, [router, adjacency, slugByKingdom])
 
   // Set forces on first mount, runs before most simulation ticks
   useEffect(() => {
@@ -284,10 +292,10 @@ export default function RelationshipGraph({ nodes, links }: Props): React.JSX.El
         onEngineStop={handleEngineStop}
       />
       <div className="absolute bottom-4 right-4 flex flex-col gap-1.5 rounded-lg border border-stone-200 bg-white px-3 py-2 shadow-sm">
-        {(Object.entries(KINGDOMS) as [Kingdom, (typeof KINGDOMS)[Kingdom]][]).map(([k, cfg]) => (
-          <div key={k} className="flex items-center gap-2">
-            <span className="inline-block h-3 w-3 rounded-full" style={{ background: cfg.color }} />
-            <span className="text-xs capitalize text-stone-600">{k}</span>
+        {kingdoms.map(k => (
+          <div key={k.key} className="flex items-center gap-2">
+            <span className="inline-block h-3 w-3 rounded-full" style={{ background: k.color }} />
+            <span className="text-xs capitalize text-stone-600">{k.plural}</span>
           </div>
         ))}
       </div>

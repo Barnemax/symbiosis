@@ -1,16 +1,17 @@
-import { getAllSpecies, getGraphRelationships } from '@/lib/api'
+import { getAllSpecies, getGraphRelationships, getKingdoms } from '@/lib/api'
 import RelationshipGraph, { type GraphNode, type GraphLink } from '@/components/RelationshipGraph'
 import { getCommonName, resolveMediaUrl } from '@/lib/helpers'
 import type { AppLocale } from '@/lib/types'
 import { getTranslations, getLocale } from 'next-intl/server'
 
 export default async function ExplorePage(): Promise<React.JSX.Element> {
-  const [t, tRel, locale, { member: species }, { member: relationships }] = await Promise.all([
+  const [t, tRel, locale, { member: species }, { member: relationships }, kingdoms] = await Promise.all([
     getTranslations('explore'),
     getTranslations('relationships'),
     getLocale(),
     getAllSpecies(),
     getGraphRelationships(),
+    getKingdoms(),
   ])
 
   const l = locale as AppLocale
@@ -72,7 +73,7 @@ export default async function ExplorePage(): Promise<React.JSX.Element> {
         </p>
       </div>
       <div className="overflow-hidden rounded-xl border border-stone-200">
-        <RelationshipGraph nodes={nodes} links={links} />
+        <RelationshipGraph nodes={nodes} links={links} kingdoms={kingdoms} />
       </div>
     </main>
   )

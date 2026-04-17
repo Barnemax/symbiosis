@@ -1,23 +1,23 @@
 'use client'
 
 import { useActionState, useState } from 'react'
-import { CONSERVATION_STATUSES } from '@/lib/constants'
+import { CONSERVATION_STATUSES, KINGDOM_FIELDS } from '@/lib/constants'
 import { routing, type AppLocale } from '@/i18n/routing'
-import type { Family, Species } from '@/lib/types'
+import type { Family, KingdomMeta, Species } from '@/lib/types'
 import Combobox from '@/components/Combobox'
 
 type ActionState = { error: string } | null
 type ActionFn = (prevState: ActionState, formData: FormData) => Promise<ActionState>
 
-const KINGDOMS = ['bird', 'tree', 'fungus'] as const
-
 export default function SpeciesForm({
   families,
+  kingdoms,
   action,
   initialData,
   submitLabel = 'Create species',
 }: {
   families: Family[]
+  kingdoms: KingdomMeta[]
   action: ActionFn
   initialData?: Species
   submitLabel?: string
@@ -36,7 +36,7 @@ export default function SpeciesForm({
         <label className="mb-1 block text-sm text-stone-500">Kingdom</label>
         <Combobox
           name="kingdom"
-          options={KINGDOMS.map(k => ({ label: k.charAt(0).toUpperCase() + k.slice(1), value: k }))}
+          options={kingdoms.map(k => ({ label: k.key.charAt(0).toUpperCase() + k.key.slice(1), value: k.key }))}
           defaultValue={initialData?.family.kingdom}
           placeholder="Select kingdom…"
           required
@@ -93,46 +93,23 @@ export default function SpeciesForm({
         />
       </div>
 
-      {kingdom === 'bird' && (
-        <div>
-          <label className="mb-1 block text-sm text-stone-500">Wingspan (cm)</label>
-          <input
-            type="number"
-            name="wingspan"
-            step="0.1"
-            defaultValue={initialData?.wingspan ?? ''}
-            placeholder="e.g. 52"
-            className="w-full rounded-lg border border-stone-200 px-3 py-2 text-sm text-stone-900 outline-none focus:border-stone-400"
-          />
-        </div>
-      )}
-
-      {kingdom === 'tree' && (
-        <div>
-          <label className="mb-1 block text-sm text-stone-500">Max height (m)</label>
-          <input
-            type="number"
-            name="maxHeight"
-            step="0.1"
-            defaultValue={initialData?.maxHeight ?? ''}
-            placeholder="e.g. 40"
-            className="w-full rounded-lg border border-stone-200 px-3 py-2 text-sm text-stone-900 outline-none focus:border-stone-400"
-          />
-        </div>
-      )}
-
-      {kingdom === 'fungus' && (
-        <div>
-          <label className="mb-1 block text-sm text-stone-500">Substrate</label>
-          <input
-            type="text"
-            name="substrate"
-            defaultValue={initialData?.substrate ?? ''}
-            placeholder="e.g. Deciduous woodland soil"
-            className="w-full rounded-lg border border-stone-200 px-3 py-2 text-sm text-stone-900 outline-none focus:border-stone-400"
-          />
-        </div>
-      )}
+      {(KINGDOM_FIELDS[kingdom] ?? []).map(field => {
+        const raw = (initialData as unknown as Record<string, unknown> | undefined)?.[field.name]
+        const defaultValue = raw == null ? '' : String(raw)
+        return (
+          <div key={field.name}>
+            <label className="mb-1 block text-sm text-stone-500">{field.label}</label>
+            <input
+              type={field.type}
+              name={field.name}
+              step={field.step}
+              defaultValue={defaultValue}
+              placeholder={field.placeholder}
+              className="w-full rounded-lg border border-stone-200 px-3 py-2 text-sm text-stone-900 outline-none focus:border-stone-400"
+            />
+          </div>
+        )
+      })}
 
       <div>
         <label className="mb-2 block text-sm text-stone-500">Common names</label>

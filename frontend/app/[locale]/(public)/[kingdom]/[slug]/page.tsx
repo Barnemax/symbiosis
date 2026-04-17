@@ -1,13 +1,15 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
-import { getSpeciesBySlug, getRelationshipsForSpecies, getSpeciesByIds } from '@/lib/api'
-import { KINGDOM_MAP, KINGDOMS } from '@/lib/constants'
+import { getKingdoms, getSpeciesBySlug, getRelationshipsForSpecies, getSpeciesByIds } from '@/lib/api'
 import { getCommonName, getTranslatedField, resolveMediaUrl } from '@/lib/helpers'
 import { buildAlternates, buildLocalizedUrl } from '@/lib/routing-utils'
+import { routing } from '@/i18n/routing'
 import { buildTaxonSchema } from '@/lib/schemas'
 import { siteInfo } from '@/lib/strings/siteInfo'
 import type { AppLocale, Media, Species } from '@/lib/types'
+
+type DynamicPathname = Extract<keyof typeof routing['pathnames'], `${string}/[${string}]`>
 import { notFound } from 'next/navigation'
 import { AdminEditLink } from '@/components/AdminEditLink'
 import JsonLd from '@/components/JsonLd'
@@ -19,19 +21,20 @@ export async function generateMetadata({
   params: Promise<{ kingdom: string; locale: string; slug: string }>
 }): Promise<Metadata> {
   const { kingdom, locale, slug } = await params
-  const apiKingdom = KINGDOM_MAP[kingdom]
-  if (!apiKingdom) {
-return {}
-}
+  const kingdoms = await getKingdoms()
+  const kd = kingdoms.find(k => k.slug === kingdom)
+  if (!kd) {
+    return {}
+  }
 
-  const species = await getSpeciesBySlug(apiKingdom, slug).catch(() => null)
+  const species = await getSpeciesBySlug(kd.key, slug).catch(() => null)
   if (!species) {
-return {}
-}
+    return {}
+  }
 
   const commonName = getCommonName(species, locale as AppLocale)
   const image = species.media.find(m => m.type === 'image')
-  const internalPath = `${KINGDOMS[apiKingdom].href}/[slug]`
+  const internalPath = `/${kd.slug}/[slug]` as DynamicPathname
   const canonicalUrl = buildLocalizedUrl(siteInfo.url, internalPath, locale, { slug })
 
   return {
@@ -59,8 +62,9 @@ export default async function SpeciesPage({
   params: Promise<{ kingdom: string; locale: string; slug: string }>
 }): Promise<React.JSX.Element> {
   const { kingdom, slug } = await params
-  const apiKingdom = KINGDOM_MAP[kingdom]
-  if (!apiKingdom) {
+  const kingdoms = await getKingdoms()
+  const kd = kingdoms.find(k => k.slug === kingdom)
+  if (!kd) {
     notFound()
   }
 
@@ -74,10 +78,12 @@ export default async function SpeciesPage({
 
   const l = locale as AppLocale
 
-  const species = await getSpeciesBySlug(apiKingdom, slug).catch(() => null)
+  const species = await getSpeciesBySlug(kd.key, slug).catch(() => null)
   if (!species) {
     notFound()
   }
+
+  const slugByKingdom = new Map(kingdoms.map(k => [k.key, k.slug]))
 
   const { asSubject, asObject } = await getRelationshipsForSpecies(species.id).catch(() => ({ asObject: [], asSubject: [] }))
 
@@ -113,7 +119,7 @@ export default async function SpeciesPage({
 
   return (
     <>
-      <JsonLd schema={buildTaxonSchema(species, asSubject)} />
+      <JsonLd schema={buildTaxonSchema(species, asSubject, slugByKingdom)} />
       <main className="mx-auto max-w-2xl px-6 py-8">
       {/* Hero image */}
       {image && (
@@ -256,7 +262,7 @@ export default async function SpeciesPage({
                         <Link
                           href={{
                             params: { slug: rel.other.slug ?? rel.other.id.toString() },
-                            pathname: KINGDOMS[rel.other.family.kingdom].slugHref
+                            pathname: `/${slugByKingdom.get(rel.other.family.kingdom) ?? rel.other.family.kingdom}/[slug]` as DynamicPathname
                           }}
                           className="font-medium text-stone-900 hover:underline"
                         >

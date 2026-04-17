@@ -1,12 +1,16 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
-import { getSpecies, PAGE_SIZE } from '@/lib/api'
-import { CONSERVATION_STATUSES, KINGDOM_MAP, KINGDOMS } from '@/lib/constants'
+import { getKingdoms, getSpecies, PAGE_SIZE } from '@/lib/api'
+import { CONSERVATION_STATUSES } from '@/lib/constants'
 import { getCommonName, resolveMediaUrl } from '@/lib/helpers'
 import { buildAlternates, buildLocalizedUrl } from '@/lib/routing-utils'
+import { routing } from '@/i18n/routing'
 import { siteInfo } from '@/lib/strings/siteInfo'
 import type { AppLocale } from '@/lib/types'
+
+type StaticPathname = Exclude<keyof typeof routing['pathnames'], `${string}/[${string}]`>
+type DynamicPathname = Extract<keyof typeof routing['pathnames'], `${string}/[${string}]`>
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import SearchInput from '@/components/SearchInput'
@@ -18,15 +22,15 @@ export async function generateMetadata({
   params: Promise<{ kingdom: string; locale: string }>
 }): Promise<Metadata> {
   const { kingdom, locale } = await params
-  const apiKingdom = KINGDOM_MAP[kingdom]
-  if (!apiKingdom) {
-return {}
-}
+  const kingdoms = await getKingdoms()
+  const kd = kingdoms.find(k => k.slug === kingdom)
+  if (!kd) {
+    return {}
+  }
 
   const tn = await getTranslations({ locale, namespace: 'nav' })
-  const internalPath = KINGDOMS[apiKingdom].href
-  const navKey = internalPath.slice(1) as 'birds' | 'trees' | 'fungi'
-  const title = tn(navKey)
+  const internalPath = `/${kd.slug}` as StaticPathname
+  const title = tn.has(kd.plural) ? tn(kd.plural) : kd.plural
   const canonicalUrl = buildLocalizedUrl(siteInfo.url, internalPath, locale)
 
   return {
@@ -44,9 +48,7 @@ return {}
   }
 }
 
-type KingdomHref = (typeof KINGDOMS)[keyof typeof KINGDOMS]['href']
-
-function buildHref(href: KingdomHref, p: { search: string; sort: string; page: number }): { pathname: KingdomHref; query?: Record<string, string> } {
+function buildHref(href: StaticPathname, p: { search: string; sort: string; page: number }): { pathname: StaticPathname; query?: Record<string, string> } {
   const query: Record<string, string> = {}
   if (p.search) {
     query.search = p.search
@@ -70,12 +72,11 @@ export default async function KingdomPage({
   const { kingdom } = await params
   const { search = '', sort = 'links', page = '1' } = await searchParams
 
-  const apiKingdom = KINGDOM_MAP[kingdom]
-  if (!apiKingdom) {
+  const kingdoms = await getKingdoms()
+  const kd = kingdoms.find(k => k.slug === kingdom)
+  if (!kd) {
     notFound()
   }
-
-  const kd = KINGDOMS[apiKingdom]
 
   const [t, ts, tc, tn, th, locale] = await Promise.all([
     getTranslations('kingdom'),
@@ -86,10 +87,14 @@ export default async function KingdomPage({
     getLocale(),
   ])
 
-  const navKey = kd.plural as 'birds' | 'trees' | 'fungi'
+  const kingdomHref = `/${kd.slug}` as StaticPathname
+  const slugHref = `/${kd.slug}/[slug]` as DynamicPathname
+  const navLabel = tn.has(kd.plural) ? tn(kd.plural) : kd.plural
+  const descKey = `${kd.plural}_desc`
+  const description = th.has(descKey) ? th(descKey) : ''
 
   const currentPage = Math.max(1, parseInt(page) || 1)
-  const data = await getSpecies({ kingdom: apiKingdom, page: currentPage, search, sort })
+  const data = await getSpecies({ kingdom: kd.key, page: currentPage, search, sort })
 
   const species = data.member
   const totalPages = Math.ceil(data.totalItems / PAGE_SIZE)
@@ -100,8 +105,8 @@ export default async function KingdomPage({
       <div className="mb-8 flex items-center gap-4">
         <span className="text-5xl" role="img" aria-hidden="true">{kd.icon}</span>
         <div>
-          <h1 className="text-2xl font-semibold text-stone-900">{tn(navKey)}</h1>
-          <p className="mt-0.5 text-sm text-stone-400">{th(`${navKey}_desc` as 'birds_desc' | 'trees_desc' | 'fungi_desc')}</p>
+          <h1 className="text-2xl font-semibold text-stone-900">{navLabel}</h1>
+          <p className="mt-0.5 text-sm text-stone-400">{description}</p>
         </div>
       </div>
 
@@ -114,13 +119,13 @@ export default async function KingdomPage({
         </div>
         <div className="flex overflow-hidden rounded-lg border border-stone-200 bg-white text-sm font-medium">
           <Link
-            href={buildHref(kd.href, { page: 1, search, sort: 'name' })}
+            href={buildHref(kingdomHref, { page: 1, search, sort: 'name' })}
             className={`px-4 py-2 transition-colors ${sort === 'name' ? 'bg-stone-900 text-white' : 'text-stone-600 hover:bg-stone-50'}`}
           >
             {t('sort_name')}
           </Link>
           <Link
-            href={buildHref(kd.href, { page: 1, search, sort: 'links' })}
+            href={buildHref(kingdomHref, { page: 1, search, sort: 'links' })}
             className={`border-l border-stone-200 px-4 py-2 transition-colors ${sort === 'links' ? 'bg-stone-900 text-white' : 'text-stone-600 hover:bg-stone-50'}`}
           >
             {t('sort_links')}
@@ -135,7 +140,7 @@ export default async function KingdomPage({
             key={s.id}
             href={{
               params: { slug: s.slug ?? s.id.toString() },
-              pathname: kd.slugHref
+              pathname: slugHref
             }}
             className="group overflow-hidden rounded-xl border border-stone-200 bg-white transition-shadow hover:shadow-md"
           >
@@ -197,7 +202,7 @@ export default async function KingdomPage({
       {totalPages > 1 && (
         <div className="mt-8 flex items-center justify-center gap-2 text-sm">
           {currentPage > 1 ? (
-            <Link href={buildHref(kd.href, { page: currentPage - 1, search, sort })} className="rounded-lg px-3 py-1.5 text-stone-600 hover:bg-stone-100">
+            <Link href={buildHref(kingdomHref, { page: currentPage - 1, search, sort })} className="rounded-lg px-3 py-1.5 text-stone-600 hover:bg-stone-100">
               {t('prev')}
             </Link>
           ) : (
@@ -207,7 +212,7 @@ export default async function KingdomPage({
             {currentPage} / {totalPages}
           </span>
           {currentPage < totalPages ? (
-            <Link href={buildHref(kd.href, { page: currentPage + 1, search, sort })} className="rounded-lg px-3 py-1.5 text-stone-600 hover:bg-stone-100">
+            <Link href={buildHref(kingdomHref, { page: currentPage + 1, search, sort })} className="rounded-lg px-3 py-1.5 text-stone-600 hover:bg-stone-100">
               {t('next')}
             </Link>
           ) : (

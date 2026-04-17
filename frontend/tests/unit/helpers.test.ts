@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { getCommonName, getRelationshipLabel, getTranslatedField, pluralKingdom, resolveMediaUrl } from '@/lib/helpers'
+import { getCommonName, getRelationshipLabel, getTranslatedField, resolveMediaUrl } from '@/lib/helpers'
 import type { Species } from '@/lib/types'
 
 // Minimal Species fixture — only the fields the helper functions inspect.
@@ -111,13 +111,3 @@ describe('getTranslatedField', () => {
   })
 })
 
-describe('pluralKingdom', () => {
-  it('returns "fungi" for "fungus"', () => {
-    expect(pluralKingdom('fungus')).toBe('fungi')
-  })
-
-  it('appends "s" for other kingdoms', () => {
-    expect(pluralKingdom('bird')).toBe('birds')
-    expect(pluralKingdom('tree')).toBe('trees')
-  })
-})

@@ -4,8 +4,12 @@ namespace App\Tests\Api;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Entity\Family;
+use App\Entity\Kingdoms\BirdSpecies;
+use App\Entity\Kingdoms\FungusSpecies;
+use App\Entity\Kingdoms\TreeSpecies;
 use App\Entity\Relationship;
 use App\Entity\Species;
+use App\Enum\Kingdom;
 use Doctrine\ORM\EntityManagerInterface;
 
 class RelationshipTest extends ApiTestCase
@@ -38,9 +42,15 @@ class RelationshipTest extends ApiTestCase
     {
         /** @var EntityManagerInterface $em */
         $em = static::getContainer()->get('doctrine')->getManager();
-        $family = (new Family())->setName('Testaceae')->setKingdom($kingdom);
+        $kingdomEnum = Kingdom::from($kingdom);
+        $family = (new Family())->setName('Testaceae')->setKingdom($kingdomEnum);
         $em->persist($family);
-        $species = (new Species())->setScientificName($scientificName)->setFamily($family);
+        $species = match ($kingdomEnum) {
+            Kingdom::Bird => new BirdSpecies(),
+            Kingdom::Tree => new TreeSpecies(),
+            Kingdom::Fungus => new FungusSpecies(),
+        };
+        $species->setScientificName($scientificName)->setFamily($family);
         $species->generateSlug();
         $em->persist($species);
         $em->flush();

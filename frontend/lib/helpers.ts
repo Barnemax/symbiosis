@@ -18,10 +18,6 @@ export function getTranslatedField(
   return species.translations.find(t => t.locale === locale)?.[field] ?? species[field] ?? null
 }
 
-export function pluralKingdom(kingdom: string): string {
-  return kingdom === 'fungus' ? 'fungi' : `${kingdom}s`
-}
-
 /**
  * Resolves a media URL. Local paths (/media/...) are served by the API server,
  * so the public API base URL is prepended for the browser to reach them.

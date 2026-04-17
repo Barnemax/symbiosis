@@ -443,10 +443,7 @@ export interface components {
             id: number;
             /** @default  */
             name: string;
-            /**
-             * @default
-             * @enum {string}
-             */
+            /** @enum {string} */
             kingdom: 'bird' | 'tree' | 'fungus';
             readonly species?: string[];
         };
@@ -454,30 +451,21 @@ export interface components {
             id: number;
             /** @default  */
             name: string;
-            /**
-             * @default
-             * @enum {string}
-             */
+            /** @enum {string} */
             kingdom: 'bird' | 'tree' | 'fungus';
         };
         'Family-species.read': {
             id: number;
             /** @default  */
             name: string;
-            /**
-             * @default
-             * @enum {string}
-             */
+            /** @enum {string} */
             kingdom: 'bird' | 'tree' | 'fungus';
         };
         'Family.jsonld': components['schemas']['HydraItemBaseSchema'] & {
             id: number;
             /** @default  */
             name: string;
-            /**
-             * @default
-             * @enum {string}
-             */
+            /** @enum {string} */
             kingdom: 'bird' | 'tree' | 'fungus';
             readonly species?: string[];
         };
@@ -485,20 +473,14 @@ export interface components {
             id: number;
             /** @default  */
             name: string;
-            /**
-             * @default
-             * @enum {string}
-             */
+            /** @enum {string} */
             kingdom: 'bird' | 'tree' | 'fungus';
         };
         'Family.jsonld-species.read': components['schemas']['HydraItemBaseSchema'] & {
             id: number;
             /** @default  */
             name: string;
-            /**
-             * @default
-             * @enum {string}
-             */
+            /** @enum {string} */
             kingdom: 'bird' | 'tree' | 'fungus';
         };
         HydraCollectionBaseSchema: components['schemas']['HydraCollectionBaseSchemaNoPagination'] & {
@@ -729,12 +711,12 @@ export interface components {
             /** @enum {string|null} */
             conservationStatus?: 'EX' | 'EW' | 'CR' | 'EN' | 'VU' | 'NT' | 'LC' | 'DD' | 'NE' | null;
             habitat?: string | null;
-            wingspan?: number | null;
-            maxHeight?: number | null;
             slug?: string | null;
-            substrate?: string | null;
             /** @default 0 */
             relationshipCount: number;
+            wingspan?: number | null;
+            maxHeight?: number | null;
+            substrate?: string | null;
             commonNames: components['schemas']['CommonName-species.read'][];
             translations: components['schemas']['SpeciesTranslation-species.read'][];
             readonly media: components['schemas']['Media-species.read'][];
@@ -792,12 +774,12 @@ export interface components {
             /** @enum {string|null} */
             conservationStatus?: 'EX' | 'EW' | 'CR' | 'EN' | 'VU' | 'NT' | 'LC' | 'DD' | 'NE' | null;
             habitat?: string | null;
-            wingspan?: number | null;
-            maxHeight?: number | null;
             slug?: string | null;
-            substrate?: string | null;
             /** @default 0 */
             relationshipCount: number;
+            wingspan?: number | null;
+            maxHeight?: number | null;
+            substrate?: string | null;
             commonNames: components['schemas']['CommonName.jsonld-species.read'][];
             translations: components['schemas']['SpeciesTranslation.jsonld-species.read'][];
             readonly media: components['schemas']['Media.jsonld-species.read'][];

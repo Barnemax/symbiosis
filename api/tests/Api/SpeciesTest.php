@@ -5,8 +5,12 @@ namespace App\Tests\Api;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Entity\CommonName;
 use App\Entity\Family;
+use App\Entity\Kingdoms\BirdSpecies;
+use App\Entity\Kingdoms\FungusSpecies;
+use App\Entity\Kingdoms\TreeSpecies;
 use App\Entity\Relationship;
 use App\Entity\Species;
+use App\Enum\Kingdom;
 use Doctrine\ORM\EntityManagerInterface;
 
 class SpeciesTest extends ApiTestCase
@@ -39,7 +43,7 @@ class SpeciesTest extends ApiTestCase
     {
         /** @var EntityManagerInterface $em */
         $em = static::getContainer()->get('doctrine')->getManager();
-        $family = (new Family())->setName($name)->setKingdom($kingdom);
+        $family = (new Family())->setName($name)->setKingdom(Kingdom::from($kingdom));
         $em->persist($family);
         $em->flush();
 
@@ -50,7 +54,13 @@ class SpeciesTest extends ApiTestCase
     {
         /** @var EntityManagerInterface $em */
         $em = static::getContainer()->get('doctrine')->getManager();
-        $species = (new Species())->setScientificName($scientificName)->setFamily($family);
+        $species = match ($family->getKingdom()) {
+            Kingdom::Bird => new BirdSpecies(),
+            Kingdom::Tree => new TreeSpecies(),
+            Kingdom::Fungus => new FungusSpecies(),
+            default => throw new \LogicException('Family must have a kingdom'),
+        };
+        $species->setScientificName($scientificName)->setFamily($family);
         $species->generateSlug();
         $em->persist($species);
         $em->flush();

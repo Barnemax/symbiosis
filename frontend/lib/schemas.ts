@@ -1,20 +1,23 @@
-import { KINGDOMS } from './constants'
 import { getCommonName, resolveMediaUrl } from './helpers'
 import { buildLocalizedUrl } from './routing-utils'
 import { siteInfo } from './strings/siteInfo'
-import type { Relationship, Species } from './types'
+import type { Kingdom, Relationship, Species } from './types'
 
 /**
  * Builds a schema.org Taxon object for a species page.
  * Includes parentTaxon, sameAs (Wikipedia), image, and ecological relationships
  * as additionalProperty entries (subject-side only, for unambiguous directionality).
  */
-export function buildTaxonSchema(species: Species, asSubject: Relationship[]): object {
+export function buildTaxonSchema(
+  species: Species,
+  asSubject: Relationship[],
+  slugByKingdom: ReadonlyMap<Kingdom, string>,
+): object {
   const enName = getCommonName(species, 'en')
   const speciesSlug = species.slug ?? species.id.toString()
   const speciesUrl = buildLocalizedUrl(
     siteInfo.url,
-    `${KINGDOMS[species.family.kingdom].href}/[slug]`,
+    `/${slugByKingdom.get(species.family.kingdom) ?? species.family.kingdom}/[slug]`,
     'en',
     { slug: speciesSlug },
   )
@@ -45,7 +48,7 @@ export function buildTaxonSchema(species: Species, asSubject: Relationship[]): o
           name: getCommonName(rel.object, 'en'),
           url: buildLocalizedUrl(
             siteInfo.url,
-            `${KINGDOMS[rel.object.family.kingdom].href}/[slug]`,
+            `/${slugByKingdom.get(rel.object.family.kingdom) ?? rel.object.family.kingdom}/[slug]`,
             'en',
             { slug: rel.object.slug ?? rel.object.id.toString() },
           ),

@@ -4,10 +4,14 @@ namespace App\DataFixtures;
 
 use App\Entity\CommonName;
 use App\Entity\Family;
+use App\Entity\Kingdoms\BirdSpecies;
+use App\Entity\Kingdoms\FungusSpecies;
+use App\Entity\Kingdoms\TreeSpecies;
 use App\Entity\Relationship;
 use App\Entity\RelationshipTranslation;
 use App\Entity\Species;
 use App\Entity\SpeciesTranslation;
+use App\Enum\Kingdom;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -19,51 +23,51 @@ class AppFixtures extends Fixture
         // Families
         // ------------------------------------------------------------------ //
 
-        $accipitridae = $this->family($manager, 'Accipitridae', 'bird');
-        $corvidae = $this->family($manager, 'Corvidae', 'bird');
-        $picidae = $this->family($manager, 'Picidae', 'bird');
-        $fringillidae = $this->family($manager, 'Fringillidae', 'bird');
-        $paridae = $this->family($manager, 'Paridae', 'bird');
-        $oriolidae = $this->family($manager, 'Oriolidae', 'bird');
-        $sittidae = $this->family($manager, 'Sittidae', 'bird');
-        $muscicapidae = $this->family($manager, 'Muscicapidae', 'bird');
-        $sturnidae = $this->family($manager, 'Sturnidae', 'bird');
-        $strigidae = $this->family($manager, 'Strigidae', 'bird');
-        $certhiidae = $this->family($manager, 'Certhiidae', 'bird');
-        $columbidae = $this->family($manager, 'Columbidae', 'bird');
-        $turdidae = $this->family($manager, 'Turdidae', 'bird');
-        $phylloscopidae = $this->family($manager, 'Phylloscopidae', 'bird');
-        $bombycillidae = $this->family($manager, 'Bombycillidae', 'bird');
+        $accipitridae = $this->family($manager, 'Accipitridae', Kingdom::Bird);
+        $corvidae = $this->family($manager, 'Corvidae', Kingdom::Bird);
+        $picidae = $this->family($manager, 'Picidae', Kingdom::Bird);
+        $fringillidae = $this->family($manager, 'Fringillidae', Kingdom::Bird);
+        $paridae = $this->family($manager, 'Paridae', Kingdom::Bird);
+        $oriolidae = $this->family($manager, 'Oriolidae', Kingdom::Bird);
+        $sittidae = $this->family($manager, 'Sittidae', Kingdom::Bird);
+        $muscicapidae = $this->family($manager, 'Muscicapidae', Kingdom::Bird);
+        $sturnidae = $this->family($manager, 'Sturnidae', Kingdom::Bird);
+        $strigidae = $this->family($manager, 'Strigidae', Kingdom::Bird);
+        $certhiidae = $this->family($manager, 'Certhiidae', Kingdom::Bird);
+        $columbidae = $this->family($manager, 'Columbidae', Kingdom::Bird);
+        $turdidae = $this->family($manager, 'Turdidae', Kingdom::Bird);
+        $phylloscopidae = $this->family($manager, 'Phylloscopidae', Kingdom::Bird);
+        $bombycillidae = $this->family($manager, 'Bombycillidae', Kingdom::Bird);
 
-        $fagaceae = $this->family($manager, 'Fagaceae', 'tree');
-        $pinaceae = $this->family($manager, 'Pinaceae', 'tree');
-        $salicaceae = $this->family($manager, 'Salicaceae', 'tree');
-        $betulaceae = $this->family($manager, 'Betulaceae', 'tree');
-        $taxaceae = $this->family($manager, 'Taxaceae', 'tree');
-        $rosaceae = $this->family($manager, 'Rosaceae', 'tree');
-        $adoxaceae = $this->family($manager, 'Adoxaceae', 'tree');
-        $oleaceae = $this->family($manager, 'Oleaceae', 'tree');
-        $santalaceae = $this->family($manager, 'Santalaceae', 'tree');
+        $fagaceae = $this->family($manager, 'Fagaceae', Kingdom::Tree);
+        $pinaceae = $this->family($manager, 'Pinaceae', Kingdom::Tree);
+        $salicaceae = $this->family($manager, 'Salicaceae', Kingdom::Tree);
+        $betulaceae = $this->family($manager, 'Betulaceae', Kingdom::Tree);
+        $taxaceae = $this->family($manager, 'Taxaceae', Kingdom::Tree);
+        $rosaceae = $this->family($manager, 'Rosaceae', Kingdom::Tree);
+        $adoxaceae = $this->family($manager, 'Adoxaceae', Kingdom::Tree);
+        $oleaceae = $this->family($manager, 'Oleaceae', Kingdom::Tree);
+        $santalaceae = $this->family($manager, 'Santalaceae', Kingdom::Tree);
 
-        $boletaceae = $this->family($manager, 'Boletaceae', 'fungus');
-        $cantharellaceae = $this->family($manager, 'Cantharellaceae', 'fungus');
-        $amanitaceae = $this->family($manager, 'Amanitaceae', 'fungus');
-        $suillaceae = $this->family($manager, 'Suillaceae', 'fungus');
-        $hydnangiaceae = $this->family($manager, 'Hydnangiaceae', 'fungus');
-        $hymenochaetaceae = $this->family($manager, 'Hymenochaetaceae', 'fungus');
-        $physalacriaceae = $this->family($manager, 'Physalacriaceae', 'fungus');
-        $hericiaceae = $this->family($manager, 'Hericiaceae', 'fungus');
-        $fomitopsidaceae = $this->family($manager, 'Fomitopsidaceae', 'fungus');
-        $sparassidaceae = $this->family($manager, 'Sparassidaceae', 'fungus');
-        $auriculariaceae = $this->family($manager, 'Auriculariaceae', 'fungus');
-        $hypoxylaceae = $this->family($manager, 'Hypoxylaceae', 'fungus');
-        $fistulinaceae = $this->family($manager, 'Fistulinaceae', 'fungus');
-        $polyporaceae = $this->family($manager, 'Polyporaceae', 'fungus');
-        $parmeliaceae = $this->family($manager, 'Parmeliaceae', 'fungus');
-        $paxillaceae = $this->family($manager, 'Paxillaceae', 'fungus');
-        $russulaceae = $this->family($manager, 'Russulaceae', 'fungus');
-        $strophariaceae = $this->family($manager, 'Strophariaceae', 'fungus');
-        $tuberaceae = $this->family($manager, 'Tuberaceae', 'fungus');
+        $boletaceae = $this->family($manager, 'Boletaceae', Kingdom::Fungus);
+        $cantharellaceae = $this->family($manager, 'Cantharellaceae', Kingdom::Fungus);
+        $amanitaceae = $this->family($manager, 'Amanitaceae', Kingdom::Fungus);
+        $suillaceae = $this->family($manager, 'Suillaceae', Kingdom::Fungus);
+        $hydnangiaceae = $this->family($manager, 'Hydnangiaceae', Kingdom::Fungus);
+        $hymenochaetaceae = $this->family($manager, 'Hymenochaetaceae', Kingdom::Fungus);
+        $physalacriaceae = $this->family($manager, 'Physalacriaceae', Kingdom::Fungus);
+        $hericiaceae = $this->family($manager, 'Hericiaceae', Kingdom::Fungus);
+        $fomitopsidaceae = $this->family($manager, 'Fomitopsidaceae', Kingdom::Fungus);
+        $sparassidaceae = $this->family($manager, 'Sparassidaceae', Kingdom::Fungus);
+        $auriculariaceae = $this->family($manager, 'Auriculariaceae', Kingdom::Fungus);
+        $hypoxylaceae = $this->family($manager, 'Hypoxylaceae', Kingdom::Fungus);
+        $fistulinaceae = $this->family($manager, 'Fistulinaceae', Kingdom::Fungus);
+        $polyporaceae = $this->family($manager, 'Polyporaceae', Kingdom::Fungus);
+        $parmeliaceae = $this->family($manager, 'Parmeliaceae', Kingdom::Fungus);
+        $paxillaceae = $this->family($manager, 'Paxillaceae', Kingdom::Fungus);
+        $russulaceae = $this->family($manager, 'Russulaceae', Kingdom::Fungus);
+        $strophariaceae = $this->family($manager, 'Strophariaceae', Kingdom::Fungus);
+        $tuberaceae = $this->family($manager, 'Tuberaceae', Kingdom::Fungus);
 
         // ------------------------------------------------------------------ //
         // Species | Birds
@@ -690,7 +694,7 @@ class AppFixtures extends Fixture
     // Helpers
     // ------------------------------------------------------------------ //
 
-    private function family(ObjectManager $manager, string $name, string $kingdom): Family
+    private function family(ObjectManager $manager, string $name, Kingdom $kingdom): Family
     {
         $f = (new Family())->setName($name)->setKingdom($kingdom);
         $manager->persist($f);
@@ -708,7 +712,13 @@ class AppFixtures extends Fixture
         ?float $maxHeight = null,
         ?string $substrate = null,
     ): Species {
-        $s = (new Species())
+        $s = match ($family->getKingdom()) {
+            Kingdom::Bird => new BirdSpecies(),
+            Kingdom::Tree => new TreeSpecies(),
+            Kingdom::Fungus => new FungusSpecies(),
+        };
+
+        $s
             ->setScientificName($scientificName)
             ->setSlug(strtolower(str_replace(' ', '-', $scientificName)))
             ->setFamily($family)

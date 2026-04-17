@@ -1,14 +1,19 @@
 import { routing } from '@/i18n/routing'
-import type { ConservationStatus, Kingdom } from './types'
+import type { ConservationStatus } from './types'
 
 export const COMMON_NAME_LOCALES = [...routing.locales, 'la'] as const
 
-export const KINGDOMS = {
-  bird:   { color: '#3b82f6', href: '/birds', icon: '🪶', plural: 'birds', slugHref: '/birds/[slug]' },
-  fungus: { color: '#f97316', href: '/fungi', icon: '🍄', plural: 'fungi', slugHref: '/fungi/[slug]' },
-  tree:   { color: '#22c55e', href: '/trees', icon: '🌳', plural: 'trees', slugHref: '/trees/[slug]' },
-} as const satisfies Record<Kingdom, { color: string; href: string; icon: string; plural: string; slugHref: string }>
+export const KINGDOM_CONFIG: Record<string, { color: string; icon: string }> = {
+  bird:   { color: '#3b82f6', icon: '🪶' },
+  fungus: { color: '#f97316', icon: '🍄' },
+  tree:   { color: '#22c55e', icon: '🌳' },
+}
 
+export const KINGDOM_FIELDS: Record<string, { name: string; label: string; type: string; step?: string; placeholder?: string }[]> = {
+  bird:   [{ label: 'Wingspan (cm)', name: 'wingspan', placeholder: 'e.g. 52', step: '0.1', type: 'number' }],
+  fungus: [{ label: 'Substrate', name: 'substrate', placeholder: 'e.g. Deciduous woodland soil', type: 'text' }],
+  tree:   [{ label: 'Max height (m)', name: 'maxHeight', placeholder: 'e.g. 40', step: '0.1', type: 'number' }],
+}
 
 export const CONSERVATION_STATUSES: Record<ConservationStatus, { label: string; className: string }> = {
   CR: { className: 'bg-red-100 text-red-800', label: 'Critically Endangered' },
@@ -20,12 +25,6 @@ export const CONSERVATION_STATUSES: Record<ConservationStatus, { label: string; 
   NE: { className: 'bg-stone-100 text-stone-600', label: 'Not Evaluated' },
   NT: { className: 'bg-lime-100 text-lime-800', label: 'Near Threatened' },
   VU: { className: 'bg-yellow-100 text-yellow-800', label: 'Vulnerable' },
-}
-
-export const KINGDOM_MAP: Record<string, Kingdom> = {
-  birds: 'bird',
-  fungi: 'fungus',
-  trees: 'tree',
 }
 
 export const RELATIONSHIP_LABELS: Record<string, string> = {

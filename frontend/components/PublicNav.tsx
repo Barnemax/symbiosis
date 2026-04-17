@@ -6,20 +6,27 @@ import { routing } from '@/i18n/routing'
 import { useLocale, useTranslations } from 'next-intl'
 import { useParams } from 'next/navigation'
 import { siteInfo } from '@/lib/strings/siteInfo'
+import type { KingdomMeta } from '@/lib/types'
 
 type StaticPathname = Exclude<keyof typeof routing['pathnames'], `${string}/[${string}]`>
 type DynamicPathname = Extract<keyof typeof routing['pathnames'], `${string}/[${string}]`>
 
-export default function PublicNav({ kingdomCounts }: { kingdomCounts?: Record<string, number> }): React.JSX.Element {
+export default function PublicNav({
+  kingdoms,
+}: {
+  kingdoms: KingdomMeta[]
+}): React.JSX.Element {
   const pathname = usePathname()
   const router = useRouter()
   const locale = useLocale()
   const t = useTranslations('nav')
 
   const NAV_LINKS: { href: StaticPathname; label: string; count?: number }[] = [
-    { count: kingdomCounts?.bird, href: '/birds', label: t('birds') },
-    { count: kingdomCounts?.tree, href: '/trees', label: t('trees') },
-    { count: kingdomCounts?.fungus, href: '/fungi', label: t('fungi') },
+    ...kingdoms.map(k => ({
+      count: k.count,
+      href: `/${k.slug}` as StaticPathname,
+      label: t.has(k.plural) ? t(k.plural) : k.plural,
+    })),
     { href: '/explore', label: t('explore') },
     { href: '/contact', label: t('contact') },
   ]
