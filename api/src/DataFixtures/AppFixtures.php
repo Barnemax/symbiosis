@@ -68,6 +68,8 @@ class AppFixtures extends Fixture
         $russulaceae = $this->family($manager, 'Russulaceae', Kingdom::Fungus);
         $strophariaceae = $this->family($manager, 'Strophariaceae', Kingdom::Fungus);
         $tuberaceae = $this->family($manager, 'Tuberaceae', Kingdom::Fungus);
+        $tricholomataceae = $this->family($manager, 'Tricholomataceae', Kingdom::Fungus);
+        $incertaeSedis = $this->family($manager, 'Incertae sedis', Kingdom::Fungus);
 
         // ------------------------------------------------------------------ //
         // Species | Birds
@@ -172,6 +174,22 @@ class AppFixtures extends Fixture
         $spottedNutcracker = $this->species($manager, 'Nucifraga caryocatactes', $corvidae, 'LC', 'Montane and boreal coniferous forest, especially Norway Spruce and Swiss Stone Pine stands', wingspan: 52.0);
         $this->names($manager, $spottedNutcracker, 'Spotted Nutcracker', 'Cassenoix moucheté');
         $this->translate($manager, $spottedNutcracker, 'fr', 'Forêts de conifères montagnardes et boréales, notamment à Épicéa commun et Pin cembro');
+
+        $spottedFlycatcher = $this->species($manager, 'Muscicapa striata', $muscicapidae, 'LC', 'Open broadleaf woodland, parks, gardens, orchards, and woodland edge with exposed perches', wingspan: 26.0);
+        $this->names($manager, $spottedFlycatcher, 'Spotted Flycatcher', 'Gobemouche gris');
+        $this->translate($manager, $spottedFlycatcher, 'fr', 'Forêts de feuillus ouvertes, parcs, jardins, vergers et lisières forestières avec perchoirs dégagés');
+
+        $marshTit = $this->species($manager, 'Poecile palustris', $paridae, 'LC', 'Mature deciduous woodland, especially Beech and mixed Hornbeam-Oak stands with closed canopy; indicator of ancient woodland', wingspan: 19.0);
+        $this->names($manager, $marshTit, 'Marsh Tit', 'Mésange nonnette');
+        $this->translate($manager, $marshTit, 'fr', 'Forêts de feuillus matures, notamment hêtraies et peuplements mixtes Charme-Chêne à canopée fermée ; indicateur de forêt ancienne');
+
+        $fieldfare = $this->species($manager, 'Turdus pilaris', $turdidae, 'LC', 'Boreal birch and conifer forest (breeding); irruptive winter visitor to berry-bearing woodland, orchards, hedgerows, and open farmland', wingspan: 42.0);
+        $this->names($manager, $fieldfare, 'Fieldfare', 'Grive litorne');
+        $this->translate($manager, $fieldfare, 'fr', 'Forêts boréales de bouleaux et de conifères (nidification) ; visiteur hivernant irruptif en forêts à baies, vergers, haies et terres agricoles ouvertes');
+
+        $lesserSpottedWoodpecker = $this->species($manager, 'Dryobates minor', $picidae, 'LC', 'Open broadleaf woodland, riparian forest, orchards and parks with standing deadwood; especially Birch, Alder, and Aspen stands', wingspan: 27.0);
+        $this->names($manager, $lesserSpottedWoodpecker, 'Lesser Spotted Woodpecker', 'Pic épeichette');
+        $this->translate($manager, $lesserSpottedWoodpecker, 'fr', 'Forêts de feuillus ouvertes, forêts riveraines, vergers et parcs avec bois mort sur pied ; notamment peuplements de Bouleau, Aulne et Tremble');
 
         // ------------------------------------------------------------------ //
         // Species | Trees
@@ -348,6 +366,18 @@ class AppFixtures extends Fixture
         $poplarFieldcap = $this->species($manager, 'Cyclocybe cylindracea', $strophariaceae, null, 'Dead and dying Poplar and Aspen wood in riparian and mixed woodland; also occasional on elder', substrate: 'Saprotrophic/weakly parasitic, dead Populus wood');
         $this->names($manager, $poplarFieldcap, 'Poplar Fieldcap', 'Pholiote du peuplier');
         $this->translate($manager, $poplarFieldcap, 'fr', 'Bois de Peuplier et Tremble mort ou mourant en forêt riveraine et mixte ; parfois sur sureau', 'Saprotrophe/faiblement parasitaire, bois mort de Populus');
+
+        $taxomyces = $this->species($manager, 'Taxomyces andreanae', $incertaeSedis, null, 'Endophytic within living Yew bark and phloem in temperate forests', substrate: 'Endophyte, internal tissues of Taxus baccata');
+        $this->names($manager, $taxomyces, 'Yew Endophyte', 'Endophyte de l\'If');
+        $this->translate($manager, $taxomyces, 'fr', 'Endophyte dans l\'écorce et le phloème vivants de l\'If en forêts tempérées', 'Endophyte, tissus internes de Taxus baccata');
+
+        $rowanBolete = $this->species($manager, 'Leccinum roseofractum', $boletaceae, null, 'Upland and northern broadleaf woodland, especially Rowan-Birch stands on acidic soils', substrate: 'Ectomycorrhizal, obligate Sorbus associate');
+        $this->names($manager, $rowanBolete, 'Rowan Bolete', 'Bolet du sorbier');
+        $this->translate($manager, $rowanBolete, 'fr', 'Forêts de feuillus d\'altitude et septentrionales, notamment peuplements Sorbier-Bouleau sur sols acides', 'Ectomycorhizien, associé obligatoire du Sorbus');
+
+        $poplarKnight = $this->species($manager, 'Tricholoma populinum', $tricholomataceae, null, 'Riparian and lowland woodland under Poplar and Aspen, often fruiting in tight rows along root lines', substrate: 'Ectomycorrhizal, near-obligate Populus associate');
+        $this->names($manager, $poplarKnight, 'Poplar Knight', 'Tricholome du peuplier');
+        $this->translate($manager, $poplarKnight, 'fr', 'Forêts riveraines et de plaine sous Peuplier et Tremble, fructifiant souvent en rangées serrées le long des lignes de racines', 'Ectomycorhizien, associé quasi obligatoire du Populus');
 
         // ------------------------------------------------------------------ //
         // Ecological relationships
@@ -687,6 +717,64 @@ class AppFixtures extends Fixture
         $r = $this->rel($manager, $poplarFieldcap, $elder, 'grows_on', 'Occasionally fruits on elder trunks, a recorded secondary host.');
         $this->relTranslate($manager, $r, 'fr', 'Fructifie occasionnellement sur les troncs de Sureau, un hôte secondaire documenté.');
 
+        // Spotted Flycatcher
+        $r = $this->rel($manager, $spottedFlycatcher, $oak, 'nests_in', 'Nests in natural cavities and old woodpecker holes in mature oaks.');
+        $this->relTranslate($manager, $r, 'fr', 'Niche dans les cavités naturelles et les anciens trous de pics dans les chênes matures.');
+
+        $r = $this->rel($manager, $spottedFlycatcher, $aspen, 'nests_in', 'Uses Black Woodpecker and Great Spotted Woodpecker cavities in large aspens.');
+        $this->relTranslate($manager, $r, 'fr', 'Utilise les cavités de Pic noir et de Pic épeiche dans les grands trembles.');
+
+        $r = $this->rel($manager, $spottedFlycatcher, $woodpecker, 'symbiosis_with', 'Obligate secondary cavity nester relying on woodpecker-excavated holes.');
+        $this->relTranslate($manager, $r, 'fr', 'Nicheur secondaire en cavité obligatoire, dépendant des trous creusés par les pics.');
+
+        // Marsh Tit
+        $r = $this->rel($manager, $marshTit, $beech, 'feeds_on', 'Caches and feeds on beech mast; scatter-hoarding aids short-distance seed dispersal (Cowie et al. 1981).');
+        $this->relTranslate($manager, $r, 'fr', 'Met en cache et se nourrit de faines ; le stockage dispersé facilite la dispersion à courte distance des graines (Cowie et al. 1981).');
+
+        $r = $this->rel($manager, $marshTit, $hornbeam, 'feeds_on', 'Feeds on hornbeam nutlets in mixed beech-hornbeam stands.');
+        $this->relTranslate($manager, $r, 'fr', 'Se nourrit des akènes du Charme dans les peuplements mixtes Hêtre-Charme.');
+
+        $r = $this->rel($manager, $marshTit, $beech, 'nests_in', 'Nests in soft-rotted cavities in beech, often enlarging existing holes in stumps weakened by bracket fungi.');
+        $this->relTranslate($manager, $r, 'fr', 'Niche dans les cavités en bois pourri du Hêtre, élargissant souvent les trous existants dans les souches affaiblies par les polypores.');
+
+        // Yew Endophyte (Taxomyces andreanae)
+        $r = $this->rel($manager, $taxomyces, $yew, 'grows_on', 'Obligate endophyte living within Yew bark and phloem; first organism other than Taxus itself shown to produce taxol (Stierle et al. 1993).');
+        $this->relTranslate($manager, $r, 'fr', 'Endophyte obligatoire vivant dans l\'écorce et le phloème de l\'If ; premier organisme autre que Taxus lui-même à produire du taxol (Stierle et al. 1993).');
+
+        // Rowan Bolete
+        $r = $this->rel($manager, $rowanBolete, $rowan, 'mycorrhiza_with', 'Obligate ectomycorrhizal partner of Rowan; found under Rowan in upland birch-rowan woodland.');
+        $this->relTranslate($manager, $r, 'fr', 'Partenaire ectomycorhizien obligatoire du Sorbier ; trouvé sous le Sorbier dans les forêts d\'altitude bouleau-sorbier.');
+
+        // Fieldfare
+        $r = $this->rel($manager, $fieldfare, $rowan, 'disperses_seeds_of', 'Major winter frugivore on Rowan berries; irruptive flocks strip trees and disperse seeds over long distances.');
+        $this->relTranslate($manager, $r, 'fr', 'Frugivore hivernal majeur des baies de Sorbier ; les bandes irruptives dépouillent les arbres et dispersent les graines sur de longues distances.');
+
+        $r = $this->rel($manager, $fieldfare, $mistletoe, 'disperses_seeds_of', 'Feeds on Mistletoe berries and disperses sticky seeds to new host branches (Zuber 2004).');
+        $this->relTranslate($manager, $r, 'fr', 'Se nourrit des baies de Gui et disperse les graines collantes sur de nouvelles branches hôtes (Zuber 2004).');
+
+        $r = $this->rel($manager, $fieldfare, $yew, 'disperses_seeds_of', 'Feeds on Yew arils in winter; seeds pass intact through the gut.');
+        $this->relTranslate($manager, $r, 'fr', 'Se nourrit des arilles de l\'If en hiver ; les graines traversent l\'intestin intactes.');
+
+        // Poplar Knight
+        $r = $this->rel($manager, $poplarKnight, $poplar, 'mycorrhiza_with', 'Near-obligate ectomycorrhizal partner of Black Poplar; fruits in rows along root lines.');
+        $this->relTranslate($manager, $r, 'fr', 'Partenaire ectomycorhizien quasi obligatoire du Peuplier noir ; fructifie en rangées le long des lignes de racines.');
+
+        $r = $this->rel($manager, $poplarKnight, $aspen, 'mycorrhiza_with', 'Also forms ectomycorrhiza with Aspen in riparian and lowland woodland.');
+        $this->relTranslate($manager, $r, 'fr', 'Forme également des ectomycorhizes avec le Tremble en forêts riveraines et de plaine.');
+
+        // Lesser Spotted Woodpecker
+        $r = $this->rel($manager, $lesserSpottedWoodpecker, $birch, 'nests_in', 'Excavates nest cavities in soft-rotted Silver Birch, often in trunks weakened by Birch Polypore.');
+        $this->relTranslate($manager, $r, 'fr', 'Creuse des cavités de nidification dans le Bouleau argenté en pourriture molle, souvent dans des troncs affaiblis par le Polypore du bouleau.');
+
+        $r = $this->rel($manager, $lesserSpottedWoodpecker, $aspen, 'nests_in', 'Nests in dead or dying Aspen, particularly where Tinder Fungus has softened heartwood.');
+        $this->relTranslate($manager, $r, 'fr', 'Niche dans les Trembles morts ou mourants, notamment là où l\'Amadouvier a ramolli l\'aubier.');
+
+        $r = $this->rel($manager, $lesserSpottedWoodpecker, $birchPolypore, 'symbiosis_with', 'Feeds on invertebrates in birch polypore fruiting bodies and relies on polypore-softened wood for cavity excavation (Wiktander et al. 2001).');
+        $this->relTranslate($manager, $r, 'fr', 'Se nourrit d\'invertébrés dans les carpophores du Polypore du bouleau et dépend du bois ramolli par le polypore pour creuser ses cavités (Wiktander et al. 2001).');
+
+        $r = $this->rel($manager, $lesserSpottedWoodpecker, $tinderFungus, 'symbiosis_with', 'Excavates nests in birch and aspen heartwood softened by Tinder Fungus; fungal decay is near-prerequisite for cavity creation.');
+        $this->relTranslate($manager, $r, 'fr', 'Creuse ses nids dans l\'aubier de bouleau et de tremble ramolli par l\'Amadouvier ; la décomposition fongique est quasi indispensable à la création de cavités.');
+
         $manager->flush();
     }
 
@@ -696,6 +784,11 @@ class AppFixtures extends Fixture
 
     private function family(ObjectManager $manager, string $name, Kingdom $kingdom): Family
     {
+        $existing = $manager->getRepository(Family::class)->findOneBy(['name' => $name, 'kingdom' => $kingdom]);
+        if (null !== $existing) {
+            return $existing;
+        }
+
         $f = (new Family())->setName($name)->setKingdom($kingdom);
         $manager->persist($f);
 
@@ -712,6 +805,11 @@ class AppFixtures extends Fixture
         ?float $maxHeight = null,
         ?string $substrate = null,
     ): Species {
+        $existing = $manager->getRepository(Species::class)->findOneBy(['scientificName' => $scientificName]);
+        if (null !== $existing) {
+            return $existing;
+        }
+
         $s = match ($family->getKingdom()) {
             Kingdom::Bird => new BirdSpecies(),
             Kingdom::Tree => new TreeSpecies(),
@@ -734,6 +832,11 @@ class AppFixtures extends Fixture
 
     private function names(ObjectManager $manager, Species $species, string $en, string $fr): void
     {
+        // Skip existing species — CommonName has a unique (species, locale) constraint.
+        if (null !== $species->getId()) {
+            return;
+        }
+
         foreach (['en' => $en, 'fr' => $fr, 'la' => $species->getScientificName()] as $locale => $name) {
             $cn = (new CommonName())->setSpecies($species)->setLocale($locale)->setName($name);
             $manager->persist($cn);
@@ -747,6 +850,17 @@ class AppFixtures extends Fixture
         string $type,
         ?string $notes = null,
     ): Relationship {
+        if (null !== $subject->getId() && null !== $object->getId()) {
+            $existing = $manager->getRepository(Relationship::class)->findOneBy([
+                'subject' => $subject,
+                'object' => $object,
+                'type' => $type,
+            ]);
+            if (null !== $existing) {
+                return $existing;
+            }
+        }
+
         $r = (new Relationship())->setSubject($subject)->setObject($object)->setType($type)->setNotes($notes);
         $manager->persist($r);
 
@@ -759,6 +873,11 @@ class AppFixtures extends Fixture
         string $locale,
         ?string $notes,
     ): void {
+        // Skip existing relationships — RelationshipTranslation has a unique (relationship, locale) constraint.
+        if (null !== $rel->getId()) {
+            return;
+        }
+
         $t = (new RelationshipTranslation())->setRelationship($rel)->setLocale($locale)->setNotes($notes);
         $manager->persist($t);
     }
@@ -770,6 +889,11 @@ class AppFixtures extends Fixture
         ?string $habitat,
         ?string $substrate = null,
     ): void {
+        // Skip existing species — SpeciesTranslation has a unique (species, locale) constraint.
+        if (null !== $species->getId()) {
+            return;
+        }
+
         $t = (new SpeciesTranslation())
             ->setSpecies($species)
             ->setLocale($locale)

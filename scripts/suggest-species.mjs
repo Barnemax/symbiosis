@@ -53,6 +53,10 @@ const EXISTING_SPECIES = {
     'Pernis apivorus (Honey Buzzard) | Accipitridae',
     'Jynx torquilla (Wryneck) | Picidae',
     'Nucifraga caryocatactes (Spotted Nutcracker) | Corvidae',
+    'Muscicapa striata (Spotted Flycatcher) | Muscicapidae',
+    'Poecile palustris (Marsh Tit) | Paridae',
+    'Turdus pilaris (Fieldfare) | Turdidae',
+    'Dryobates minor (Lesser Spotted Woodpecker) | Picidae',
   ],
   trees: [
     'Quercus robur (Pedunculate Oak) | Fagaceae',
@@ -99,6 +103,9 @@ const EXISTING_SPECIES = {
     'Evernia prunastri (Oakmoss Lichen) | Parmeliaceae',
     'Lactarius circellatus (Hornbeam Milkcap) | Russulaceae',
     'Cyclocybe cylindracea (Poplar Fieldcap) | Strophariaceae',
+    'Taxomyces andreanae (Yew Endophyte) | Incertae sedis',
+    'Leccinum roseofractum (Rowan Bolete) | Boletaceae',
+    'Tricholoma populinum (Poplar Knight) | Tricholomataceae',
   ],
 };
 
@@ -199,6 +206,23 @@ const EXISTING_RELATIONSHIPS = [
   'Poplar Fieldcap → Black Poplar: grows_on',
   'Poplar Fieldcap → Aspen: grows_on',
   'Poplar Fieldcap → Elder: grows_on',
+  'Spotted Flycatcher → Pedunculate Oak: nests_in',
+  'Spotted Flycatcher → Aspen: nests_in',
+  'Spotted Flycatcher → Great Spotted Woodpecker: symbiosis_with',
+  'Marsh Tit → European Beech: feeds_on',
+  'Marsh Tit → Hornbeam: feeds_on',
+  'Marsh Tit → European Beech: nests_in',
+  'Yew Endophyte → Common Yew: grows_on',
+  'Rowan Bolete → Rowan: mycorrhiza_with',
+  'Fieldfare → Rowan: disperses_seeds_of',
+  'Fieldfare → European Mistletoe: disperses_seeds_of',
+  'Fieldfare → Common Yew: disperses_seeds_of',
+  'Poplar Knight → Black Poplar: mycorrhiza_with',
+  'Poplar Knight → Aspen: mycorrhiza_with',
+  'Lesser Spotted Woodpecker → Silver Birch: nests_in',
+  'Lesser Spotted Woodpecker → Aspen: nests_in',
+  'Lesser Spotted Woodpecker → Birch Polypore: symbiosis_with',
+  'Lesser Spotted Woodpecker → Tinder Fungus: symbiosis_with',
 ];
 
 // Species that were previously suggested but intentionally skipped.
@@ -208,6 +232,9 @@ const SKIPPED_SPECIES = [
   'Gymnosporangium cornutum (Rowan Whitebeam Rust) | heteroecious rust requiring Juniper for telial stage; ecologically incomplete without Juniper in DB',
   'Postia fragilis (Yew Powdercap) | single Yew relationship; low chain value; Yew is a peripheral node',
   'Perenniporia fraxinea (Ash Bracket) | single Ash relationship; Ash already strengthened by Oakmoss Lichen',
+  'Lactarius zonarius (Oak Milkcap) | Ash mycorrhiza claim ecologically dubious (Ash is predominantly arbuscular, not ECM); Oak link redundant with existing Oakbug Milkcap',
+  'Leccinum albostipitatum (Orange Aspen Bolete) | single Aspen edge overlaps with existing L. aurantiacum → Aspen mycorrhiza',
+  'Russula betularum (Birch Brittlegill) | Birch already has 5 mycorrhizal partners; Aspen cross-host claim less well documented',
 ];
 
 const RELATIONSHIP_TYPES = [

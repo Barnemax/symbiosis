@@ -18,6 +18,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RelationshipRepository::class)]
+#[ORM\UniqueConstraint(name: 'UNIQ_relationship_subject_object_type', fields: ['subject', 'object', 'type'])]
 #[ApiResource(
     normalizationContext: ['groups' => ['relationship:read']],
     denormalizationContext: ['groups' => ['relationship:write']],
