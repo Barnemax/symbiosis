@@ -21,6 +21,16 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 )]
 class ImportMediaCommand extends Command
 {
+    /** Minimum delay between requests to the same host, in microseconds. */
+    private const HOST_THROTTLE_US = [
+        'wikipedia.org' => 200_000,
+        'inaturalist.org' => 1_000_000,
+        'xeno-canto.org' => 1_000_000,
+    ];
+
+    /** @var array<string, float> last request timestamp per host */
+    private array $lastRequestAt = [];
+
     public function __construct(
         private readonly SpeciesRepository $speciesRepository,
         private readonly EntityManagerInterface $em,
@@ -28,6 +38,66 @@ class ImportMediaCommand extends Command
         #[\Symfony\Component\DependencyInjection\Attribute\Autowire('%app.name%')] private readonly string $appName,
     ) {
         parent::__construct();
+    }
+
+    /**
+     * Make a GET request with per-host throttling and a single retry on HTTP 429.
+     *
+     * @param array<string, mixed> $options
+     *
+     * @return array<string, mixed>|null decoded JSON, or null on failure
+     */
+    private function requestJson(string $url, array $options, SymfonyStyle $io, string $context = ''): ?array
+    {
+        $this->throttle($url);
+        $label = '' !== $context ? " ({$context})" : '';
+
+        try {
+            $response = $this->httpClient->request('GET', $url, $options);
+
+            if (429 === $response->getStatusCode()) {
+                $retryAfter = (int) ($response->getHeaders(false)['retry-after'][0] ?? 5);
+                $io->text("    rate limited{$label} | waiting {$retryAfter}s…");
+                \sleep(max(1, $retryAfter));
+                $this->throttle($url);
+                $response = $this->httpClient->request('GET', $url, $options);
+
+                if (200 !== $response->getStatusCode()) {
+                    $io->text("    ✗ retry failed{$label} with status {$response->getStatusCode()}");
+
+                    return null;
+                }
+            }
+
+            return $response->toArray();
+        } catch (\Throwable $e) {
+            $io->text("  API error{$label}: {$e->getMessage()}");
+
+            return null;
+        }
+    }
+
+    private function throttle(string $url): void
+    {
+        $host = parse_url($url, PHP_URL_HOST) ?: '';
+        $minDelay = 0;
+        foreach (self::HOST_THROTTLE_US as $needle => $delay) {
+            if (str_contains($host, $needle)) {
+                $minDelay = $delay;
+                break;
+            }
+        }
+        if (0 === $minDelay) {
+            return;
+        }
+
+        $key = $host;
+        $now = microtime(true);
+        $elapsed = (int) (($now - ($this->lastRequestAt[$key] ?? 0)) * 1_000_000);
+        if ($elapsed < $minDelay) {
+            usleep($minDelay - $elapsed);
+        }
+        $this->lastRequestAt[$key] = microtime(true);
     }
 
     protected function configure(): void
@@ -165,25 +235,23 @@ class ImportMediaCommand extends Command
         $imageUrl = null;
         $page = null;
         foreach (['en', 'de', 'fr', 'la'] as $lang) {
-            try {
-                $res = $this->httpClient->request('GET', "https://{$lang}.wikipedia.org/w/api.php", [
-                    'query' => [
-                        'action' => 'query',
-                        'titles' => $title,
-                        'prop' => 'pageimages',
-                        'piprop' => 'original',
-                        'format' => 'json',
-                        'redirects' => '1',
-                    ],
-                ]);
-                $data = $res->toArray();
-                $page = reset($data['query']['pages']);
-                if (isset($page['original']['source'])) {
-                    $imageUrl = $page['original']['source'];
-                    break;
-                }
-            } catch (\Throwable $e) {
-                $io->text("  API error (pageimages, {$lang}): {$e->getMessage()}");
+            $data = $this->requestJson("https://{$lang}.wikipedia.org/w/api.php", [
+                'query' => [
+                    'action' => 'query',
+                    'titles' => $title,
+                    'prop' => 'pageimages',
+                    'piprop' => 'original',
+                    'format' => 'json',
+                    'redirects' => '1',
+                ],
+            ], $io, "pageimages, {$lang}");
+            if (null === $data) {
+                continue;
+            }
+            $page = reset($data['query']['pages']);
+            if (isset($page['original']['source'])) {
+                $imageUrl = $page['original']['source'];
+                break;
             }
         }
 
@@ -191,41 +259,39 @@ class ImportMediaCommand extends Command
             return [null, null];
         }
 
-        $imageUrl = $page['original']['source'];
         // Derive the Commons filename from the URL | e.g. "Common_Blackbird.jpg"
         $imageName = rawurldecode(basename((string) parse_url($imageUrl, PHP_URL_PATH)));
 
         // Step 2 | fetch attribution from the File: page
-        $credit = null;
-        try {
-            $res = $this->httpClient->request('GET', 'https://en.wikipedia.org/w/api.php', [
-                'query' => [
-                    'action' => 'query',
-                    'titles' => "File:$imageName",
-                    'prop' => 'imageinfo',
-                    'iiprop' => 'extmetadata',
-                    'format' => 'json',
-                ],
-            ]);
-            $data = $res->toArray();
-            $page = reset($data['query']['pages']);
-            $meta = $page['imageinfo'][0]['extmetadata'] ?? [];
+        $data = $this->requestJson('https://en.wikipedia.org/w/api.php', [
+            'query' => [
+                'action' => 'query',
+                'titles' => "File:$imageName",
+                'prop' => 'imageinfo',
+                'iiprop' => 'extmetadata',
+                'format' => 'json',
+            ],
+        ], $io, 'imageinfo');
 
-            $artist = isset($meta['Artist']['value'])
-                ? trim(strip_tags((string) $meta['Artist']['value']))
-                : null;
-            $license = $meta['LicenseShortName']['value'] ?? null;
-
-            $credit = match (true) {
-                null !== $artist && null !== $license => "$artist / $license",
-                null !== $license => $license,
-                null !== $artist => $artist,
-                default => 'Wikimedia Commons',
-            };
-        } catch (\Throwable) {
+        if (null === $data) {
             // Attribution unavailable | image URL is still usable
-            $credit = 'Wikimedia Commons';
+            return [$imageUrl, 'Wikimedia Commons'];
         }
+
+        $page = reset($data['query']['pages']);
+        $meta = $page['imageinfo'][0]['extmetadata'] ?? [];
+
+        $artist = isset($meta['Artist']['value'])
+            ? trim(strip_tags((string) $meta['Artist']['value']))
+            : null;
+        $license = $meta['LicenseShortName']['value'] ?? null;
+
+        $credit = match (true) {
+            null !== $artist && null !== $license => "$artist / $license",
+            null !== $license => $license,
+            null !== $artist => $artist,
+            default => 'Wikimedia Commons',
+        };
 
         return [$imageUrl, $credit];
     }
@@ -235,25 +301,22 @@ class ImportMediaCommand extends Command
     /** @return array{0: string|null, 1: string|null} */
     private function fetchInatLeaf(string $scientificName, SymfonyStyle $io): array
     {
-        try {
-            $res = $this->httpClient->request('GET', 'https://api.inaturalist.org/v1/observations', [
-                'headers' => ['User-Agent' => "$this->appName/1.0 (nature encyclopedia)"],
-                'query' => [
-                    'taxon_name' => $scientificName,
-                    'quality_grade' => 'research',
-                    'photos' => 'true',
-                    'photo_license' => 'cc-by,cc-by-sa,cc0,cc-by-nd',
-                    'term_id' => 12,  // annotation: Plant Part
-                    'term_value_id' => 13,  // annotation value: Leaf
-                    'order_by' => 'votes',
-                    'order' => 'desc',
-                    'per_page' => 1,
-                ],
-            ]);
-            $data = $res->toArray();
-        } catch (\Throwable $e) {
-            $io->text("  API error (iNaturalist): {$e->getMessage()}");
+        $data = $this->requestJson('https://api.inaturalist.org/v1/observations', [
+            'headers' => ['User-Agent' => "$this->appName/1.0 (nature encyclopedia)"],
+            'query' => [
+                'taxon_name' => $scientificName,
+                'quality_grade' => 'research',
+                'photos' => 'true',
+                'photo_license' => 'cc-by,cc-by-sa,cc0,cc-by-nd',
+                'term_id' => 12,  // annotation: Plant Part
+                'term_value_id' => 13,  // annotation value: Leaf
+                'order_by' => 'votes',
+                'order' => 'desc',
+                'per_page' => 1,
+            ],
+        ], $io, 'iNaturalist leaf');
 
+        if (null === $data) {
             return [null, null];
         }
 
@@ -272,25 +335,22 @@ class ImportMediaCommand extends Command
     /** @return array{0: string|null, 1: string|null} */
     private function fetchInatFeather(string $scientificName, SymfonyStyle $io): array
     {
-        try {
-            $res = $this->httpClient->request('GET', 'https://api.inaturalist.org/v1/observations', [
-                'headers' => ['User-Agent' => "$this->appName/1.0 (nature encyclopedia)"],
-                'query' => [
-                    'taxon_name' => $scientificName,
-                    'quality_grade' => 'research',
-                    'photos' => 'true',
-                    'photo_license' => 'cc-by,cc-by-sa,cc0,cc-by-nd',
-                    'term_id' => 22,  // annotation: Evidence of Presence
-                    'term_value_id' => 23,  // annotation value: Feather
-                    'order_by' => 'votes',
-                    'order' => 'desc',
-                    'per_page' => 1,
-                ],
-            ]);
-            $data = $res->toArray();
-        } catch (\Throwable $e) {
-            $io->text("  API error (iNaturalist): {$e->getMessage()}");
+        $data = $this->requestJson('https://api.inaturalist.org/v1/observations', [
+            'headers' => ['User-Agent' => "$this->appName/1.0 (nature encyclopedia)"],
+            'query' => [
+                'taxon_name' => $scientificName,
+                'quality_grade' => 'research',
+                'photos' => 'true',
+                'photo_license' => 'cc-by,cc-by-sa,cc0,cc-by-nd',
+                'term_id' => 22,  // annotation: Evidence of Presence
+                'term_value_id' => 23,  // annotation value: Feather
+                'order_by' => 'votes',
+                'order' => 'desc',
+                'per_page' => 1,
+            ],
+        ], $io, 'iNaturalist feather');
 
+        if (null === $data) {
             return [null, null];
         }
 
@@ -310,18 +370,15 @@ class ImportMediaCommand extends Command
     /** @return array{0: string|null, 1: string|null} */
     private function fetchXenoCanto(string $scientificName, string $apiKey, SymfonyStyle $io): array
     {
-        try {
-            // v3 requires tag-based queries: sp:"Scientific name" q:A
-            $res = $this->httpClient->request('GET', 'https://xeno-canto.org/api/3/recordings', [
-                'query' => [
-                    'query' => sprintf('sp:"%s" q:A', $scientificName),
-                    'key' => $apiKey,
-                ],
-            ]);
-            $data = $res->toArray();
-        } catch (\Throwable $e) {
-            $io->text("  API error (xeno-canto): {$e->getMessage()}");
+        // v3 requires tag-based queries: sp:"Scientific name" q:A
+        $data = $this->requestJson('https://xeno-canto.org/api/3/recordings', [
+            'query' => [
+                'query' => sprintf('sp:"%s" q:A', $scientificName),
+                'key' => $apiKey,
+            ],
+        ], $io, 'xeno-canto');
 
+        if (null === $data) {
             return [null, null];
         }
 
