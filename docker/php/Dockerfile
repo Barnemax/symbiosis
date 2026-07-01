@@ -7,7 +7,8 @@ RUN install-php-extensions \
     intl \
     zip \
     opcache \
-    gd
+    gd \
+    apcu
 
 COPY php.ini /usr/local/etc/php/conf.d/app.ini
 COPY Caddyfile /etc/frankenphp/Caddyfile

@@ -14,7 +14,21 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-ENV NEXT_TELEMETRY_DISABLED=1
+
+# NEXT_PUBLIC_* are inlined into the client bundle at build time, so they must be
+# provided as build args (Railway passes service variables as build args).
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_SITE_URL
+ARG NEXT_PUBLIC_TURNSTILE_SITE_KEY
+ARG NEXT_PUBLIC_SENTRY_DSN
+ARG SENTRY_AUTH_TOKEN
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \
+    NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL \
+    NEXT_PUBLIC_TURNSTILE_SITE_KEY=$NEXT_PUBLIC_TURNSTILE_SITE_KEY \
+    NEXT_PUBLIC_SENTRY_DSN=$NEXT_PUBLIC_SENTRY_DSN \
+    SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN \
+    NEXT_TELEMETRY_DISABLED=1 \
+    BUILD_STANDALONE=true
 RUN pnpm build
 
 # ── Runner ────────────────────────────────────────────────────────────────────

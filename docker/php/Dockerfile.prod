@@ -1,0 +1,41 @@
+# syntax=docker/dockerfile:1
+#
+# Production image for the Symfony/API Platform backend (FrankenPHP worker mode).
+# Build context is the REPO ROOT (needs both api/ and docker/php/):
+#   docker build -f docker/php/Dockerfile.prod -t symbiosis-api .
+
+FROM dunglas/frankenphp:1-php8.4-alpine AS base
+RUN install-php-extensions \
+    pdo_pgsql \
+    intl \
+    zip \
+    opcache \
+    gd \
+    apcu
+COPY docker/php/php.ini /usr/local/etc/php/conf.d/app.ini
+COPY docker/php/Caddyfile /etc/frankenphp/Caddyfile
+WORKDIR /app
+
+# ── Builder: install prod deps + warm the compiled container ────────────────────
+FROM base AS builder
+ENV APP_ENV=prod \
+    APP_DEBUG=0 \
+    APP_SECRET=build \
+    COMPOSER_ALLOW_SUPERUSER=1
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Install dependencies first (cached until composer.json/lock change)
+COPY api/composer.json api/composer.lock ./
+RUN composer install --no-dev --no-scripts --prefer-dist --no-progress --no-autoloader
+
+# App source, then optimized autoloader + cache warmup
+COPY api/ ./
+RUN composer dump-autoload --no-dev --optimize --classmap-authoritative \
+ && php bin/console cache:clear --no-warmup \
+ && php bin/console cache:warmup
+
+# ── Runtime: FrankenPHP serves the built app on $PORT ───────────────────────────
+FROM base AS runtime
+ENV APP_ENV=prod \
+    APP_DEBUG=0
+COPY --from=builder /app /app

@@ -1,8 +1,11 @@
 {
 	frankenphp
+	# Railway (and local compose) terminate/serve HTTP directly; no ACME.
+	auto_https off
 }
 
-{$SERVER_NAME} {
+# Binds to Railway's injected $PORT (defaults to 80 for local compose).
+:{$PORT:80} {
 	root * /app/public
 	encode zstd br gzip
 	php_server {

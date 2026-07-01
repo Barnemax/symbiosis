@@ -49,6 +49,8 @@ class ImportMediaCommand extends Command
      */
     private function requestJson(string $url, array $options, SymfonyStyle $io, string $context = ''): ?array
     {
+        // Wikipedia (and others) throttle or reject UA-less clients
+        $options['headers'] = ($options['headers'] ?? []) + ['User-Agent' => "$this->appName/1.0 (nature encyclopedia)"];
         $this->throttle($url);
         $label = '' !== $context ? " ({$context})" : '';
 
@@ -302,7 +304,6 @@ class ImportMediaCommand extends Command
     private function fetchInatLeaf(string $scientificName, SymfonyStyle $io): array
     {
         $data = $this->requestJson('https://api.inaturalist.org/v1/observations', [
-            'headers' => ['User-Agent' => "$this->appName/1.0 (nature encyclopedia)"],
             'query' => [
                 'taxon_name' => $scientificName,
                 'quality_grade' => 'research',
@@ -336,7 +337,6 @@ class ImportMediaCommand extends Command
     private function fetchInatFeather(string $scientificName, SymfonyStyle $io): array
     {
         $data = $this->requestJson('https://api.inaturalist.org/v1/observations', [
-            'headers' => ['User-Agent' => "$this->appName/1.0 (nature encyclopedia)"],
             'query' => [
                 'taxon_name' => $scientificName,
                 'quality_grade' => 'research',

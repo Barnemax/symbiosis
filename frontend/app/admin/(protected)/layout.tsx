@@ -1,6 +1,9 @@
 import Link from 'next/link'
 import { logout } from '@/lib/actions'
 
+// Admin is auth-gated and data-driven — render per request, never prerender at build.
+export const dynamic = 'force-dynamic'
+
 export default function AdminLayout({ children }: { children: React.ReactNode }): React.JSX.Element {
   return (
     <div className="min-h-screen bg-stone-50">

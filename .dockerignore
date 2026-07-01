@@ -1,0 +1,17 @@
+# Backend build context is the repo root — keep it lean.
+.git
+.github
+.claude
+frontend
+scripts
+docker/db
+
+# Symfony build artifacts / local deps (reinstalled inside the image)
+api/vendor
+api/var
+api/.env.local
+api/.env.*.local
+
+# Docs / meta
+*.md
+compose*.y*ml
