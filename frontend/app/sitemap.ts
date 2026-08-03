@@ -4,6 +4,12 @@ import { buildAlternates, buildLocalizedUrl } from '@/lib/routing-utils'
 import { siteInfo } from '@/lib/strings/siteInfo'
 import { routing } from '@/i18n/routing'
 
+// Generate on-demand, not at build time: the sitemap fetches the API, and an unguarded
+// build-time fetch failure aborts the whole deploy. Dynamic means the build never depends
+// on the backend; a crawler request regenerates it live (and surfaces a real error if the
+// API is down, rather than shipping a stale or fabricated sitemap).
+export const dynamic = 'force-dynamic'
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { url } = siteInfo
   const kingdoms = await getKingdoms()
