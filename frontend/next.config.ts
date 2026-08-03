@@ -7,8 +7,9 @@ const withNextIntl = createNextIntlPlugin('./i18n/request.ts')
 // Allow next/image to load self-hosted media served by the API (e.g. /media/... on
 // the backend domain), derived from the public API URL so it isn't hardcoded.
 const apiUrl = process.env.NEXT_PUBLIC_API_URL
-const apiImagePattern = apiUrl
-  ? [{ protocol: new URL(apiUrl).protocol.replace(':', '') as 'http' | 'https', hostname: new URL(apiUrl).hostname }]
+const apiImageUrl = apiUrl ? new URL(apiUrl) : null
+const apiImagePattern = apiImageUrl
+  ? [{ hostname: apiImageUrl.hostname, protocol: apiImageUrl.protocol.replace(':', '') as 'http' | 'https' }]
   : []
 
 const nextConfig: NextConfig = {
