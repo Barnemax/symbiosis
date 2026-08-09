@@ -21,7 +21,7 @@ export function applyTheme(theme: Theme): void {
   try {
     localStorage.setItem(THEME_STORAGE_KEY, theme)
   } catch {
-    // Private mode / storage disabled — the theme still applies for this page.
+    // Private mode / storage disabled - the theme still applies for this page.
   }
   for (const listener of listeners) {
     listener()

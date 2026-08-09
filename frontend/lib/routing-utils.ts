@@ -11,7 +11,7 @@ return pathConfig
 
 /**
  * Builds an absolute URL for any locale, driven entirely by routing.pathnames.
- * Respects localePrefix: 'as-needed' — default locale gets no prefix.
+ * Respects localePrefix: 'as-needed' - default locale gets no prefix.
  *
  * buildLocalizedUrl(siteUrl, '/birds', 'fr') → 'https://…/fr/oiseaux'
  * buildLocalizedUrl(siteUrl, '/birds/[slug]', 'en', { slug: 'alcedo-atthis' }) → 'https://…/birds/alcedo-atthis'
@@ -37,7 +37,7 @@ export function buildLocalizedUrl(
 
 /**
  * Builds the alternates object for generateMetadata and sitemap entries.
- * Iterates over all locales in routing.locales — adding a locale to routing.ts is enough.
+ * Iterates over all locales in routing.locales - adding a locale to routing.ts is enough.
  */
 export function buildAlternates(
   siteUrl: string,

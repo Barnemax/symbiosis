@@ -33,7 +33,7 @@ class RateLimitTest extends ApiTestCase
                 'headers' => ['Content-Type' => 'application/ld+json'],
                 'json' => ['scientificName' => 'Test'],
             ]);
-            // 401 (no API key) is expected — rate limiter runs before auth
+            // 401 (no API key) is expected - rate limiter runs before auth
             $this->assertContains(
                 $client->getResponse()->getStatusCode(),
                 [401, 422],

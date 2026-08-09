@@ -10,7 +10,7 @@ import { buildLocalizedUrl, buildAlternates } from '@/lib/routing-utils'
 const SITE = 'https://example.com'
 
 describe('buildLocalizedUrl', () => {
-  describe('default locale (en) — no prefix', () => {
+  describe('default locale (en) - no prefix', () => {
     it('resolves a localised static path', () => {
       expect(buildLocalizedUrl(SITE, '/birds', 'en')).toBe('https://example.com/birds')
     })
@@ -29,7 +29,7 @@ describe('buildLocalizedUrl', () => {
     })
   })
 
-  describe('non-default locale (fr) — adds prefix and translated path', () => {
+  describe('non-default locale (fr) - adds prefix and translated path', () => {
     it('resolves a localised static path', () => {
       expect(buildLocalizedUrl(SITE, '/birds', 'fr')).toBe('https://example.com/fr/oiseaux')
     })

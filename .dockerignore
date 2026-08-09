@@ -1,4 +1,4 @@
-# Backend build context is the repo root — keep it lean.
+# Backend build context is the repo root - keep it lean.
 .git
 .github
 .claude

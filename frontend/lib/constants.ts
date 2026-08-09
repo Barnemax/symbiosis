@@ -5,7 +5,7 @@ export const COMMON_NAME_LOCALES = [...routing.locales, 'la'] as const
 
 /**
  * Kingdom accents. Two hex values per kingdom because the graph paints to a
- * canvas, where CSS custom properties are not available — keep these in sync
+ * canvas, where CSS custom properties are not available - keep these in sync
  * with --bird / --tree / --fungus in globals.css.
  */
 export const KINGDOM_CONFIG: Record<string, { color: string; colorDark: string }> = {

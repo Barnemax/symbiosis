@@ -21,7 +21,7 @@ A nature encyclopedia built with **Symfony 8 + API Platform 4** and a **Next.js 
 
 ## What it does
 
-The encyclopedia covers three kingdoms — **birds**, **trees**, and **fungi** — linked by typed ecological relationships (`nests_in`, `feeds_on`, `symbiosis_with`, `disperses_spores_of`, …). Each species has a scientific name, IUCN conservation status, common names in multiple locales, and associated media (images, bird calls).
+The encyclopedia covers three kingdoms - **birds**, **trees**, and **fungi** - linked by typed ecological relationships (`nests_in`, `feeds_on`, `symbiosis_with`, `disperses_spores_of`, …). Each species has a scientific name, IUCN conservation status, common names in multiple locales, and associated media (images, bird calls).
 
 An interactive force-graph on the `/explore` page visualises the full ecological network.
 
@@ -59,21 +59,21 @@ docker compose exec php bin/console doctrine:fixtures:load
 
 All species data has real, documented ecological associations. The dataset is expanded using a Claude-assisted curation workflow (see below). Sources:
 
-- [Wikipedia](https://wikipedia.org/) — species descriptions
-- [Wikimedia Commons](https://commons.wikimedia.org/) — images (CC-licensed)
-- [iNaturalist](https://www.inaturalist.org/) — leaf and feather photos (CC-licensed)
-- [xeno-canto](https://xeno-canto.org/) — bird calls (CC-licensed)
-- [IUCN Red List](https://www.iucnredlist.org/) — conservation status
+- [Wikipedia](https://wikipedia.org/) - species descriptions
+- [Wikimedia Commons](https://commons.wikimedia.org/) - images (CC-licensed)
+- [iNaturalist](https://www.inaturalist.org/) - leaf and feather photos (CC-licensed)
+- [xeno-canto](https://xeno-canto.org/) - bird calls (CC-licensed)
+- [IUCN Red List](https://www.iucnredlist.org/) - conservation status
 
 ### Claude-assisted curation workflow
 
 Adding ecologically accurate species to the dataset involves two tools:
 
-**`scripts/suggest-species.mjs`** — a Node script that calls the Claude API. It reads the existing fixture data and asks Claude to suggest new species with *documented* ecological links to what's already in the dataset (not just plausible ones). Output is a structured Markdown file ranking candidates by relationship density.
+**`scripts/suggest-species.mjs`** - a Node script that calls the Claude API. It reads the existing fixture data and asks Claude to suggest new species with *documented* ecological links to what's already in the dataset (not just plausible ones). Output is a structured Markdown file ranking candidates by relationship density.
 
-**Claude Code skills** (`/review-suggestions`, `/add-species`) — slash commands that run inside Claude Code. `/review-suggestions` reads the latest suggestions file and cross-references it against the current fixtures to recommend the best additions. `/add-species` takes a species name, writes the PHP fixture entry, and updates the suggest script's known-species list so future runs stay in sync.
+**Claude Code skills** (`/review-suggestions`, `/add-species`) - slash commands that run inside Claude Code. `/review-suggestions` reads the latest suggestions file and cross-references it against the current fixtures to recommend the best additions. `/add-species` takes a species name, writes the PHP fixture entry, and updates the suggest script's known-species list so future runs stay in sync.
 
-This keeps the dataset small but ecologically coherent — every relationship in the graph has a real source.
+This keeps the dataset small but ecologically coherent - every relationship in the graph has a real source.
 
 ---
 

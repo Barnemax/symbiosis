@@ -5,9 +5,9 @@
 
 /*
  * Semantic tokens. Components reference these (bg-paper, text-ink, border-line…),
- * never raw palette values — that is what makes the theme switchable.
+ * never raw palette values - that is what makes the theme switchable.
  */
-/* `.light` lets a subtree opt out of dark mode — admin is a light-only UI. */
+/* `.light` lets a subtree opt out of dark mode - admin is a light-only UI. */
 :root,
 .light {
   --paper: #faf8f4;

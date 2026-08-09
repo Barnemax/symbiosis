@@ -10,7 +10,7 @@ $kernel = new Kernel($env = $_SERVER['APP_ENV'] ?? 'prod', (bool) ($_SERVER['APP
 $t = hrtime(true);
 error_log("[worker] Booting kernel ({$env})...");
 $kernel->boot();
-error_log(sprintf('[worker] Kernel ready in %.1fs — accepting requests', (hrtime(true) - $t) / 1e9));
+error_log(sprintf('[worker] Kernel ready in %.1fs - accepting requests', (hrtime(true) - $t) / 1e9));
 
 $handler = static function () use ($kernel): void {
     $request = Request::createFromGlobals();

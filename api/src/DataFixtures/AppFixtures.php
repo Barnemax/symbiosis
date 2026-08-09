@@ -436,8 +436,8 @@ class AppFixtures extends Fixture
         $r = $this->rel($manager, $birchBolete, $birch, 'mycorrhiza_with', 'Obligate ectomycorrhizal associate of birch. Virtually never found without a Betula host nearby.');
         $this->relTranslate($manager, $r, 'fr', 'Associé ectomycorhizien obligatoire du bouleau. Pratiquement jamais trouvé sans un hôte Betula à proximité.');
 
-        $r = $this->rel($manager, $flyAgaric, $birch, 'mycorrhiza_with', 'The iconic fly agaric–birch association. Birch is its primary pioneer-woodland host alongside pine.');
-        $this->relTranslate($manager, $r, 'fr', 'L\'association iconique amanite tue-mouches–bouleau. Le bouleau est son hôte principal en forêts pionnières, aux côtés du pin.');
+        $r = $this->rel($manager, $flyAgaric, $birch, 'mycorrhiza_with', 'The iconic association between fly agaric and birch. Birch is its primary pioneer-woodland host alongside pine.');
+        $this->relTranslate($manager, $r, 'fr', 'L\'association iconique entre l\'amanite tue-mouches et le bouleau. Le bouleau est son hôte principal en forêts pionnières, aux côtés du pin.');
 
         // European Beech
         $r = $this->rel($manager, $amethystDeceiver, $beech, 'mycorrhiza_with', 'Characteristic ectomycorrhizal fungus of beech woodland floors. Its violet colour makes it unmistakable in autumn litter.');
@@ -463,11 +463,11 @@ class AppFixtures extends Fixture
 
         // Blue Tit - oak phenology
         $r = $this->rel($manager, $blueTit, $oak, 'feeds_on', 'Nestling diet is dominated by oak caterpillars during the critical growth window. Blue Tit breeding phenology has evolved to synchronise with oak bud-burst - a flagship example in climate change ecology (Visser et al.; Charmantier et al. 2008).');
-        $this->relTranslate($manager, $r, 'fr', 'L\'alimentation des poussins est dominée par les chenilles du chêne pendant la fenêtre de croissance critique. La phénologie de reproduction de la Mésange bleue a évolué pour se synchroniser avec le débourrement du chêne — un exemple phare en écologie du changement climatique (Visser et al. ; Charmantier et al. 2008).');
+        $this->relTranslate($manager, $r, 'fr', 'L\'alimentation des poussins est dominée par les chenilles du chêne pendant la fenêtre de croissance critique. La phénologie de reproduction de la Mésange bleue a évolué pour se synchroniser avec le débourrement du chêne - un exemple phare en écologie du changement climatique (Visser et al. ; Charmantier et al. 2008).');
 
         // Wood Warbler - beech specialist
         $r = $this->rel($manager, $woodWarbler, $beech, 'nests_in', 'Breeds almost exclusively in mature Beech woodland with a closed canopy and bare, leaf-litter floor - one of the tightest habitat associations of any European warbler. UK populations have declined sharply as Beech woodland structure has changed.');
-        $this->relTranslate($manager, $r, 'fr', 'Niche presque exclusivement dans les hêtraies matures à canopée fermée et sol nu couvert de litière — l\'une des associations habitat les plus étroites de toutes les fauvettes européennes. Les populations britanniques ont fortement décliné avec l\'évolution de la structure des hêtraies.');
+        $this->relTranslate($manager, $r, 'fr', 'Niche presque exclusivement dans les hêtraies matures à canopée fermée et sol nu couvert de litière - l\'une des associations habitat les plus étroites de toutes les fauvettes européennes. Les populations britanniques ont fortement décliné avec l\'évolution de la structure des hêtraies.');
 
         // Treecreepers
         $r = $this->rel($manager, $treecreeper, $pine, 'feeds_on', 'Forages under the rough scales of Scots Pine bark for spiders and insects; also nests behind loose bark slabs, a nesting habit unique to this family. The association with pine is particularly strong in Scottish Highland populations.');
@@ -832,7 +832,7 @@ class AppFixtures extends Fixture
 
     private function names(ObjectManager $manager, Species $species, string $en, string $fr): void
     {
-        // Skip existing species — CommonName has a unique (species, locale) constraint.
+        // Skip existing species - CommonName has a unique (species, locale) constraint.
         if (null !== $species->getId()) {
             return;
         }
@@ -873,7 +873,7 @@ class AppFixtures extends Fixture
         string $locale,
         ?string $notes,
     ): void {
-        // Skip existing relationships — RelationshipTranslation has a unique (relationship, locale) constraint.
+        // Skip existing relationships - RelationshipTranslation has a unique (relationship, locale) constraint.
         if (null !== $rel->getId()) {
             return;
         }
@@ -889,7 +889,7 @@ class AppFixtures extends Fixture
         ?string $habitat,
         ?string $substrate = null,
     ): void {
-        // Skip existing species — SpeciesTranslation has a unique (species, locale) constraint.
+        // Skip existing species - SpeciesTranslation has a unique (species, locale) constraint.
         if (null !== $species->getId()) {
             return;
         }

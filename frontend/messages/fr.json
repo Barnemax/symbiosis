@@ -26,15 +26,15 @@
     "stat_relationships": "{count, plural, one {relation} other {relations}}",
     "stat_kingdoms": "{count, plural, one {règne} other {règnes}}",
     "browse": "Parcourir",
-    "about_title": "De quoi s'agit-il\u00a0?",
-    "about_p1": "Symbiose est une encyclopédie naturaliste qui cartographie les relations écologiques entre oiseaux, arbres et champignons. Quel pic niche dans quel chêne\u00a0? Quel champignon forme des réseaux mycorhiziens avec quel arbre\u00a0? Chaque relation ici est documentée et sourcée.",
-    "about_p2": "Le jeu de données est volontairement restreint\u00a0: nous privilégions la profondeur à l'étendue. Chaque espèce est reliée à ses voisines par des associations écologiques réelles et publiées, et non par des suppositions générées par IA.",
-    "about_curation_title": "Comment nous curons les données",
+    "about_title": "De quoi s'agit-il ?",
+    "about_p1": "Symbiosis est un projet qui se veut éducatif, qui cherche à offrir un curieux regard sur la nature et informer sur les répercussions de l'altération/destructions de milieux naturels. Nous pensons que le monde serait un meilleur endroit si les gens prennaient le temps d'aller en forêt juste pour observer ce qui se passe autour d'eux, il y a un peu cette notion d'émerveillement et d'empathie que nous souhaitons transmettre à travers ce projet. Le but est de montrer que les espèces ne vivent pas isolées, mais qu'elles sont toutes connectées par des relations écologiques complexes.",
+    "about_p2": "Le jeu de données est volontairement restreint : nous privilégions la profondeur à l'étendue. Chaque espèce est reliée à ses voisines par des associations écologiques réelles et publiées. Pour l'instant nous nous concentrons sur les oiseaux, les champignons et les arbres, mais il n'est pas exclu que d'autres règnes soient ajoutés à l'avenir.",
+    "about_curation_title": "Comment nous qualifions les données",
     "about_curation": "Les données proviennent de Wikipédia, les images de Wikimedia Commons et iNaturalist, les chants d'oiseaux de xeno-canto et les statuts de conservation de la Liste rouge de l'UICN. Les nouvelles espèces sont suggérées par l'API Anthropic à partir de liens écologiques documentés avec les espèces déjà présentes, puis vérifiées et ajoutées manuellement.",
     "about_explore": "Explorer le réseau"
   },
   "kingdom": {
-    "empty": "Aucune espèce trouvée pour « {search} »",
+    "empty": "Aucune espèce trouvée pour « {search} »",
     "link_count": "{count, plural, one {# lien} other {# liens}}",
     "next": "Suiv. →",
     "prev": "← Préc.",
@@ -57,24 +57,24 @@
     "wingspan_value": "~{value} cm"
   },
   "contact": {
-    "subtitle": "Une erreur\u00a0? Vous souhaitez suggérer une espèce\u00a0? Juste dire bonjour\u00a0? Envoyez-nous un message.",
+    "subtitle": "Une erreur ? Vous souhaitez suggérer une espèce ? Juste dire bonjour ? Envoyez-nous un message.",
     "title": "Contact",
     "email": "Email",
     "email_placeholder": "votre@email.com",
     "species": "Espèce (facultatif)",
-    "species_placeholder": "Rechercher une espèce\u2026",
+    "species_placeholder": "Rechercher une espèce…",
     "message": "Message",
-    "message_placeholder": "Décrivez une correction, suggérez une espèce ou dites simplement bonjour\u00a0\u2026",
+    "message_placeholder": "Décrivez une correction, suggérez une espèce ou dites simplement bonjour…",
     "send": "Envoyer",
-    "sending": "Envoi\u2026"
+    "sending": "Envoi…"
   },
   "explore": {
-    "loading": "Construction du réseau écologique\u2026",
+    "loading": "Construction du réseau écologique…",
     "subtitle": "{species} espèces · {relationships} relations · cliquer pour zoomer · double-cliquer pour ouvrir",
     "title": "Réseau écologique"
   },
   "search": {
-    "placeholder": "Rechercher une espèce\u2026"
+    "placeholder": "Rechercher une espèce…"
   },
   "kingdoms": {
     "bird": "Oiseau",

@@ -54,7 +54,7 @@ function makeRelationship(overrides: Partial<Relationship> = {}): Relationship {
 // Core shape
 // ---------------------------------------------------------------------------
 
-describe('buildTaxonSchema — core shape', () => {
+describe('buildTaxonSchema - core shape', () => {
   it('sets the correct @context and @type', () => {
     const schema = buildTaxonSchema(makeSpecies(), [], SLUG_BY_KINGDOM) as Record<string, unknown>
     expect(schema['@context']).toBe('https://schema.org')
@@ -106,7 +106,7 @@ describe('buildTaxonSchema — core shape', () => {
 // Image
 // ---------------------------------------------------------------------------
 
-describe('buildTaxonSchema — image', () => {
+describe('buildTaxonSchema - image', () => {
   it('omits image when species has no media', () => {
     const schema = buildTaxonSchema(makeSpecies({ media: [] }), [], SLUG_BY_KINGDOM) as Record<string, unknown>
     expect(schema).not.toHaveProperty('image')
@@ -134,7 +134,7 @@ describe('buildTaxonSchema — image', () => {
 // Relationships (additionalProperty)
 // ---------------------------------------------------------------------------
 
-describe('buildTaxonSchema — additionalProperty', () => {
+describe('buildTaxonSchema - additionalProperty', () => {
   it('omits additionalProperty when asSubject is empty', () => {
     const schema = buildTaxonSchema(makeSpecies(), [], SLUG_BY_KINGDOM) as Record<string, unknown>
     expect(schema).not.toHaveProperty('additionalProperty')

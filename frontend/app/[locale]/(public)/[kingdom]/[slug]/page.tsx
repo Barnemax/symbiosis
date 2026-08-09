@@ -58,7 +58,7 @@ export async function generateMetadata({
   }
 }
 
-/** Small-caps section heading with a hairline rule — the field-guide device used throughout. */
+/** Small-caps section heading with a hairline rule - the field-guide device used throughout. */
 function SectionLabel({ children }: { children: React.ReactNode }): React.JSX.Element {
   return (
     <h2 className="mb-4 flex items-center gap-3 text-xs font-medium uppercase tracking-[0.14em] text-ink-faint">
@@ -215,7 +215,7 @@ export default async function SpeciesPage({
         </div>
 
         <div className="mt-12 grid gap-12 lg:grid-cols-[1fr_19rem] lg:gap-14">
-          {/* Relationships — the substance of the page, so it leads */}
+          {/* Relationships - the substance of the page, so it leads */}
           <div className="order-2 lg:order-1">
             {groupedRelationships.length > 0 && (
               <section>
@@ -296,7 +296,7 @@ export default async function SpeciesPage({
                 <div className="relative aspect-4/3 overflow-hidden rounded-lg border border-line bg-paper-sunk">
                   <SpeciesImage
                     src={resolveMediaUrl(plate.media.url)}
-                    alt={`${commonName} — ${plate.label.toLowerCase()}`}
+                    alt={`${commonName}, ${plate.label.toLowerCase()}`}
                     kingdom={species.family.kingdom}
                     sizes="(min-width: 1024px) 19rem, 100vw"
                     className="object-cover object-center"

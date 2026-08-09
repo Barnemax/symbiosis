@@ -30,7 +30,7 @@ async function main(): Promise<void> {
       console.log(`Admin user already exists: ${EMAIL}`)
       process.exit(0)
     }
-    // User exists but isn't admin yet — promote
+    // User exists but isn't admin yet - promote
     await db.update(user).set({ role: 'admin' }).where(eq(user.email, EMAIL))
     console.log(`Promoted existing user to admin: ${EMAIL}`)
     process.exit(0)

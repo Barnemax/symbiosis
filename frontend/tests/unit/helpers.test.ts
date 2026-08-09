@@ -2,7 +2,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest'
 import { getCommonName, getRelationshipLabel, getTranslatedField, resolveMediaUrl } from '@/lib/helpers'
 import type { Species } from '@/lib/types'
 
-// Minimal Species fixture — only the fields the helper functions inspect.
+// Minimal Species fixture - only the fields the helper functions inspect.
 function makeSpecies(overrides: Partial<Species> = {}): Species {
   return {
     commonNames: [

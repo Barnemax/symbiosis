@@ -19,7 +19,7 @@ The user provides species names as arguments (scientific or common names). Match
 - Glob for `scripts/suggestions-*.md` and read the most recent one
 - Read `api/src/DataFixtures/AppFixtures.php`
 - Read `scripts/suggest-species.mjs`
-- Read `api/src/Locale.php` — extract the `SUPPORTED` array; the non-`en` values are the locales that need translations
+- Read `api/src/Locale.php` - extract the `SUPPORTED` array; the non-`en` values are the locales that need translations
 
 ### 2. Parse the suggestions
 

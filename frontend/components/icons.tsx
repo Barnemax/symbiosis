@@ -7,7 +7,7 @@ type IconProps = {
 /**
  * Line-art icons drawn on a 24-unit grid with a 1.5 stroke, so they sit at the
  * same optical weight as the type. Kingdom marks are deliberately drawn rather
- * than emoji — emoji render differently per platform and read as placeholder.
+ * than emoji, which render differently per platform and read as placeholder.
  */
 const stroke = {
   fill: 'none',
@@ -18,9 +18,9 @@ const stroke = {
 } as const
 
 /**
- * Brand mark: three kingdoms as nodes, bound by the relationships between them
- * — the dataset's own shape. Drawn in currentColor so it inherits the theme and
- * stays crisp at any size, unlike the pixel-art PNG it replaces.
+ * Brand mark: three kingdoms as nodes, bound by the relationships between them.
+ * Drawn in currentColor so it inherits the theme and stays crisp at any size,
+ * unlike the pixel-art PNG it replaces.
  */
 export function SymbiosisMark({ className }: IconProps): React.JSX.Element {
   return (

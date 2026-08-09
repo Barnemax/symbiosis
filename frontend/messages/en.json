@@ -27,8 +27,8 @@
     "stat_kingdoms": "{count, plural, one {kingdom} other {kingdoms}}",
     "browse": "Browse",
     "about_title": "What is this?",
-    "about_p1": "Symbiosis is a nature encyclopedia that maps the ecological relationships between birds, trees and fungi. Which woodpecker nests in which oak? Which fungus forms mycorrhizal networks with which tree? Every relationship here is documented and sourced.",
-    "about_p2": "The dataset is small on purpose: we favour depth over breadth. Each species is linked to its neighbours through real, published ecological associations rather than AI-generated guesses.",
+    "about_p1": "Symbiosis is an educational project: a curious look at the natural world, and at what happens when habitats are altered or destroyed. We think the world would be a better place if people took the time to walk into a forest simply to watch what goes on around them. That sense of wonder and empathy is what we hope to pass on. The aim is to show that species do not live in isolation, but are bound to one another by complex ecological relationships.",
+    "about_p2": "The dataset is small on purpose: we favour depth over breadth. Each species is linked to its neighbours through real, published ecological associations. For now we focus on birds, fungi and trees, though other kingdoms may well follow.",
     "about_curation_title": "How we curate",
     "about_curation": "Species data comes from Wikipedia, images from Wikimedia Commons and iNaturalist, bird calls from xeno-canto and conservation statuses from the IUCN Red List. New species are suggested by the Anthropic API based on documented ecological links to what's already in the dataset, then reviewed and added by hand.",
     "about_explore": "Explore the network"
@@ -69,12 +69,12 @@
     "sending": "Sending…"
   },
   "explore": {
-    "loading": "Building ecological network\u2026",
+    "loading": "Building ecological network…",
     "subtitle": "{species} species · {relationships} relationships · click to zoom · double-click to open",
     "title": "Ecological network"
   },
   "search": {
-    "placeholder": "Search species\u2026"
+    "placeholder": "Search species…"
   },
   "kingdoms": {
     "bird": "Bird",

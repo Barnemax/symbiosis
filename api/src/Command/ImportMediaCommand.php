@@ -141,7 +141,7 @@ class ImportMediaCommand extends Command
 
             // ── Image ──────────────────────────────────────────────────────────
             if (!$force && $this->hasMediaType($species, 'image')) {
-                $io->text('  – image already exists (use --force to overwrite)');
+                $io->text('  - image already exists (use --force to overwrite)');
                 ++$skipped;
             } else {
                 [$url, $credit] = $this->fetchWikimediaImage($species->getScientificName(), $io);
@@ -159,7 +159,7 @@ class ImportMediaCommand extends Command
             // ── Leaf image (trees only) ───────────────────────────────────────
             if ($withLeaves && Kingdom::Tree === $species->getFamily()?->getKingdom()) {
                 if (!$force && $this->hasMediaType($species, 'leaf')) {
-                    $io->text('  – leaf image already exists (use --force to overwrite)');
+                    $io->text('  - leaf image already exists (use --force to overwrite)');
                     ++$skipped;
                 } else {
                     [$url, $credit] = $this->fetchInatLeaf($species->getScientificName(), $io);
@@ -178,7 +178,7 @@ class ImportMediaCommand extends Command
             // ── Feather image (birds only) ────────────────────────────────────
             if ($withFeathers && Kingdom::Bird === $species->getFamily()?->getKingdom()) {
                 if (!$force && $this->hasMediaType($species, 'feather')) {
-                    $io->text('  – feather image already exists (use --force to overwrite)');
+                    $io->text('  - feather image already exists (use --force to overwrite)');
                     ++$skipped;
                 } else {
                     [$url, $credit] = $this->fetchInatFeather($species->getScientificName(), $io);
@@ -197,7 +197,7 @@ class ImportMediaCommand extends Command
             // ── Audio (birds only) ─────────────────────────────────────────────
             if ($withAudio && Kingdom::Bird === $species->getFamily()?->getKingdom()) {
                 if (!$force && $this->hasMediaType($species, 'audio')) {
-                    $io->text('  – audio already exists (use --force to overwrite)');
+                    $io->text('  - audio already exists (use --force to overwrite)');
                     ++$skipped;
                 } else {
                     [$url, $credit] = $this->fetchXenoCanto($species->getScientificName(), $xenoCantoKey, $io);
