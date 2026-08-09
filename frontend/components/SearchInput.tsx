@@ -2,6 +2,7 @@
 
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { SearchIcon } from '@/components/icons'
 
 export default function SearchInput({ defaultValue, placeholder }: { defaultValue: string; placeholder: string }): React.JSX.Element {
   const router = useRouter()
@@ -39,11 +40,14 @@ export default function SearchInput({ defaultValue, placeholder }: { defaultValu
   }, [value, push])
 
   return (
-    <input
-      value={value}
-      onChange={e => setValue(e.target.value)}
-      placeholder={placeholder}
-      className="w-full rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-300"
-    />
+    <div className="relative">
+      <SearchIcon className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+      <input
+        value={value}
+        onChange={e => setValue(e.target.value)}
+        placeholder={placeholder}
+        className="w-full rounded-full border border-line bg-surface py-2 pl-10 pr-4 text-sm text-ink placeholder:text-ink-faint focus:border-ink-faint focus:outline-none"
+      />
+    </div>
   )
 }

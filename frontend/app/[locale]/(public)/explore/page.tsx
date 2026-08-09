@@ -65,14 +65,14 @@ export default async function ExplorePage(): Promise<React.JSX.Element> {
   const links: GraphLink[] = mergedLinks.map(link => ({ curvature: 0, ...link }))
 
   return (
-    <main className="mx-auto max-w-5xl px-6 py-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-stone-900">{t('title')}</h1>
-        <p className="mt-1 text-sm text-stone-500">
+    <main className="mx-auto max-w-7xl px-5 py-12 sm:px-8">
+      <header className="mb-6 max-w-2xl">
+        <h1 className="font-display text-4xl font-semibold tracking-tight sm:text-5xl">{t('title')}</h1>
+        <p className="mt-2 text-ink-muted">
           {t('subtitle', { relationships: links.length, species: nodes.length })}
         </p>
-      </div>
-      <div className="overflow-hidden rounded-xl border border-stone-200">
+      </header>
+      <div className="overflow-hidden rounded-2xl border border-line">
         <RelationshipGraph nodes={nodes} links={links} kingdoms={kingdoms} />
       </div>
     </main>

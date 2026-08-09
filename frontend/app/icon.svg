@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <style>
+    .tile { fill: #14130F }
+    .mark { fill: #F7F4ED; stroke: #F7F4ED }
+    /* Invert on dark tab strips so the tile never blends into the chrome. */
+    @media (prefers-color-scheme: dark) {
+      .tile { fill: #F7F4ED }
+      .mark { fill: #14130F; stroke: #14130F }
+    }
+  </style>
+  <rect class="tile" width="32" height="32" rx="7"/>
+  <g class="mark">
+    <path d="M16 7.4Q6.6 12.6 6.4 23.8Q16 28.8 25.6 23.8Q25.4 12.6 16 7.4Z"
+          fill="none" stroke-width="2.4" stroke-linejoin="round"/>
+    <circle cx="16" cy="7.4" r="4.2"/>
+    <circle cx="6.4" cy="23.8" r="3.6"/>
+    <circle cx="25.6" cy="23.8" r="3.6"/>
+  </g>
+</svg>

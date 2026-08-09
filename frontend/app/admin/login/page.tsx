@@ -7,7 +7,7 @@ export default function LoginPage(): React.JSX.Element {
   const [state, action, pending] = useActionState(login, null)
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-stone-50">
+    <div className="light flex min-h-screen items-center justify-center bg-stone-50">
       <div className="w-full max-w-sm rounded-xl border border-stone-200 bg-white p-8">
         <h1 className="mb-6 text-xl font-semibold text-stone-900">Admin login</h1>
         <form action={action} className="space-y-4">

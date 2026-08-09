@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 
 export default function AdminLayout({ children }: { children: React.ReactNode }): React.JSX.Element {
   return (
-    <div className="min-h-screen bg-stone-50">
+    <div className="light min-h-screen bg-stone-50 text-stone-900">
       <header className="flex items-center justify-between border-b border-stone-200 bg-white px-6 py-4">
         <div className="flex items-center gap-6">
           <Link href="/" className="text-sm text-stone-500 hover:text-stone-900">

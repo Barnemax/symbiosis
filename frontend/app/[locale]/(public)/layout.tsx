@@ -6,7 +6,7 @@ export default async function PublicLayout({ children }: { children: React.React
   const kingdoms = await getKingdoms()
 
   return (
-    <div className="min-h-screen bg-stone-50 flex flex-col">
+    <div className="flex min-h-screen flex-col">
       <PublicNav kingdoms={kingdoms} />
       <div className="flex-1">{children}</div>
       <PublicFooter />

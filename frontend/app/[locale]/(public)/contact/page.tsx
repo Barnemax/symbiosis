@@ -30,10 +30,12 @@ export default async function ContactPage(): Promise<React.JSX.Element> {
     .sort((a, b) => a.label.localeCompare(b.label))
 
   return (
-    <main className="mx-auto max-w-lg px-6 py-12">
-      <h1 className="mb-2 text-2xl font-semibold text-stone-900">{t('title')}</h1>
-      <p className="mb-8 text-sm text-stone-500">{t('subtitle')}</p>
-      <ContactForm speciesOptions={speciesOptions} />
+    <main className="mx-auto max-w-xl px-5 py-16 sm:px-8">
+      <h1 className="font-display text-4xl font-semibold tracking-tight sm:text-5xl">{t('title')}</h1>
+      <p className="mt-3 text-base leading-relaxed text-ink-muted text-pretty">{t('subtitle')}</p>
+      <div className="mt-10 border-t border-line pt-8">
+        <ContactForm speciesOptions={speciesOptions} />
+      </div>
     </main>
   )
 }

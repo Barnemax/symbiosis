@@ -1,10 +1,17 @@
 {
   "nav": {
     "birds": "Birds",
+    "close": "Close menu",
     "contact": "Contact",
     "explore": "Explore",
     "fungi": "Fungi",
+    "menu": "Menu",
     "trees": "Trees"
+  },
+  "theme": {
+    "dark": "dark",
+    "light": "light",
+    "switch_to": "Switch to {theme} mode"
   },
   "home": {
     "birds_desc": "Aves, feathered vertebrates",
@@ -13,6 +20,12 @@
     "title": "Symbiosis",
     "trees_desc": "Woody plants and their ecology",
     "species_count": "{count, plural, one {# species} other {# species}}",
+    "relationship_count": "{count, plural, one {# relationship} other {# relationships}}",
+    "kingdom_count": "{count, plural, one {# kingdom} other {# kingdoms}}",
+    "stat_species": "{count, plural, one {species} other {species}}",
+    "stat_relationships": "{count, plural, one {relationship} other {relationships}}",
+    "stat_kingdoms": "{count, plural, one {kingdom} other {kingdoms}}",
+    "browse": "Browse",
     "about_title": "What is this?",
     "about_p1": "Symbiosis is a nature encyclopedia that maps the ecological relationships between birds, trees and fungi. Which woodpecker nests in which oak? Which fungus forms mycorrhizal networks with which tree? Every relationship here is documented and sourced.",
     "about_p2": "The dataset is small on purpose: we favour depth over breadth. Each species is linked to its neighbours through real, published ecological associations rather than AI-generated guesses.",

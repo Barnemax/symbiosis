@@ -1,23 +1,20 @@
+import Skeleton from '@/components/Skeleton'
+
 export default function Loading(): React.JSX.Element {
   return (
-    <main className="mx-auto max-w-lg px-6 py-12">
-      <div className="mb-2 h-7 w-32 animate-pulse rounded bg-stone-200" />
-      <div className="mb-8 h-4 w-3/4 animate-pulse rounded bg-stone-100" />
+    <main className="mx-auto max-w-xl px-5 py-16 sm:px-8">
+      <Skeleton className="h-11 w-48 rounded-lg sm:h-14" />
+      <Skeleton className="mt-4 h-5 w-full" />
+      <Skeleton className="mt-2 h-5 w-2/3" />
 
-      <div className="space-y-5">
-        <div>
-          <div className="mb-1 h-4 w-20 animate-pulse rounded bg-stone-100" />
-          <div className="h-10 w-full animate-pulse rounded-lg bg-stone-200" />
-        </div>
-        <div>
-          <div className="mb-1 h-4 w-32 animate-pulse rounded bg-stone-100" />
-          <div className="h-10 w-full animate-pulse rounded-lg bg-stone-200" />
-        </div>
-        <div>
-          <div className="mb-1 h-4 w-24 animate-pulse rounded bg-stone-100" />
-          <div className="h-32 w-full animate-pulse rounded-lg bg-stone-200" />
-        </div>
-        <div className="h-10 w-full animate-pulse rounded-lg bg-stone-200" />
+      <div className="mt-10 space-y-5 border-t border-line pt-8">
+        {[10, 10, 32].map((height, i) => (
+          <div key={i}>
+            <Skeleton className="mb-1.5 h-3 w-20" />
+            <Skeleton className={`w-full rounded-lg ${height === 32 ? 'h-32' : 'h-10'}`} />
+          </div>
+        ))}
+        <Skeleton className="h-10 w-32 rounded-full" />
       </div>
     </main>
   )

@@ -54,7 +54,7 @@ export async function getKingdoms(): Promise<KingdomMeta[]> {
     '/api/kingdoms',
     { next: { revalidate: false, tags: ['kingdoms', 'species'] } },
   )
-  return data.kingdoms.map(k => ({ ...k, ...(KINGDOM_CONFIG[k.key] ?? { color: '#78716c', icon: '•' }) }))
+  return data.kingdoms.map(k => ({ ...k, ...(KINGDOM_CONFIG[k.key] ?? { color: '#78716c', colorDark: '#a8a29e' }) }))
 }
 
 export async function getSpeciesBySlug(kingdom: string, slug: string): Promise<Species> {

@@ -1,25 +1,122 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* `.light` wins over an ancestor `.dark`, so dark: variants must not match inside it. */
+@custom-variant dark (&:where(.dark, .dark *):not(:where(.light, .light *)));
+
+/*
+ * Semantic tokens. Components reference these (bg-paper, text-ink, border-line…),
+ * never raw palette values — that is what makes the theme switchable.
+ */
+/* `.light` lets a subtree opt out of dark mode — admin is a light-only UI. */
+:root,
+.light {
+  --paper: #faf8f4;
+  --paper-sunk: #f2eee6;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+
+  --ink: #1c1a17;
+  --ink-muted: #5c574f;
+  --ink-faint: #8b857a;
+
+  --line: #e6e1d7;
+  --line-strong: #d2ccbe;
+
+  --accent: #3f6b4b;
+  --accent-hover: #325740;
+  --accent-fg: #ffffff;
+  --accent-wash: #eef3ee;
+
+  --bird: #40718f;
+  --tree: #4f8250;
+  --fungus: #a8672c;
+
+  --shadow-plate: 0 1px 2px rgb(28 26 23 / 0.04), 0 8px 24px -12px rgb(28 26 23 / 0.12);
+}
+
+.dark {
+  --paper: #131210;
+  --paper-sunk: #0d0c0a;
+  --surface: #1b1917;
+  --surface-raised: #23201d;
+
+  --ink: #f0ebe1;
+  --ink-muted: #a8a196;
+  --ink-faint: #7a7469;
+
+  --line: #2c2925;
+  --line-strong: #3d3833;
+
+  --accent: #8fb494;
+  --accent-hover: #a6c6aa;
+  --accent-fg: #14180f;
+  --accent-wash: #1e2620;
+
+  --bird: #7dabc9;
+  --tree: #86b583;
+  --fungus: #d09a5f;
+
+  --shadow-plate: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.6);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: "Miranda Sans";
+  --color-paper: var(--paper);
+  --color-paper-sunk: var(--paper-sunk);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-wash: var(--accent-wash);
+
+  --color-bird: var(--bird);
+  --color-tree: var(--tree);
+  --color-fungus: var(--fungus);
+
+  --font-sans: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+
+  --shadow-plate: var(--shadow-plate);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), sans-serif;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "cv05" 1;
+}
+
+/* Fraunces reads as a plate caption at small sizes and a title at large ones. */
+.font-display {
+  font-variation-settings: "SOFT" 20, "WONK" 1;
+}
+
+::selection {
+  background-color: var(--accent-wash);
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

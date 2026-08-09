@@ -1,8 +1,25 @@
 import type { Metadata } from 'next'
 import './globals.css'
 
+import { Fraunces, Instrument_Sans } from 'next/font/google'
 import { siteInfo } from '@/lib/strings/siteInfo'
 import { getLocale } from 'next-intl/server'
+import { THEME_INIT_SCRIPT } from '@/lib/theme'
+
+const fraunces = Fraunces({
+  axes: ['SOFT', 'WONK'],
+  display: 'swap',
+  style: ['normal', 'italic'],
+  subsets: ['latin'],
+  variable: '--font-fraunces',
+})
+
+const instrumentSans = Instrument_Sans({
+  display: 'swap',
+  style: ['normal', 'italic'],
+  subsets: ['latin'],
+  variable: '--font-instrument-sans',
+})
 
 export const metadata: Metadata = {
   description: 'A nature encyclopedia exploring ecological relationships between birds, trees, and fungi.',
@@ -19,15 +36,12 @@ export default async function RootLayout({
 }>): Promise<React.JSX.Element> {
   const locale = await getLocale().catch(() => 'en')
   return (
-    <html lang={locale}>
+    <html lang={locale} className={`${fraunces.variable} ${instrumentSans.variable}`} suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Miranda+Sans:wght@100..900&display=swap" rel="stylesheet" />
+        {/* Runs before paint so a dark-mode reload never flashes light. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
-      <body
-        className="antialiased"
-      >
+      <body className="antialiased">
         {children}
       </body>
     </html>

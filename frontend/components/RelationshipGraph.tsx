@@ -5,11 +5,19 @@ import { forceCollide } from 'd3-force'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { ForceGraphMethods, LinkObject, NodeObject } from 'react-force-graph-2d'
-import { KINGDOM_CONFIG } from '@/lib/constants'
+import { useTranslations } from 'next-intl'
 import type { Kingdom, KingdomMeta } from '@/lib/types'
 import { escapeHtml } from '@/lib/utils'
+import { useThemeTokens } from '@/lib/use-theme-tokens'
 
-const FALLBACK_KINGDOM_STYLE = { color: '#78716c', icon: '•' }
+const FALLBACK_KINGDOM_COLOR = '#78716c'
+
+/** Token names the canvas needs; mirrors the semantic palette in globals.css. */
+const TOKENS = ['paper', 'surface', 'ink', 'ink-faint', 'line-strong', 'bird', 'tree', 'fungus'] as const
+
+const GRAPH_FONT = '"Instrument Sans", ui-sans-serif, system-ui, sans-serif'
+
+const GRAPH_HEIGHT = 700
 
 const ForceGraph2D = dynamic(() => import('react-force-graph-2d'), { ssr: false })
 
@@ -54,6 +62,8 @@ export default function RelationshipGraph({ nodes, links, kingdoms }: Props): Re
   const tooltipRef = useRef<HTMLDivElement>(null)
   const imageCache = useRef<Map<string, HTMLImageElement>>(new Map())
   const [width, setWidth] = useState(800)
+  const t = useTranslations('nav')
+  const theme = useThemeTokens(TOKENS)
 
   // Preload node images in batches to avoid hammering the proxy with 55 simultaneous requests
   useEffect(() => {
@@ -97,20 +107,20 @@ export default function RelationshipGraph({ nodes, links, kingdoms }: Props): Re
     // Same screen-size cap as node labels: constant ~9px when zoomed in, shrinks when zoomed out
     const fontSize = Math.min(5, 9 / globalScale)
     ctx.save()
-    ctx.font = `${fontSize}px "Miranda Sans", sans-serif`
-    ctx.fillStyle = '#a8a29e'
+    ctx.font = `${fontSize}px ${GRAPH_FONT}`
+    ctx.fillStyle = theme['ink-faint'] || '#a8a29e'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
     ctx.fillText((link as unknown as GraphLink).label, midX, midY)
     ctx.restore()
-  }, [])
+  }, [theme])
 
   const paintNode = useCallback((node: NodeObject<object>, ctx: CanvasRenderingContext2D, globalScale: number) => {
     const n = node as NodeObject<GraphNode> & { x: number; y: number }
     const r = drawnRadius(n.degree, globalScale)
     ctx.beginPath()
     ctx.arc(n.x, n.y, r, 0, 2 * Math.PI)
-    ctx.fillStyle = KINGDOM_CONFIG[n.kingdom]?.color ?? FALLBACK_KINGDOM_STYLE.color
+    ctx.fillStyle = theme[n.kingdom as typeof TOKENS[number]] || FALLBACK_KINGDOM_COLOR
     ctx.fill()
 
     // Draw thumbnail image clipped to the circle when zoomed in enough
@@ -132,8 +142,9 @@ export default function RelationshipGraph({ nodes, links, kingdoms }: Props): Re
 
     // Labels: constant screen size via inverse zoom scaling
     if (globalScale >= 1.2 || n.degree >= 4) {
-      const fontSize = Math.min(11, 14 / globalScale)
-      ctx.font = `${fontSize}px "Miranda Sans", sans-serif`
+      // World units, so the on-screen size stays put at ~12px through zoom.
+      const fontSize = 12 / globalScale
+      ctx.font = `${fontSize}px ${GRAPH_FONT}`
       ctx.textAlign = 'center'
       ctx.textBaseline = 'top'
 
@@ -150,16 +161,18 @@ export default function RelationshipGraph({ nodes, links, kingdoms }: Props): Re
       const cr = fontSize * 0.25
       ctx.beginPath()
       ctx.roundRect(rx, ry, rw, rh, cr)
-      ctx.fillStyle = 'rgba(250, 250, 249, 0.85)'
+      ctx.fillStyle = theme.surface || '#ffffff'
+      ctx.globalAlpha = 0.88
       ctx.fill()
-      ctx.strokeStyle = 'rgba(168, 162, 158, 0.4)'
+      ctx.globalAlpha = 1
+      ctx.strokeStyle = theme['line-strong'] || '#d2ccbe'
       ctx.lineWidth = 0.5 / globalScale
       ctx.stroke()
 
-      ctx.fillStyle = '#1c1917'
+      ctx.fillStyle = theme.ink || '#1c1917'
       ctx.fillText(n.name, n.x, labelY)
     }
-  }, [])
+  }, [theme])
 
   const paintNodeArea = useCallback((node: NodeObject<object>, color: string, ctx: CanvasRenderingContext2D, globalScale: number) => {
     const n = node as NodeObject<GraphNode> & { x: number; y: number }
@@ -212,12 +225,20 @@ export default function RelationshipGraph({ nodes, links, kingdoms }: Props): Re
     }
   }, [router, adjacency, slugByKingdom])
 
-  // Set forces on first mount, runs before most simulation ticks
-  useEffect(() => {
+  /*
+   * Applied on the first simulation tick rather than in a mount effect:
+   * ForceGraph2D is a dynamic (ssr:false) import, so on the parent's mount
+   * graphRef is still empty and the setup would silently no-op, leaving the
+   * layout on d3's defaults.
+   */
+  const forcesConfigured = useRef(false)
+  const handleEngineTick = useCallback(() => {
     const fg = graphRef.current
-    if (!fg) {
+    if (forcesConfigured.current || !fg) {
       return
     }
+    forcesConfigured.current = true
+
     fg.d3Force('charge')?.strength(-400).distanceMax(300)
     fg.d3Force('link')?.distance((link: LinkObject<object, object>) => {
       const srcDeg = typeof link.source === 'object' ? (link.source as NodeObject<GraphNode>).degree : 1
@@ -231,6 +252,7 @@ export default function RelationshipGraph({ nodes, links, kingdoms }: Props): Re
       const n = node as NodeObject<GraphNode>
       return BASE_RADIUS(n.degree ?? 0) + 28
     }).strength(1).iterations(10))
+    fg.d3ReheatSimulation()
   }, [])
 
   const hasInitialFit = useRef(false)
@@ -241,6 +263,16 @@ export default function RelationshipGraph({ nodes, links, kingdoms }: Props): Re
     }
   }, [])
 
+  // The first fit can run against the placeholder width; re-fit once the
+  // container has been measured, or the graph sits zoomed-out in a corner.
+  useEffect(() => {
+    if (!hasInitialFit.current) {
+      return
+    }
+    const id = setTimeout(() => graphRef.current?.zoomToFit(300, 48), 60)
+    return () => clearTimeout(id)
+  }, [width])
+
   // Imperative tooltip, avoids re-rendering the graph on every hover
   const handleNodeHover = useCallback((node: NodeObject<object> | null) => {
     const el = tooltipRef.current
@@ -250,9 +282,8 @@ export default function RelationshipGraph({ nodes, links, kingdoms }: Props): Re
     if (node) {
       const n = node as NodeObject<GraphNode>
       el.innerHTML = `
-        <p class="text-sm font-semibold text-stone-900">${escapeHtml(n.name)}</p>
-        <p class="text-xs italic text-stone-400">${escapeHtml(n.scientific)}</p>
-        <p class="mt-0.5 text-xs capitalize text-stone-500">${escapeHtml(n.kingdom)}</p>
+        <p class="font-display text-sm font-semibold">${escapeHtml(n.name)}</p>
+        <p class="font-display text-xs italic text-ink-faint">${escapeHtml(n.scientific)}</p>
       `
       el.style.display = 'block'
     } else {
@@ -261,15 +292,15 @@ export default function RelationshipGraph({ nodes, links, kingdoms }: Props): Re
   }, [])
 
   return (
-    <div ref={containerRef} className="relative w-full" style={{ height: 600 }}>
+    <div ref={containerRef} className="relative w-full" style={{ height: GRAPH_HEIGHT }}>
       <div
         ref={tooltipRef}
-        className="pointer-events-none absolute left-4 top-4 z-10 hidden rounded-lg border border-stone-200 bg-white px-3 py-2 shadow-sm"
+        className="pointer-events-none absolute left-4 top-4 z-10 hidden rounded-lg border border-line bg-surface px-3 py-2 shadow-plate"
       />
       <ForceGraph2D
         ref={graphRef}
         width={width}
-        height={600}
+        height={GRAPH_HEIGHT}
         graphData={{ links, nodes }}
         nodeCanvasObject={paintNode}
         nodeCanvasObjectMode={() => 'replace'}
@@ -281,21 +312,25 @@ export default function RelationshipGraph({ nodes, links, kingdoms }: Props): Re
         linkHoverPrecision={0}
         linkCanvasObjectMode={() => 'after'}
         linkCanvasObject={paintLink}
-        linkColor={() => '#c7c3bf'}
+        linkColor={() => theme['line-strong'] || '#c7c3bf'}
         linkDirectionalArrowLength={2}
         linkDirectionalArrowRelPos={0.85}
         linkCurvature={(link: LinkObject) => (link as unknown as GraphLink).curvature}
-        backgroundColor="#fafaf9"
+        backgroundColor={theme.paper || '#fafaf9'}
         cooldownTicks={300}
         d3AlphaDecay={0.025}
         d3VelocityDecay={0.35}
+        onEngineTick={handleEngineTick}
         onEngineStop={handleEngineStop}
       />
-      <div className="absolute bottom-4 right-4 flex flex-col gap-1.5 rounded-lg border border-stone-200 bg-white px-3 py-2 shadow-sm">
+      <div className="absolute bottom-4 right-4 flex flex-col gap-1.5 rounded-lg border border-line bg-surface px-3 py-2 shadow-plate">
         {kingdoms.map(k => (
           <div key={k.key} className="flex items-center gap-2">
-            <span className="inline-block h-3 w-3 rounded-full" style={{ background: k.color }} />
-            <span className="text-xs capitalize text-stone-600">{k.plural}</span>
+            <span
+              className="inline-block h-2.5 w-2.5 rounded-full"
+              style={{ background: theme[k.key as typeof TOKENS[number]] || k.color }}
+            />
+            <span className="text-xs text-ink-muted">{t.has(k.plural) ? t(k.plural) : k.plural}</span>
           </div>
         ))}
       </div>

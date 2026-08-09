@@ -1,10 +1,17 @@
 {
   "nav": {
     "birds": "Oiseaux",
+    "close": "Fermer le menu",
     "contact": "Contact",
     "explore": "Explorer",
     "fungi": "Champignons",
+    "menu": "Menu",
     "trees": "Arbres"
+  },
+  "theme": {
+    "dark": "sombre",
+    "light": "clair",
+    "switch_to": "Passer en mode {theme}"
   },
   "home": {
     "birds_desc": "Aves, vertébrés à plumes",
@@ -13,6 +20,12 @@
     "title": "Symbiose",
     "trees_desc": "Plantes ligneuses et leur écologie",
     "species_count": "{count, plural, one {# espèce} other {# espèces}}",
+    "relationship_count": "{count, plural, one {# relation} other {# relations}}",
+    "kingdom_count": "{count, plural, one {# règne} other {# règnes}}",
+    "stat_species": "{count, plural, one {espèce} other {espèces}}",
+    "stat_relationships": "{count, plural, one {relation} other {relations}}",
+    "stat_kingdoms": "{count, plural, one {règne} other {règnes}}",
+    "browse": "Parcourir",
     "about_title": "De quoi s'agit-il\u00a0?",
     "about_p1": "Symbiose est une encyclopédie naturaliste qui cartographie les relations écologiques entre oiseaux, arbres et champignons. Quel pic niche dans quel chêne\u00a0? Quel champignon forme des réseaux mycorhiziens avec quel arbre\u00a0? Chaque relation ici est documentée et sourcée.",
     "about_p2": "Le jeu de données est volontairement restreint\u00a0: nous privilégions la profondeur à l'étendue. Chaque espèce est reliée à ses voisines par des associations écologiques réelles et publiées, et non par des suppositions générées par IA.",
