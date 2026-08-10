@@ -1,8 +1,15 @@
-import { getTranslations } from 'next-intl/server'
+'use client'
+
+import { useTranslations } from 'next-intl'
 import Skeleton from '@/components/Skeleton'
 
-export default async function ExploreLoading(): Promise<React.JSX.Element> {
-  const t = await getTranslations('explore')
+/*
+ * Client-side translations on purpose: loading.tsx receives no params, so a
+ * server-side getTranslations() here would resolve the locale from request
+ * headers and force the whole /explore route to render dynamically.
+ */
+export default function ExploreLoading(): React.JSX.Element {
+  const t = useTranslations('explore')
   return (
     <main className="mx-auto max-w-7xl px-5 py-12 sm:px-8">
       <header className="mb-6 max-w-2xl">

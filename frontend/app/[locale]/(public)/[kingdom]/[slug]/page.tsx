@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { Link } from '@/i18n/navigation'
-import { getKingdoms, getSpeciesBySlug, getRelationshipsForSpecies, getSpeciesByIds } from '@/lib/api'
+import { getAllSpecies, getKingdoms, getSpeciesBySlug, getRelationshipsForSpecies, getSpeciesByIds } from '@/lib/api'
 import { getCommonName, getTranslatedField, resolveMediaUrl } from '@/lib/helpers'
 import { buildAlternates, buildLocalizedUrl } from '@/lib/routing-utils'
 import { routing } from '@/i18n/routing'
@@ -15,7 +15,28 @@ import JsonLd from '@/components/JsonLd'
 import SpeciesImage from '@/components/SpeciesImage'
 import { KingdomIcon } from '@/components/icons'
 import { CONSERVATION_STATUSES } from '@/lib/constants'
-import { getTranslations, getLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
+
+/*
+ * Prerender every species page at build. Fails soft: if the API is unreachable
+ * the build still succeeds and pages are generated on first request instead
+ * (dynamicParams defaults to true), so a down API never blocks a deploy.
+ */
+export async function generateStaticParams(): Promise<{ kingdom: string; slug: string }[]> {
+  try {
+    const [kingdoms, { member }] = await Promise.all([getKingdoms(), getAllSpecies()])
+    const slugByKingdom = new Map(kingdoms.map(k => [k.key, k.slug]))
+    return member.flatMap(s => {
+      const kingdom = slugByKingdom.get(s.family.kingdom)
+      return kingdom ? [{ kingdom, slug: s.slug ?? String(s.id) }] : []
+    })
+  } catch (error) {
+    // Loud on purpose: an empty list looks identical to "no species yet" in the
+    // build log, and silently shipping zero prerendered pages is worth noticing.
+    console.warn('[generateStaticParams] species prerender skipped, API unreachable:', error)
+    return []
+  }
+}
 
 export async function generateMetadata({
   params,
@@ -73,19 +94,20 @@ export default async function SpeciesPage({
 }: {
   params: Promise<{ kingdom: string; locale: string; slug: string }>
 }): Promise<React.JSX.Element> {
-  const { kingdom, slug } = await params
+  const { kingdom, locale, slug } = await params
+  setRequestLocale(locale)
+
   const kingdoms = await getKingdoms()
   const kd = kingdoms.find(k => k.slug === kingdom)
   if (!kd) {
     notFound()
   }
 
-  const [ts, tc, tk, tr, locale] = await Promise.all([
+  const [ts, tc, tk, tr] = await Promise.all([
     getTranslations('species'),
     getTranslations('conservation'),
     getTranslations('kingdoms'),
     getTranslations('relationships'),
-    getLocale(),
   ])
 
   const l = locale as AppLocale

@@ -2,13 +2,19 @@ import { getAllSpecies, getGraphRelationships, getKingdoms } from '@/lib/api'
 import RelationshipGraph, { type GraphNode, type GraphLink } from '@/components/RelationshipGraph'
 import { getCommonName, resolveMediaUrl } from '@/lib/helpers'
 import type { AppLocale } from '@/lib/types'
-import { getTranslations, getLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 
-export default async function ExplorePage(): Promise<React.JSX.Element> {
-  const [t, tRel, locale, { member: species }, { member: relationships }, kingdoms] = await Promise.all([
+export default async function ExplorePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<React.JSX.Element> {
+  const { locale } = await params
+  setRequestLocale(locale)
+
+  const [t, tRel, { member: species }, { member: relationships }, kingdoms] = await Promise.all([
     getTranslations('explore'),
     getTranslations('relationships'),
-    getLocale(),
     getAllSpecies(),
     getGraphRelationships(),
     getKingdoms(),

@@ -3,22 +3,30 @@ import { getAllSpecies } from '@/lib/api'
 import { getCommonName } from '@/lib/helpers'
 import type { AppLocale } from '@/lib/types'
 import { siteInfo } from '@/lib/strings/siteInfo'
-import { getTranslations, getLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 
-export async function generateMetadata(): Promise<{ description: string; title: string }> {
-  const t = await getTranslations('contact')
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<{ description: string; title: string }> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'contact' })
   return {
     description: t('subtitle'),
     title: `${t('title')} | ${siteInfo.name}`,
   }
 }
 
-export default async function ContactPage(): Promise<React.JSX.Element> {
-  const [t, locale] = await Promise.all([
-    getTranslations('contact'),
-    getLocale(),
-  ])
+export default async function ContactPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<React.JSX.Element> {
+  const { locale } = await params
+  setRequestLocale(locale)
 
+  const t = await getTranslations('contact')
   const { member: species } = await getAllSpecies()
 
   const speciesOptions = species

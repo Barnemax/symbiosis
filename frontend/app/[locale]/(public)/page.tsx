@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Link } from '@/i18n/navigation'
 import { routing } from '@/i18n/routing'
-import { getTranslations, getLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 type StaticPathname = Exclude<keyof typeof routing['pathnames'], `${string}/[${string}]`>
 import { buildAlternates, buildLocalizedUrl } from '@/lib/routing-utils'
@@ -43,13 +43,19 @@ async function coverFor(kingdom: KingdomMeta): Promise<Species | undefined> {
   return data.member.find(s => s.media.some(m => m.type === 'image'))
 }
 
-export default async function HomePage(): Promise<React.JSX.Element> {
-  const [t, tn, kingdoms, graph, locale] = await Promise.all([
+export default async function HomePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<React.JSX.Element> {
+  const { locale } = await params
+  setRequestLocale(locale)
+
+  const [t, tn, kingdoms, graph] = await Promise.all([
     getTranslations('home'),
     getTranslations('nav'),
     getKingdoms(),
     getGraphRelationships(),
-    getLocale(),
   ])
 
   const covers = await Promise.all(kingdoms.map(coverFor))

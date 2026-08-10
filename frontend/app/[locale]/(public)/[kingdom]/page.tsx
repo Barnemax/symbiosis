@@ -15,7 +15,7 @@ type DynamicPathname = Extract<keyof typeof routing['pathnames'], `${string}/[${
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import SearchInput from '@/components/SearchInput'
-import { getTranslations, getLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 export async function generateMetadata({
   params,
@@ -70,7 +70,11 @@ export default async function KingdomPage({
   params: Promise<{ kingdom: string; locale: string }>
   searchParams: Promise<{ search?: string; sort?: string; page?: string }>
 }): Promise<React.JSX.Element> {
-  const { kingdom } = await params
+  const { kingdom, locale } = await params
+  setRequestLocale(locale)
+
+  // Reading searchParams keeps this route dynamic - the search/sort/page state
+  // is server-rendered so paginated listings stay crawlable.
   const { search = '', sort = 'links', page = '1' } = await searchParams
 
   const kingdoms = await getKingdoms()
@@ -79,13 +83,12 @@ export default async function KingdomPage({
     notFound()
   }
 
-  const [t, ts, tc, tn, th, locale] = await Promise.all([
+  const [t, ts, tc, tn, th] = await Promise.all([
     getTranslations('kingdom'),
     getTranslations('search'),
     getTranslations('conservation'),
     getTranslations('nav'),
     getTranslations('home'),
-    getLocale(),
   ])
 
   const kingdomHref = `/${kd.slug}` as StaticPathname
