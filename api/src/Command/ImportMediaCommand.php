@@ -24,6 +24,7 @@ class ImportMediaCommand extends Command
     /** Minimum delay between requests to the same host, in microseconds. */
     private const HOST_THROTTLE_US = [
         'wikipedia.org' => 200_000,
+        'wikimedia.org' => 200_000,
         'inaturalist.org' => 1_000_000,
         'xeno-canto.org' => 1_000_000,
     ];
@@ -258,7 +259,9 @@ class ImportMediaCommand extends Command
         }
 
         if (null === $imageUrl) {
-            return [null, null];
+            // No article in any edition | fall back to searching Commons itself,
+            // which carries images for plenty of species Wikipedia has yet to cover.
+            return $this->fetchCommonsImage($scientificName, $io);
         }
 
         // Derive the Commons filename from the URL | e.g. "Common_Blackbird.jpg"
@@ -281,21 +284,84 @@ class ImportMediaCommand extends Command
         }
 
         $page = reset($data['query']['pages']);
-        $meta = $page['imageinfo'][0]['extmetadata'] ?? [];
 
+        return [$imageUrl, $this->creditFrom($page['imageinfo'][0]['extmetadata'] ?? [])];
+    }
+
+    // ── Wikimedia Commons ──────────────────────────────────────────────────────
+
+    /**
+     * Last resort when no Wikipedia edition has an article: search Commons' File
+     * namespace by scientific name and take the top hit.
+     *
+     * @return array{0: string|null, 1: string|null}
+     */
+    private function fetchCommonsImage(string $scientificName, SymfonyStyle $io): array
+    {
+        $search = $this->requestJson('https://commons.wikimedia.org/w/api.php', [
+            'query' => [
+                'action' => 'query',
+                'list' => 'search',
+                'srsearch' => $scientificName,
+                'srnamespace' => 6,   // File:
+                'srlimit' => 1,
+                'format' => 'json',
+            ],
+        ], $io, 'Commons search');
+
+        $title = $search['query']['search'][0]['title'] ?? null;
+        if (null === $title) {
+            return [null, null];
+        }
+
+        $data = $this->requestJson('https://commons.wikimedia.org/w/api.php', [
+            'query' => [
+                'action' => 'query',
+                'titles' => $title,
+                'prop' => 'imageinfo',
+                'iiprop' => 'url|extmetadata',
+                'format' => 'json',
+            ],
+        ], $io, 'Commons imageinfo');
+
+        if (null === $data) {
+            return [null, null];
+        }
+
+        $page = reset($data['query']['pages']);
+        $info = $page['imageinfo'][0] ?? null;
+        $url = $info['url'] ?? null;
+
+        if (null === $url) {
+            return [null, null];
+        }
+
+        // Commons appends utm_* tracking params to imageinfo URLs | drop them.
+        $url = (string) strtok((string) $url, '?');
+
+        $io->text("    via Commons: {$title}");
+
+        return [$url, $this->creditFrom($info['extmetadata'] ?? [])];
+    }
+
+    /**
+     * Build an attribution string from a File: page's extmetadata.
+     *
+     * @param array<string, mixed> $meta
+     */
+    private function creditFrom(array $meta): string
+    {
         $artist = isset($meta['Artist']['value'])
             ? trim(strip_tags((string) $meta['Artist']['value']))
             : null;
         $license = $meta['LicenseShortName']['value'] ?? null;
 
-        $credit = match (true) {
-            null !== $artist && null !== $license => "$artist / $license",
-            null !== $license => $license,
-            null !== $artist => $artist,
+        return match (true) {
+            null !== $artist && '' !== $artist && null !== $license => "$artist / $license",
+            null !== $license => (string) $license,
+            null !== $artist && '' !== $artist => $artist,
             default => 'Wikimedia Commons',
         };
-
-        return [$imageUrl, $credit];
     }
 
     // ── iNaturalist ───────────────────────────────────────────────────────────

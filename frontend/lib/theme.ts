@@ -15,9 +15,21 @@ export function isTheme(value: unknown): value is Theme {
  */
 export const THEME_INIT_SCRIPT = `(function(){try{var t=localStorage.getItem('${THEME_STORAGE_KEY}');var d=t==='dark'||(t!=='light'&&matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.classList.toggle('dark',d)}catch(e){}})()`
 
+/**
+ * Projects a theme onto <html>. Client-only.
+ *
+ * <html> is rendered by the root layout, so React owns it and resets it to the
+ * attributes it rendered whenever that layout remounts - which switching locale
+ * does, the locale being the layout's only param. Anything written here is
+ * therefore lost on a locale switch; <ThemeSync> puts it back.
+ */
+export function paintTheme(theme: Theme): void {
+  document.documentElement.classList.toggle('dark', theme === 'dark')
+}
+
 /** Applies a theme to <html> and persists it. Client-only. */
 export function applyTheme(theme: Theme): void {
-  document.documentElement.classList.toggle('dark', theme === 'dark')
+  paintTheme(theme)
   try {
     localStorage.setItem(THEME_STORAGE_KEY, theme)
   } catch {

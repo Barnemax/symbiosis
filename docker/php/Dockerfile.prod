@@ -28,9 +28,12 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 COPY api/composer.json api/composer.lock ./
 RUN composer install --no-dev --no-scripts --prefer-dist --no-progress --no-autoloader
 
-# App source, then optimized autoloader + cache warmup
+# App source, then optimized autoloader + cache warmup.
+# assets:install is normally run by composer's auto-scripts, which --no-scripts
+# skips - without it public/bundles/ is empty and Swagger UI loads with no CSS/JS.
 COPY api/ ./
 RUN composer dump-autoload --no-dev --optimize --classmap-authoritative \
+ && php bin/console assets:install public --no-interaction \
  && php bin/console cache:clear --no-warmup \
  && php bin/console cache:warmup
 
