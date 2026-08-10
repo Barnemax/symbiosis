@@ -109,5 +109,11 @@
     "parasitises_inv": "Parasitised by",
     "symbiosis_with": "Symbiosis with",
     "symbiosis_with_inv": "Symbiosis with"
+  },
+  "notFound": {
+    "back_home": "Back to home",
+    "back_kingdom": "Back to {kingdom}",
+    "description": "This page does not exist, or the species has been renamed. The trail ends here.",
+    "title": "Page not found"
   }
 }

@@ -1,12 +1,12 @@
 import type { Metadata } from 'next'
 import { Link } from '@/i18n/navigation'
-import { getAllSpecies, getKingdoms, getSpeciesBySlug, getRelationshipsForSpecies, getSpeciesByIds } from '@/lib/api'
+import { getAllRelationships, getAllSpecies, getKingdoms } from '@/lib/api'
 import { getCommonName, getTranslatedField, resolveMediaUrl } from '@/lib/helpers'
 import { buildAlternates, buildLocalizedUrl } from '@/lib/routing-utils'
 import { routing } from '@/i18n/routing'
 import { buildTaxonSchema } from '@/lib/schemas'
 import { siteInfo } from '@/lib/strings/siteInfo'
-import type { AppLocale, Media, Species } from '@/lib/types'
+import type { AppLocale, KingdomMeta, Media, Species } from '@/lib/types'
 
 type DynamicPathname = Extract<keyof typeof routing['pathnames'], `${string}/[${string}]`>
 import { notFound } from 'next/navigation'
@@ -16,6 +16,33 @@ import SpeciesImage from '@/components/SpeciesImage'
 import { KingdomIcon } from '@/components/icons'
 import { CONSERVATION_STATUSES } from '@/lib/constants'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
+
+/*
+ * Every species page reads from the same two bulk responses - the whole species
+ * list and the whole relationship list - rather than querying per slug. Both are
+ * cached fetches, so prerendering 134 pages costs three upstream calls in total
+ * instead of roughly 270, and /explore and /contact share the same entries.
+ *
+ * The trade is payload for round trips: ~290KB of JSON to render one page. Fine
+ * at the current ~75 species; revisit if the encyclopedia grows an order of
+ * magnitude, at which point per-slug queries become the cheaper side again.
+ */
+async function loadSpecies(kingdomSlug: string, slug: string): Promise<{
+  allSpecies: Species[]
+  kd: KingdomMeta
+  kingdoms: KingdomMeta[]
+  species: Species
+} | null> {
+  // Issued together, not chained: on a cold cache this is one round trip rather
+  // than one per lookup.
+  const [kingdoms, { member }] = await Promise.all([getKingdoms(), getAllSpecies()])
+  const kd = kingdoms.find(k => k.slug === kingdomSlug)
+  if (!kd) {
+    return null
+  }
+  const species = member.find(s => s.family.kingdom === kd.key && (s.slug ?? String(s.id)) === slug)
+  return species ? { allSpecies: member, kd, kingdoms, species } : null
+}
 
 /*
  * Prerender every species page at build. Fails soft: if the API is unreachable
@@ -44,16 +71,11 @@ export async function generateMetadata({
   params: Promise<{ kingdom: string; locale: string; slug: string }>
 }): Promise<Metadata> {
   const { kingdom, locale, slug } = await params
-  const kingdoms = await getKingdoms()
-  const kd = kingdoms.find(k => k.slug === kingdom)
-  if (!kd) {
+  const found = await loadSpecies(kingdom, slug).catch(() => null)
+  if (!found) {
     return {}
   }
-
-  const species = await getSpeciesBySlug(kd.key, slug).catch(() => null)
-  if (!species) {
-    return {}
-  }
+  const { kd, species } = found
 
   const commonName = getCommonName(species, locale as AppLocale)
   const image = species.media.find(m => m.type === 'image')
@@ -97,11 +119,14 @@ export default async function SpeciesPage({
   const { kingdom, locale, slug } = await params
   setRequestLocale(locale)
 
-  const kingdoms = await getKingdoms()
-  const kd = kingdoms.find(k => k.slug === kingdom)
-  if (!kd) {
+  const [found, allRelationships] = await Promise.all([
+    loadSpecies(kingdom, slug),
+    getAllRelationships().then(data => data.member).catch(() => []),
+  ])
+  if (!found) {
     notFound()
   }
+  const { allSpecies, kd, kingdoms, species } = found
 
   const [ts, tc, tk, tr] = await Promise.all([
     getTranslations('species'),
@@ -112,22 +137,14 @@ export default async function SpeciesPage({
 
   const l = locale as AppLocale
 
-  const species = await getSpeciesBySlug(kd.key, slug).catch(() => null)
-  if (!species) {
-    notFound()
-  }
-
   const slugByKingdom = new Map(kingdoms.map(k => [k.key, k.slug]))
 
-  const { asSubject, asObject } = await getRelationshipsForSpecies(species.id).catch(() => ({ asObject: [], asSubject: [] }))
+  const asSubject = allRelationships.filter(r => r.subject.id === species.id)
+  const asObject = allRelationships.filter(r => r.object.id === species.id)
 
-  const relatedIds = [...new Set([
-    ...asSubject.map(r => r.object.id),
-    ...asObject.map(r => r.subject.id),
-  ])]
-  const relatedSpeciesMap = await getSpeciesByIds(relatedIds)
-    .then(data => new Map(data.member.map(s => [s.id, s])))
-    .catch(() => new Map<number, Species>())
+  // `media` is absent from relationship:read, so thumbnails come from the
+  // species list we already hold rather than a second id[]= round trip.
+  const relatedSpeciesMap = new Map<number, Species>(allSpecies.map(s => [s.id, s]))
 
   const relationships = [
     ...asSubject.map(rel => ({

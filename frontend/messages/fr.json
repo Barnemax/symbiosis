@@ -109,5 +109,11 @@
     "parasitises_inv": "Parasité par",
     "symbiosis_with": "En symbiose avec",
     "symbiosis_with_inv": "En symbiose avec"
+  },
+  "notFound": {
+    "back_home": "Retour à l'accueil",
+    "back_kingdom": "Retour aux {kingdom}",
+    "description": "Cette page n'existe pas, ou l'espèce a été renommée. La piste s'arrête ici.",
+    "title": "Page introuvable"
   }
 }
