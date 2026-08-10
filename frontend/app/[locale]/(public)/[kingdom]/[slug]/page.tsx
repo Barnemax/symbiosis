@@ -234,7 +234,7 @@ export default async function SpeciesPage({
                                 <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-line bg-paper-sunk">
                                   <SpeciesImage
                                     src={thumb ? resolveMediaUrl(thumb.url) : undefined}
-                                    alt=""
+                                    alt={getCommonName(rel.other, l)}
                                     kingdom={targetKingdom}
                                     sizes="56px"
                                     className="object-cover object-top"

@@ -65,6 +65,7 @@ export default async function HomePage(): Promise<React.JSX.Element> {
       image: image ? resolveMediaUrl(image) : undefined,
       key: k.key,
       label: tn.has(k.plural) ? tn(k.plural) : k.plural,
+      name: cover ? getCommonName(cover, locale as AppLocale) : '',
     }
   })
 
@@ -109,16 +110,20 @@ export default async function HomePage(): Promise<React.JSX.Element> {
               <div className="relative aspect-4/3 overflow-hidden bg-paper-sunk">
                 <SpeciesImage
                   src={plate.image}
-                  alt=""
+                  alt={plate.name}
                   kingdom={plate.key}
                   sizes="(min-width: 640px) 33vw, 100vw"
-                  className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                  className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.04]"
                 />
                 {plate.image && (
                   <>
                     <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/50 via-black/5 to-transparent" />
-                    <p className="absolute inset-x-4 bottom-3 truncate font-display text-xs italic text-white/85">
-                      {getCommonName(plate.cover!, locale as AppLocale)}
+                    {/* Visual echo of the alt text - hidden from AT to avoid a double announcement. */}
+                    <p
+                      aria-hidden="true"
+                      className="absolute inset-x-4 bottom-3 truncate font-display text-xs italic text-white/85"
+                    >
+                      {plate.name}
                     </p>
                   </>
                 )}
